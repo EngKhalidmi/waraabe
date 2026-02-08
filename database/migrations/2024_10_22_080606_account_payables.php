@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        //
+        Schema::create('account_payables', function (Blueprint $table) {
+            $table->id();
+            $table->text('received_From');
+            $table->text('amount');
+            $table->text('type');
+            $table->text('account');
+            $table->text('date');
+            $table->text('description');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        //
+    }
+};

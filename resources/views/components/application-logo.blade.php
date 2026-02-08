@@ -1,0 +1,1 @@
+<img src="{{ asset('Logo/HazLogo.png') }}" alt="" width="170px" height="130px">
