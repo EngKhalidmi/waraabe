@@ -3,6 +3,9 @@
     $pwaThemeColor = '#3d5ee1';
     $pwaStartUrl = route('dashboard');
     $appBasePath = rtrim(request()->getBaseUrl(), '/');
+    if ($appBasePath === '') {
+        $appBasePath = '/public';
+    }
     $appOrigin = request()->getSchemeAndHttpHost();
     $appBaseUrl = $appOrigin . $appBasePath;
 @endphp

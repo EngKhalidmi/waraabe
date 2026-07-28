@@ -24,6 +24,43 @@
         return OfflineDatabase.nowIso ? OfflineDatabase.nowIso() : new Date().toISOString();
     }
 
+    function getDeploymentBaseUrl() {
+        var baseUrl = String(global.__APP_BASE_URL__ || '').trim().replace(/\/$/, '');
+        var basePath = String(global.__APP_BASE_PATH__ || '').trim();
+
+        if (!basePath) {
+            basePath = '/public';
+        } else if (basePath.charAt(0) !== '/') {
+            basePath = '/' + basePath;
+        }
+
+        if (baseUrl) {
+            return baseUrl;
+        }
+
+        return global.location.origin.replace(/\/$/, '') + basePath;
+    }
+
+    function resolveEndpoint() {
+        var configuredEndpoint = String(config.syncEndpoint || '').trim();
+        var deploymentBaseUrl = getDeploymentBaseUrl();
+
+        if (configuredEndpoint) {
+            try {
+                var parsed = new URL(configuredEndpoint, global.location.href);
+                if (parsed.origin === global.location.origin && parsed.pathname.indexOf('/public/') === -1) {
+                    return deploymentBaseUrl + '/api/sync';
+                }
+
+                return parsed.toString();
+            } catch (error) {
+                // Fall through to deployment base URL.
+            }
+        }
+
+        return deploymentBaseUrl + '/api/sync';
+    }
+
     function emit(detail) {
         global.dispatchEvent(new CustomEvent('sync-client:changed', {
             detail: detail || {}
@@ -55,7 +92,7 @@
 
         this.queueManager = options.queueManager || QueueManager;
         this.syncManager = options.syncManager || SyncManager;
-        this.endpoint = options.endpoint || config.syncEndpoint || new URL('api/sync', window.location.href).toString();
+        this.endpoint = options.endpoint || resolveEndpoint();
         this.batchSize = Number(options.batchSize || syncConfig.batch_size || 20);
         this.userId = typeof options.userId !== 'undefined' ? options.userId : config.userId;
         this.state = {

@@ -31,6 +31,10 @@ class AppServiceProvider extends ServiceProvider
                 $baseUrl = rtrim($request->getBaseUrl(), '/');
                 $baseUrl = preg_replace('#/index\\.php$#', '', $baseUrl);
 
+                if ($baseUrl === '') {
+                    $baseUrl = '/public';
+                }
+
                 URL::forceRootUrl($request->getSchemeAndHttpHost() . $baseUrl);
                 URL::forceScheme($request->getScheme());
             }
