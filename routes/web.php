@@ -51,6 +51,8 @@ Route::get('/', function () {
     return view('auth.login');
 })->middleware('guest');
 
+Route::view('/offline', 'offline')->name('offline');
+
 // Clear Cache
 Route::get('/cache', function () {
     Artisan::call('cache:clear');
@@ -301,7 +303,9 @@ Route::prefix('reports')->middleware(['role:branch-manager,manager,branch-branch
 
     // Customer Balance report
     Route::get('/customerBalanceReport', [ReportsController::class, 'customerBalanceReport'])->name('report.customerBalance');
-    Route::get('/customerBalance', [ReportsController::class, 'getCustomerBalanceReport'])->name('info.customerbalance');
+    Route::get('/customerBalance', [ReportsController::class, 'getCustomerBalanceReport'])
+    ->name('info.customerbalance');
+
     
         // Pateint Taken Prescription report
     Route::get('/taken/prescription', [ReportsController::class, 'MedicationLogReport'])->name('report.medication.log');

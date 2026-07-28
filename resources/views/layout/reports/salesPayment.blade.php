@@ -202,14 +202,14 @@
                     <!-- Display results -->
                     <div class="table-responsive" id="printArea" style="display:none;">
                         <center>
-
-                            <h1>TABANTAABO FUEL STATION BURAO</h1>
-                            <p>Kaalinta Shiidaalka Tabantaabo
-                                <br>Burco Somaliland
-                                <br>
-                                +252 634042473 | 634357338 | 713013 <br>
-                                ZAAD: 400723 | Edahab: 731684
-                            </p>
+ <img src="{{ asset('/Logo/Logo1.png') }}" width="150" alt="Company Logo">
+                              <h1>WARAABE FUEL STATIONS</h1>
+                <p>Kaalinta Shiidaalka Waraabe
+                    <br>Berbera Somaliland
+                    <br>
+                    +252 63XXXXX | 63XXXXXX | 5XXXXX <br>
+                    ZAAD: XXXXX | Edahab: XXXXX
+                </p>
                             <hr>
                             <h4 class="card-title">Invoices Report</h4>
                         </center>

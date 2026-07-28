@@ -29,14 +29,17 @@ class FuelSalesController extends Controller
      */
     public function create()
     {
-        $products = Products::all();
-        if(auth()->user()->role !== 'admin' && auth()->user()->role !== 'manager') {
-             $salesmen = Salesman::where('type', 'Salesman')
-            ->where('depID', auth()->user()->depID)
-            ->get();}else{
-                 $salesmen = Salesman::where('type', 'Salesman')->get();
-            }
+        $user = auth()->user();
+        $isPrivileged = in_array($user->role, ['admin', 'manager']);
+
+        $products = Products::when(!$isPrivileged, fn($q) => $q->where('depID', $user->depID))->get();
+
+        $salesmen = Salesman::where('type', 'Salesman')
+            ->when(!$isPrivileged, fn($q) => $q->where('depID', $user->depID))
+            ->get();
+
         $customers = Customers::all();
+
         return view('layout.salesOrders.fuel_sales', compact('products', 'salesmen', 'customers'));
     }
     
@@ -822,29 +825,90 @@ class FuelSalesController extends Controller
     
     public function printSheet($id)
     {
-        // Get the fuel sale with relationships
         $fuelSale = FuelSale::with([
             'transactions.product',
             'creditSales.product',
             'creditSales.customer',
             'salesman'
         ])->findOrFail($id);
-    
-        // Get cash transactions
+
         $cashTransactions = $fuelSale->transactions ?? collect();
-        
-        // Get credit sales
         $creditSales = $fuelSale->creditSales ?? collect();
-    
-        // Calculate product summary
+        $cashDisplayRows = $this->buildCashDisplayRows($cashTransactions, $creditSales);
+
+        $cashTotal = $cashTransactions->sum(fn ($t) => $t->total ?? ($t->liters * $t->rate));
+        $creditTotal = $creditSales->sum(fn ($c) => $c->total ?? ($c->quantity * $c->rate));
         $productSummary = $this->calculateProductSummary($fuelSale);
-    
+
         return view('layout.salesOrders.fuel_sale_print', compact(
             'fuelSale',
             'cashTransactions',
+            'cashDisplayRows',
             'creditSales',
+            'cashTotal',
+            'creditTotal',
             'productSummary'
         ));
+    }
+
+    private function buildCashDisplayRows($cashTransactions, $creditSales)
+    {
+        $phases = ['Phase 1', 'Phase 2'];
+        $products = collect();
+
+        foreach ($cashTransactions as $transaction) {
+            if ($transaction->product) {
+                $products->put($transaction->product_id, $transaction->product);
+            }
+        }
+
+        foreach ($creditSales as $credit) {
+            if ($credit->product) {
+                $products->put($credit->product_id, $credit->product);
+            }
+        }
+
+        $sortedProducts = $products->sortBy(function ($product) {
+            $name = strtolower($product->name ?? '');
+
+            if (str_contains($name, 'diesel')) {
+                return 0;
+            }
+
+            if (str_contains($name, 'petrol')) {
+                return 1;
+            }
+
+            return 2;
+        });
+
+        $rows = collect();
+
+        foreach ($sortedProducts as $productId => $product) {
+            $productTransactions = $cashTransactions->where('product_id', $productId);
+            $defaultRate = optional($productTransactions->first())->rate ?? $product->selling_price ?? 0;
+
+            foreach ($phases as $phase) {
+                $match = $productTransactions->firstWhere('dphase', $phase);
+
+                if ($match) {
+                    $rows->push($match);
+                    continue;
+                }
+
+                $rows->push((object) [
+                    'product' => $product,
+                    'dphase' => $phase,
+                    'previous_reading' => 0,
+                    'current_reading' => 0,
+                    'liters' => 0,
+                    'rate' => $defaultRate,
+                    'total' => 0,
+                ]);
+            }
+        }
+
+        return $rows;
     }
     
     private function calculateProductSummary($fuelSale)
@@ -869,7 +933,7 @@ class FuelSalesController extends Controller
             }
             
             $summary[$productId]['cash_liters'] += $transaction->liters;
-            $summary[$productId]['cash_amount'] += ($transaction->liters * $transaction->rate);
+            $summary[$productId]['cash_amount'] += ($transaction->total ?? ($transaction->liters * $transaction->rate));
         }
     
         // Process credit sales
@@ -889,8 +953,8 @@ class FuelSalesController extends Controller
                 ];
             }
             
-            $summary[$productId]['credit_liters'] += $credit->liters;
-            $summary[$productId]['credit_amount'] += ($credit->liters * $credit->rate);
+            $summary[$productId]['credit_liters'] += $credit->quantity;
+            $summary[$productId]['credit_amount'] += ($credit->total ?? ($credit->quantity * $credit->rate));
         }
     
         // Calculate totals

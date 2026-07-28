@@ -36,14 +36,26 @@ class PurchasesController extends Controller
             $query->whereBetween('created_at', [$request->input('startDate'), $request->input('endDate')]);
         }
 
-        // Filter by product type
-        if ($request->input('type') === 'fuel') {
-            // Assuming fuel products have IDs 4 (Petrol) and 5 (Diesel)
-            $query->whereIn('proID', [4, 5]);
-        } elseif ($request->input('type') === 'oil') {
-            // Assuming oil products are all other products
-            $query->whereNotIn('proID', [4, 5]);
-        }
+       // Filter by product type
+if ($request->input('type') === 'fuel') {
+
+    if (auth()->user()->depID == 3) {
+        // For department 3 fuel products
+        $query->whereIn('proID', [39, 40]);
+    } else {
+        // Normal fuel products
+        $query->whereIn('proID', [4, 5, 39, 40]);
+    }
+
+} elseif ($request->input('type') === 'oil') {
+
+    if (auth()->user()->depID == 3) {
+        $query->whereNotIn('proID', [39, 40]);
+    } else {
+        $query->whereNotIn('proID', [4, 5]);
+    }
+
+}
         // For 'all' type, no additional filtering needed
 
         $totalData = $query->count();

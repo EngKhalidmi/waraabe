@@ -141,76 +141,10 @@
 </div>
 
 <script>
-    $(document).ready(function() {
-
-    // Initialize the DataTable
-    let table = $('#openingInventoryTable').DataTable({
-        processing: true,
-        serverSide: true,
-        lengthMenu: [10, 25, 50],
-        ajax: {
-            url: "{{ route('opening_inventory') }}",
-            type: 'GET',
-            data: function (d) {
-                d.name = $('#name').val();
-                d.startDate = $('#startDate').val();
-                d.endDate = $('#endDate').val();
-            },
-            dataSrc: function (json) {
-                console.log("AJAX response received:", json);
-                return json.data;
-            },
-            error: function (xhr, error, thrown) {
-                console.error("AJAX Error:", xhr.responseText);
-            }
-        },
-        columns: [
-            { data: 'id', name: 'id' },
-            { data: 'product', name: 'product' },
-            { data: 'opening_quantity', name: 'opening_quantity' },
-            { data: 'opening_date', name: 'opening_date' },
-            { data: 'created_at', name: 'created_at' },
-            { 
-                data: 'id', 
-                name: 'actions', 
-                orderable: false, 
-                searchable: false,
-                render: function(data, type, row) {
-                    return `
-                        <a href="{{ url('opening_inventory/opening_inventory') }}/${data}/edit" class="btn btn-sm btn-primary">Edit</a>
-                        <form action="{{ url('opening_inventory/opening_inventory') }}/${data}" method="POST" style="display:inline-block;" id="deleteForm-${data}">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete(${data})">Delete</button>
-                        </form>
-                    `;
-                }
-            }
-        ]
-    });
-
-    // Filter search button click
-    $('#searchBtn').click(function() {
-        table.draw();
-    });
-});
-
-function confirmDelete(id) {
-    // Trigger SweetAlert
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "This will also decrement the product quantity!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // If confirmed, submit the form
-            document.getElementById('deleteForm-' + id).submit();
+    document.addEventListener('DOMContentLoaded', function () {
+        if (window.StoreManagementInventoryModule && typeof window.StoreManagementInventoryModule.boot === 'function') {
+            window.StoreManagementInventoryModule.boot();
         }
     });
-}
 </script>
 @endsection

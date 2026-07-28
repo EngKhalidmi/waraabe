@@ -156,14 +156,14 @@
 
                     <div class="table-responsive mt-4">
                         <center>
-                            <img src="{{ asset('/Logo/maal.png') }}" alt="Company Logo" width="200">
-                            <h1>TABANTAABO FUEL STATION BURAO</h1>
-                            <p>Kaalinta Shiidaalka Tabantaabo
-                                <br>Burco Somaliland
-                                <br>
-                                +252 634042473 | 634357338 | 713013 <br>
-                                ZAAD: 400723 | Edahab: 731684
-                            </p>
+                             <img src="{{ asset('/Logo/Logo1.png') }}" width="150" alt="Company Logo">
+                <h1>WARAABE FUEL STATIONS</h1>
+                <p>Kaalinta Shiidaalka Waraabe
+                    <br>Berbera Somaliland
+                    <br>
+                    +252 63XXXXX | 63XXXXXX | 5XXXXX <br>
+                    ZAAD: XXXXX | Edahab: XXXXX
+                </p>
                             <hr>
                             <h4 class="card-title">Purchase Payment Report</h4>
                         </center>
@@ -268,20 +268,20 @@
         }
 
 
-        function appendToTable(data, tableBody) {
+       function appendToTable(data, tableBody) {
             var tableRow = '<tr>' +
-                '<td>' + data.date + '</td>' +
-                '<td>' + data.client + '</td>' +
-                '<td>' + data.phone + '</td>' +
-                '<td>' + data.type + '</td>' +
-                '<td>' + data.subTotal + '</td>' +
-                '<td>' + data.discount + '</td>' +
-                '<td>' + data.net_price + '</td>' +
-                '<td>' + data.add_cost + '</td>' + // Additionals column is not present in the given JSON data
-                '<td>' + data.paidAmount + '</td>' +
-                '<td>' + data.balance + '</td>' +
-                '<td>' + data.payMethod + '</td>' +
-                '<td>' + data.purchased + '</td>' +
+                '<td>' + (data.date ?? 'N/A') + '</td>' +
+               '<td>' + (data.supplier?.name ?? 'N/A') + '</td>' +
+                '<td>' + (data.supplier?.phone ?? 'N/A') + '</td>' +
+                '<td>' + (data.type ?? 'N/A') + '</td>' +
+                '<td>' + (data.subTotal ?? '0') + '</td>' +
+                '<td>' + (data.discount ?? '0') + '</td>' +
+                '<td>' + (data.net_price ?? '0') + '</td>' +
+                '<td>' + (data.add_cost ?? '0') + '</td>' +
+                '<td>' + (data.paidAmount ?? '0') + '</td>' +
+                '<td>' + (data.balance ?? '0') + '</td>' +
+                '<td>' + (data.payMethod ?? 'N/A') + '</td>' +
+                '<td>' + (data.purchased_by_user?.name ?? 'N/A') + '</td>' +
                 '</tr>';
 
             tableBody.append(tableRow);

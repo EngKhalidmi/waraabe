@@ -146,6 +146,35 @@
      const customerSearchInput = document.getElementById('customerSearch');
      const customerDropdown = document.getElementById('customerDropdown');
 
+     function renderSupplierResults(customers) {
+        customerDropdown.innerHTML = '';
+        if (customers.length > 0) {
+            customers.forEach(customer => {
+                const customerOption = document.createElement('a');
+                customerOption.className = 'dropdown-item';
+                customerOption.textContent = customer.name;
+                customerOption.href = '#';
+                customerOption.dataset.id = customer.id;
+                customerOption.dataset.balance = customer.balance;
+                customerOption.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    selectcustomer(customer);
+                });
+
+                customerDropdown.appendChild(customerOption);
+            });
+
+            customerDropdown.style.display = 'block';
+        } else {
+            customerDropdown.innerHTML = `
+                <div class="dropdown-item text-center text-muted">
+                    No results found
+                </div>
+            `;
+            customerDropdown.style.display = 'block';
+        }
+     }
+
     //  Function to select a customer from the dropdown
     customerSearchInput.addEventListener('input', function() {
         const query = customerSearchInput.value;
@@ -156,39 +185,23 @@
                     <i class="fa fa-spinner fa-spin" style="margin-right:8px !important;"></i> Searching...
                 </div>
             `;
-            axios.get(`{{ route('payable.searchSupplier') }}?query=${query}`)
-                .then(response => {
-                    customerDropdown.innerHTML = '';
-                    if (response.data.length > 0) {
-                    response.data.forEach(customer => {
-                        const customerOption = document.createElement('a');
-                        customerOption.className = 'dropdown-item';
-                        customerOption.textContent = customer.name;
-                        customerOption.href = '#';
-                        customerOption.dataset.id = customer.id;
-                        customerOption.dataset.balance = customer.balance;
-                        customerOption.addEventListener('click', function(e) {
-                            e.preventDefault();
-                            selectcustomer(customer);
-                        });
-
-                        customerDropdown.appendChild(customerOption);
+            if (!navigator.onLine && window.StoreManagementFinanceModule) {
+                window.StoreManagementFinanceModule.searchSuppliers(query)
+                    .then(renderSupplierResults)
+                    .catch(error => {
+                        console.error('Error fetching customers:', error);
+                        customerDropdown.style.display = 'none';
                     });
-
-                    customerDropdown.style.display = 'block'; // Show the dropdown
-                } else {
-                        customerDropdown.innerHTML = `
-                            <div class="dropdown-item text-center text-muted">
-                                No results found
-                            </div>
-                        `;
-                        customerDropdown.style.display = 'block';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching customers:', error);
-                    customerDropdown.style.display = 'none'; // Hide on error
-                });
+            } else {
+                axios.get(`{{ route('payable.searchSupplier') }}?query=${query}`)
+                    .then(response => {
+                        renderSupplierResults(response.data || []);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching customers:', error);
+                        customerDropdown.style.display = 'none'; // Hide on error
+                    });
+            }
         } else {
             customerDropdown.style.display = 'none'; // Hide if query is too short
         }

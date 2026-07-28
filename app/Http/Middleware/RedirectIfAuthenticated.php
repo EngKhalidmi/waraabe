@@ -21,6 +21,10 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
+                if ($request->routeIs('login') && $request->boolean('history')) {
+                    return $next($request);
+                }
+
                 return redirect(RouteServiceProvider::HOME);
             }
         }

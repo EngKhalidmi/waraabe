@@ -123,8 +123,12 @@
 </div>
 </div>
 
-<script>
+    <script>
     $(document).ready(function() {
+        if (!navigator.onLine && window.StoreManagementFinanceModule) {
+            window.StoreManagementFinanceModule.mountListPage('bankStatement');
+            return;
+        }
 
     // Initialize the DataTable
     let table = $('#bankStatement').DataTable({
@@ -141,6 +145,9 @@
                 d.endDate = $('#endDate').val();
             },
             dataSrc: function (json) {
+                if (window.StoreManagementFinanceModule) {
+                    window.StoreManagementFinanceModule.cacheList('bankStatement', json.data || []);
+                }
                 console.log("AJAX response received:", json);
                 return json.data;
             },

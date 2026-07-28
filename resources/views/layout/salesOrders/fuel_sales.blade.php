@@ -269,7 +269,7 @@
                 <div class="col-lg-8 col-sm-12">
                     <div class="card">
                         <div class="card-body">
-                            <form id="fuelSalesForm" method="POST" action="{{ route('fuel.sales.store') }}">
+                            <form id="fuelSalesForm" method="POST" action="{{ route('fuel.sales.store') }}" data-fuel-sales-form="main">
                                 @csrf
                                 <div class="form-section">
                                     <h5 class="section-title">Transaction Details</h5>
@@ -287,6 +287,7 @@
                                                 <select name="shift" id="shift" class="form-control select">
                                                     <option value="morning">Morning</option>
                                                     <option value="evening">Evening</option>
+                                                     <option value="24Hrs-Shift">24Hrs Shift</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -346,7 +347,7 @@
                                                 <label>Rate</label>
                                                 <input type="number" step="0.001" name="rate" id="rate"
                                                     class="form-control"
-                                                    value="{{ $products->first()->selling_price ?? 0 }}" required>
+                                                    value="{{ optional($products->first())->selling_price ?? 0 }}" required>
                                             </div>
                                         </div>
                                     </div>
@@ -485,7 +486,7 @@
                                     <div class="form-group">
                                         <label>Rate</label>
                                         <input type="number" step="0.001" id="creditRate" class="form-control"
-                                            value="{{ $products->first()->selling_price ?? 0 }}">
+                                            value="{{ optional($products->first())->selling_price ?? 0 }}">
                                     </div>
 
                                     <div class="form-group">
@@ -615,6 +616,23 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script>
+        window.__FUEL_SALES_CONFIG__ = {
+            createRoute: @json(route('fuel.sales.store')),
+            indexRoute: @json(route('fuel.sales.index')),
+            creditIndexRoute: @json(route('fuel.sales.credit.index')),
+            customerSearchRoute: @json(route('customers.search')),
+            customerCreateRoute: @json(route('customer.add')),
+            destroyBaseUrl: @json(url('admin/delete')),
+            printRouteTemplate: @json(route('fuel.sales.print', ':id'))
+        };
+
+        window.StoreManagementFuelSalesSeed = {
+            products: @json($products),
+            customers: @json($customers),
+            salesmen: @json($salesmen)
+        };
+    </script>
     <script>
         $(document).ready(function() {
             let transactions = [];
@@ -1293,6 +1311,61 @@ $('#fuelSalesForm').submit(function(e) {
                 $('#cashOnHand').val('0.00');
                 $('#discount').val('0.00');
             }
+
+            window.StoreManagementFuelSalesState = {
+                getTransactions: function() {
+                    return transactions.slice();
+                },
+                getCreditTransactions: function() {
+                    return creditTransactions.slice();
+                },
+                getProductSummary: function() {
+                    return JSON.parse(JSON.stringify(productSummary));
+                },
+                prepareFinalTransactions: function() {
+                    return prepareFinalTransactions();
+                },
+                getPaymentData: function() {
+                    return {
+                        zaad_dollar: parseFloat($('#zaad_dollar').val()) || 0,
+                        zaad_slsh: parseFloat($('#zaad_slsh').val()) || 0,
+                        edahab_dollar: parseFloat($('#edahab_dollar').val()) || 0,
+                        edahab_slsh: parseFloat($('#edahab_slsh').val()) || 0,
+                        cash_dollar: parseFloat($('#cash_dollar').val()) || 0,
+                        cash_slsh: parseFloat($('#cash_slsh').val()) || 0,
+                        merchant_dollar: parseFloat($('#merchant_dollar').val()) || 0,
+                        merchant_slsh: parseFloat($('#merchant_slsh').val()) || 0,
+                        payment_rate: parseFloat($('#payment_rate').val()) || 1
+                    };
+                },
+                getFormValues: function() {
+                    return {
+                        date: $('#date').val(),
+                        shift: $('#shift').val(),
+                        salesman_id: $('#salesman_id').val(),
+                        salesman_name: $('#salesman_id option:selected').text(),
+                        created_by: $('#created_by').val(),
+                        discount: parseFloat($('#discount').val()) || 0,
+                        net_total: parseFloat($('#netTotal').text().replace(/,/g, '')) || 0,
+                        cash_on_hand: parseFloat($('#cashOnHand').val()) || 0,
+                        balance: parseFloat($('#balance').text().replace(/,/g, '')) || 0
+                    };
+                },
+                resetForm: function() {
+                    resetForm();
+                },
+                setCustomerSelection: function(customer) {
+                    if (!customer) {
+                        return;
+                    }
+
+                    $('#customerSearch').val(customer.customer_name || customer.name || '');
+                    $('#customerID').val(customer.id || customer.local_id || '');
+                    $('#customerName').val(customer.customer_name || customer.name || '');
+                    $('#customerDropdown').hide();
+                    $('#creditForm').show();
+                }
+            };
 
             // Initial calculation
             calculateTotals();

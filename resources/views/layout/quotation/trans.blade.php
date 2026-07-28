@@ -124,47 +124,4 @@
 </div>
 </div>
 
-<script>
-    $(document).ready(function() {
-
-    // Initialize the DataTable
-    let table = $('#QuotationOrdersTable').DataTable({
-        processing: true,
-        serverSide: true,
-        lengthMenu: [10, 25, 50],
-        ajax: {
-            url: "{{ route('quotationorders') }}",
-            type: 'GET',
-            data: function (d) {
-                d.name = $('#name').val();
-                d.phone = $('#transID').val();
-                d.startDate = $('#startDate').val();
-                d.endDate = $('#endDate').val();
-            },
-            dataSrc: function (json) {
-                console.log("AJAX response received:", json);
-                return json.data;
-            },
-            error: function (xhr, error, thrown) {
-                console.error("AJAX Error:", xhr.responseText);
-            }
-        },
-        columns: [
-            { data: 'id', name: 'id' },
-            { data: 'pro', name: 'pro' },
-            { data: 'qty', name: 'qty' },
-            { data: 'unit', name: 'unit' },
-            { data: 'price', name: 'price' },
-            { data: 'total', name: 'total' },
-            { data: 'transID', name: 'transID' },
-            { data: 'created_at', name: 'created_at' },
-        ]
-    });
-
-    // Filter search button click
-    $('#searchBtn').click(function() {
-        table.draw();
-    });
-});
-</script>
 @endsection

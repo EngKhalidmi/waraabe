@@ -93,7 +93,7 @@
 </div>
 
 <div class="table-responsive">
-<table class="table" id="purchaseDate">
+<table class="table" id="badProductsTable">
 <thead>
 <tr class="bg-primary">
 <th class="text-white">#</th>
@@ -112,59 +112,10 @@
 </div>
 
 <script>
-    $(document).ready(function() {
-
-    // Initialize the DataTable
-    let table = $('#purchaseDate').DataTable({
-        processing: true,
-        serverSide: true,
-        lengthMenu: [10, 25, 50],
-        ajax: {
-            url: "{{ route('bad_products') }}",
-            type: 'GET',
-            data: function (d) {
-                d.name = $('#name').val();
-                d.startDate = $('#startDate').val();
-                d.endDate = $('#endDate').val();
-            },
-            dataSrc: function (json) {
-                console.log("AJAX response received:", json);
-                return json.data;
-            },
-            error: function (xhr, error, thrown) {
-                console.error("AJAX Error:", xhr.responseText);
-            }
-        },
-        columns: [
-            { data: 'id', name: 'id' },
-            { data: 'name', name: 'name' },
-            { data: 'quantity', name: 'quantity' },
-            { data: 'created_at', name: 'created_at' },
-        ]
+    document.addEventListener('DOMContentLoaded', function () {
+        if (window.StoreManagementInventoryModule && typeof window.StoreManagementInventoryModule.boot === 'function') {
+            window.StoreManagementInventoryModule.boot();
+        }
     });
-
-    // Filter search button click
-    $('#searchBtn').click(function() {
-        table.draw();
-    });
-});
-
-function confirmDelete(catId) {
-        // Trigger SweetAlert
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // If confirmed, submit the form
-                document.getElementById('deleteForm-' + catId).submit();
-            }
-        });
-    }
 </script>
 @endsection

@@ -175,23 +175,23 @@
                 <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
                     <!-- Logo -->
                     <div style="width: 120px; height: 120px; background: #2c5aa0; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; overflow: hidden;">
-                        <img src="{{ asset('/Logo/maal.png') }}" alt="Company Logo" width="110" height="110" style="object-fit: contain;">
+                        <img src="{{ asset('/Logo/Logo1.png') }}" alt="Company Logo" width="110" height="110" style="object-fit: contain;">
                     </div>
                     <div>
-                        <h1 style="font-size: 28px; font-weight: bold; margin: 0; color: #2c5aa0;">TABANTAABO FUEL STATION BURAO</h1>
+                        <h1 style="font-size: 28px; font-weight: bold; margin: 0; color: #2c5aa0;">WARAABE FUEL STATION</h1>
                         <p style="margin: 5px 0; font-size: 14px;">
-                            Kaalinta Shiidaalka Tabantaabo<br>
-                            Burco Somaliland
+                            Kaalinta Shiidaalka Waraabe<br>
+                            Berbera Somaliland
                         </p>
                         
                         <p style="margin: 3px 0;">
                             <i class="fas fa-phone-alt" style="color: #2c5aa0; margin-right: 5px;"></i>
-                            <strong>Tell:</strong> 713013 | 063-4042473 | 063-4357338
+                            <strong>Tell:</strong> 7XXXXX | 063-XXXXXX | 063-XXXXXX
                         </p>
                         
                         <p style="margin: 5px 0; font-size: 14px;">
                             <i class="fas fa-wallet" style="color: #2c5aa0; margin-right: 5px;"></i>
-                            <strong>Merchant Accounts: Zaad : 400723 &nbsp; | &nbsp; E-dahab : 731684</strong>
+                            <strong>Merchant Accounts: Zaad : XXXX &nbsp; | &nbsp; E-dahab : XXXXX</strong>
                         </p>
                     </div>
                 </div>
@@ -340,15 +340,20 @@
                 if (response.data.data && response.data.data.length > 0) {
                     response.data.data.forEach(group => {
                         const row = `
-                            <tr>
-                                <td><span class="badge bg-primary">${group.type.toUpperCase()}</span></td>
-                                <td>${group.product}</td>
-                                <td>${group.total_liters}</td>
-                                <td>$${parseFloat(group.rate).toFixed(2)}</td>
-                                <td>$${parseFloat(group.total_sales).toFixed(2)}</td>
-                                <td>${group.payment_type}</td>
-                            </tr>
-                        `;
+<tr>
+    <td>
+        <span class="badge bg-primary">
+            ${(group.type ?? 'N/A').toUpperCase()}
+        </span>
+    </td>
+    <td>${group.product ?? 'Unknown'}</td>
+    <td>${parseFloat(group.total_liters ?? 0).toFixed(2)}</td>
+    <td>$${parseFloat(group.rate ?? 0).toFixed(2)}</td>
+    <td>$${parseFloat(group.total_sales ?? 0).toFixed(2)}</td>
+    <td>${group.payment_type ?? 'N/A'}</td>
+</tr>
+`;
+
                         visibleTableBody.innerHTML += row;
                         printTableBody.innerHTML += row;
 

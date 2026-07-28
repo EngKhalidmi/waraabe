@@ -133,6 +133,35 @@
         const paidAmountInput = document.getElementById('paid_amount');
         const discountInput = document.getElementById('discount');
 
+        function renderSalesmanResults(salesmen) {
+            salesmanDropdown.innerHTML = '';
+            if (salesmen.length > 0) {
+                salesmen.forEach(salesman => {
+                    const salesmanOption = document.createElement('a');
+                    salesmanOption.className = 'dropdown-item';
+                    salesmanOption.textContent = salesman.full_name + (salesman.phone ?
+                        ' - ' + salesman.phone : '');
+                    salesmanOption.href = '#';
+                    salesmanOption.dataset.id = salesman.id;
+                    salesmanOption.dataset.balance = salesman.balance || 0;
+                    salesmanOption.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        selectSalesman(salesman);
+                    });
+
+                    salesmanDropdown.appendChild(salesmanOption);
+                });
+                salesmanDropdown.style.display = 'block';
+            } else {
+                salesmanDropdown.innerHTML = `
+                    <div class="dropdown-item text-center text-muted">
+                        No results found
+                    </div>
+                `;
+                salesmanDropdown.style.display = 'block';
+            }
+        }
+
         // Search Salesman Code JS
         salesmanSearchInput.addEventListener('input', function() {
             const query = salesmanSearchInput.value.trim();
@@ -143,41 +172,24 @@
                         <i class="fa fa-spinner fa-spin" style="margin-right:8px !important;"></i> Searching...
                     </div>
                 `;
-
-                // You'll need to create this route in your web.php
-                axios.get(`{{ route('salesman_payment.searchSalesman') }}?query=${query}`)
-                    .then(response => {
-                        salesmanDropdown.innerHTML = '';
-                        if (response.data.length > 0) {
-                            response.data.forEach(salesman => {
-                                const salesmanOption = document.createElement('a');
-                                salesmanOption.className = 'dropdown-item';
-                                salesmanOption.textContent = salesman.full_name + (salesman.phone ?
-                                    ' - ' + salesman.phone : '');
-                                salesmanOption.href = '#';
-                                salesmanOption.dataset.id = salesman.id;
-                                salesmanOption.dataset.balance = salesman.balance || 0;
-                                salesmanOption.addEventListener('click', function(e) {
-                                    e.preventDefault();
-                                    selectSalesman(salesman);
-                                });
-
-                                salesmanDropdown.appendChild(salesmanOption);
-                            });
-                            salesmanDropdown.style.display = 'block';
-                        } else {
-                            salesmanDropdown.innerHTML = `
-                                <div class="dropdown-item text-center text-muted">
-                                    No results found
-                                </div>
-                            `;
-                            salesmanDropdown.style.display = 'block';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching salesmen:', error);
-                        salesmanDropdown.style.display = 'none';
-                    });
+                if (!navigator.onLine && window.StoreManagementFinanceModule) {
+                    window.StoreManagementFinanceModule.searchSalesmen(query)
+                        .then(renderSalesmanResults)
+                        .catch(error => {
+                            console.error('Error fetching salesmen:', error);
+                            salesmanDropdown.style.display = 'none';
+                        });
+                } else {
+                    // You'll need to create this route in your web.php
+                    axios.get(`{{ route('salesman_payment.searchSalesman') }}?query=${query}`)
+                        .then(response => {
+                            renderSalesmanResults(response.data || []);
+                        })
+                        .catch(error => {
+                            console.error('Error fetching salesmen:', error);
+                            salesmanDropdown.style.display = 'none';
+                        });
+                }
             } else {
                 salesmanDropdown.style.display = 'none';
             }

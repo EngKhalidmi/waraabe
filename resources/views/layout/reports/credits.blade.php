@@ -180,7 +180,7 @@
                         <i class="fas fa-file-invoice-dollar" style="font-size: 36px;"></i>
                     </div>
                     <div>
-                        <h1 style="font-size: 28px; font-weight: bold; margin: 0; color: #2c5aa0;">TABANTAABO FUEL STATION</h1>
+                        <h1 style="font-size: 28px; font-weight: bold; margin: 0; color: #2c5aa0;">WARAABE FUEL STATION</h1>
                         <p style="margin: 5px 0; font-size: 14px;">
                             <strong>Credit Payments Report</strong>
                         </p>

@@ -309,6 +309,24 @@ class CreditsController extends Controller
     }
     
     
+    public function invoice(string $id)
+    {
+        if (auth()->user()->role === 'admin' || auth()->user()->role === 'manager') {
+            $transaction = Credits::with('customer')->findOrFail($id);
+        } else {
+            $transaction = Credits::with('customer')
+                ->where('depID', auth()->user()->depID)
+                ->findOrFail($id);
+        }
+
+        // Map 'date' to 'paid_date' expected by the invoice view
+        $transaction->paid_date = $transaction->date
+            ? \Carbon\Carbon::parse($transaction->date)->format('d/m/Y')
+            : now()->format('d/m/Y');
+
+        return view('layout.creditPayment.invoice', compact('transaction'));
+    }
+
     public function destroy(string $id)
     {
         

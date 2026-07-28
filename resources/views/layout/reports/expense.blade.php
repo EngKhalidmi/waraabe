@@ -95,26 +95,26 @@
                                         <!-- Logo -->
                                         <div
                                             style="width: 120px; height: 120px; background: #2c5aa0; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; overflow: hidden;">
-                                            <img src="{{ asset('/Logo/maal.png') }}" alt="Company Logo" width="110"
+                                            <img src="{{ asset('/Logo/Logo1.png') }}" alt="Company Logo" width="110"
                                                 height="110" style="object-fit: contain;">
                                         </div>
                                         <div>
                                             <h1 style="font-size: 28px; font-weight: bold; margin: 0; color: #2c5aa0;">
-                                                TABANTAABO FUEL STATION BURAO</h1>
+                                                WARAABE FUEL STATION</h1>
                                             <p style="margin: 5px 0; font-size: 14px;">
-                                                Kaalinta Shiidaalka Tabantaabo<br>
-                                                Burco Somaliland
+                                                Kaalinta Shiidaalka Waraabe<br>
+                                                Berbera Somaliland
                                             </p>
 
                                             <p style="margin: 3px 0;">
                                                 <i class="fas fa-phone-alt" style="color: #2c5aa0; margin-right: 5px;"></i>
-                                                <strong>Tell:</strong> 713013 | 063-4042473 | 063-4357338
+                                                <strong>Tell:</strong> XXXXX | 063-XXXXXX | 063-XXXXXX
                                             </p>
 
                                             <p style="margin: 5px 0; font-size: 14px;">
                                                 <i class="fas fa-wallet" style="color: #2c5aa0; margin-right: 5px;"></i>
-                                                <strong>Merchant Accounts: Zaad : 400723 &nbsp; | &nbsp; E-dahab :
-                                                    731684</strong>
+                                                <strong>Merchant Accounts: Zaad : XXXXX &nbsp; | &nbsp; E-dahab :
+                                                    XXXXX</strong>
                                             </p>
                                         </div>
                                     </div>

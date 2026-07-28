@@ -31,6 +31,15 @@ class AuthenticationTest extends TestCase
         $response->assertRedirect(RouteServiceProvider::HOME);
     }
 
+    public function test_authenticated_users_can_view_history_login_screen(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get('/login?history=1');
+
+        $response->assertStatus(200);
+    }
+
     public function test_users_can_not_authenticate_with_invalid_password(): void
     {
         $user = User::factory()->create();

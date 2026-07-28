@@ -41,7 +41,7 @@
 
         <div class="card">
             <div class="card-body">
-                <form action="{{ route('opening_inventory.update', $inventory->id) }}" method="POST">
+                <form action="{{ route('opening_inventory.update', $inventory->id) }}" method="POST" data-opening-inventory-form="update" data-opening-inventory-id="{{ $inventory->id }}">
                     @csrf
                     @method('PUT')
                     

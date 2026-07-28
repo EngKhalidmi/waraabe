@@ -122,8 +122,12 @@
 </div>
 </div>
 
-<script>
+    <script>
     $(document).ready(function() {
+        if (!navigator.onLine && window.StoreManagementFinanceModule) {
+            window.StoreManagementFinanceModule.mountListPage('assets');
+            return;
+        }
 
     // Initialize the DataTable
     let table = $('#assetTable').DataTable({
@@ -140,6 +144,9 @@
                 d.endDate = $('#endDate').val();
             },
             dataSrc: function (json) {
+                if (window.StoreManagementFinanceModule) {
+                    window.StoreManagementFinanceModule.cacheList('assets', json.data || []);
+                }
                 console.log("AJAX response received:", json);
                 return json.data;
             },

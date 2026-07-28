@@ -43,7 +43,7 @@
             @endif
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('purchases.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('purchases.store') }}" method="POST" enctype="multipart/form-data" data-purchase-form="create">
                         @csrf
                         <div class="row">
                             <div class="col-lg-4 col-sm-6 col-12">
@@ -52,7 +52,15 @@
                                     <select name="name" id="name" class="select">
                                         <option value="" selected>Select</option>
                                         @foreach ($products as $pro)
-                                            <option value="{{ $pro->name }}">{{ $pro->name }}</option>
+                                            <option
+                                                value="{{ $pro->name }}"
+                                                data-product-id="{{ $pro->id }}"
+                                                data-product-name="{{ $pro->name }}"
+                                                data-product-quantity="{{ $pro->quantity }}"
+                                                data-product-type="{{ $pro->type }}"
+                                                data-product-unit="{{ $pro->unit }}"
+                                                data-product-supplier="{{ $pro->supplier }}"
+                                            >{{ $pro->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -84,7 +92,12 @@
                                     <select name="supplier" id="supplier" class="select">
                                         <option value="" selected>Select</option>
                                         @foreach ($suppliers as $sup)
-                                            <option value="{{ $sup->name }}">{{ $sup->name }}</option>
+                                            <option
+                                                value="{{ $sup->name }}"
+                                                data-supplier-id="{{ $sup->id }}"
+                                                data-supplier-name="{{ $sup->name }}"
+                                                data-supplier-balance="{{ $sup->balance }}"
+                                            >{{ $sup->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>

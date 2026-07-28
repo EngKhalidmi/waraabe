@@ -2,343 +2,357 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\SalesTransactions;
-use App\Models\Expenses;
-use App\Models\Credits;            
-use App\Models\Customers;            
-use App\Models\Suppliers;
-use App\Models\AccountPayables;
-use App\Models\FinanceTrans;
-use App\Models\PurchaseTransactions;
+
+use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Sales;
 use App\Models\Assets;
-use App\Models\CashAccount;
-use App\Models\Inventory;
-use App\Models\Capital;
-use App\Models\Departments;
+use App\Models\Expenses;
+use App\Models\FuelSale;
 use App\Models\Products;
+use App\Models\Salesman;
 use App\Models\Purchases;
+use App\Models\Suppliers;
+use App\Models\CashAccount;
+use App\Models\Departments;
+use App\Models\FinanceTrans;
+use Illuminate\Http\Request;
 use App\Models\BankStatement;
 use App\Models\FuelCreditSale;
-use App\Models\FuelSale;
-use App\Models\FuelSaleTransaction;
-use App\Models\Sales;
-use App\Models\Salesman;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\View\View;
-use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
+use App\Models\AccountPayables;
+use App\Models\SalesTransactions;
 use Illuminate\Support\Facades\DB;
+use App\Models\Credits;            
+use Illuminate\Support\Facades\Log;
+use App\Models\PurchaseTransactions;
+use App\Models\Customers;            
 use Illuminate\Support\Facades\Schema;
-
 class ReportsController extends Controller
 {
-
-    public function Credits() {
-        
-        $departments = Departments::get();
-        $customers = Customers::get();
-         $users = User::where('role', 'sales')->get();
-        return view('layout.reports.credits', compact('customers', 'departments', 'users'));
-    }
-    public function Liability() {
-        if(auth()->user()->role != 'admin' && auth()->user()->role != 'manager') {
-            $departments = Departments::where('id', auth()->user()->depID)->get();
-             $suppliers = Suppliers::where('depID', auth()->user()->depID)->get();
-        } else {
-            $departments = Departments::get();
-            $suppliers = Suppliers::get();
-        }
-        return view('layout.reports.liability', compact('suppliers', 'departments'));
-    }
-    public function Expense() {
-        if(auth()->user()->role != 'admin' && auth()->user()->role != 'manager') {
-            $departments = Departments::where('id', auth()->user()->depID)->get();
-             $salesman = Salesman::where('depID', auth()->user()->depID)->get();
-        } else {
-            $departments = Departments::get();
-            $salesman = Salesman::get();
-        }
-        
-        return view('layout.reports.expense', compact('departments', 'salesman'));
-    }
-    public function BankStatement() {
-        if(auth()->user()->role != 'admin' && auth()->user()->role != 'manager') {
-            $departments = Departments::where('id', auth()->user()->depID)->get();
-        } else {
-            $departments = Departments::get();
-        }
-        return view('layout.reports.bankSatement', compact('departments'));
-    }
-    public function SalesPayment() {
-        $departments = Departments::get();
-        $customers = Customers::get();
-        
-        // Get users based on role
-        $users = auth()->user()->role == 'sales' 
-            ? User::where('id', auth()->id())->get()
-            : User::all();
-    
-        return view('layout.reports.salesPayment', compact('customers', 'departments', 'users'));
-    }
-    public function Sales() {
-        $departments = Departments::get();
-        $customers = Customers::get();
-        $products = Products::get();
-        return view('layout.reports.sales', compact('customers', 'departments', 'products'));
-    }
-    public function PurchasePayment() {
-        $departments = Departments::get();
-        
-        $suppliers = Suppliers::get();
-        return view('layout.reports.purchasePayment', compact('suppliers', 'departments'));
-    }
-    public function Purchase() {
-        $departments = Departments::get();
-   
-        $products = Products::get();
-        return view('layout.reports.purchase', compact('products', 'departments'));
-    }
-    public function FinanceActivity() {
-        $departments = Departments::get();
-        $users = User::get();
-        return view('layout.reports.FinanceAcc', compact('users', 'departments'));
-    }
-    public function IncomeStatement() {
-
-              // Initialize an empty data structure for the initial page load
-        $formattedIncomeStatement = [
-            'SalesRevenue' => 0,
-            'RegularFuelSalesRevenue' => 0,
-            'FuelCreditSalesRevenue' => 0,
-            'TotalFuelSalesRevenue' => 0,
-            'NetRegularFuelRevenue' => 0,
-            'NetFuelCreditRevenue' => 0,
-            'NetFuelSalesRevenue' => 0,
-            'RegularFuelDiscount' => 0,
-            'FuelCreditDiscount' => 0,
-            'TotalFuelDiscount' => 0,
-            'totalCreditPayments' => 0,
-            'netSales' => 0,
-            'COGS' => 0,
-            'RegularFuelCOGS' => 0,
-            'FuelCreditCOGS' => 0,
-            'TotalFuelCOGS' => 0,
-            'gross_profit' => 0,
-            'netIncome' => 0,
-            'total_discount' => 0,
-            'expense' => 0,
-            'startDate' => '',
-            'endDate' => '',
-            'paymentMethodTotals' => [],
-            'paymentMethodTotalsCredits' => [],
-            'thirdValueSales' => 0,
-            'thirdValueCredits' => 0,
-            'totalRevenue' => 0,
-            'regularSalesCount' => 0,
-            'regularFuelSalesCount' => 0,
-            'fuelCreditSalesCount' => 0,
-        ];
-
-        return view('layout.reports.incomeStatement', compact('formattedIncomeStatement'));
+    /* =====================================================
+     |  ROLE & DEPARTMENT HELPERS
+     ===================================================== */
+    private function isPrivileged(): bool
+    {
+        return in_array(auth()->user()->role, ['admin', 'manager', 'acc']);
     }
 
-    public function customerBalanceReport(){
-        $departments = Departments::get();
-        return view('layout.reports.customerBalance', compact('departments'));
-    }
-    
-
-    
-     public function InventoryReport(){
-        
-        return view('layout.reports.inventory');
+    private function resolveDepartmentId(?int $requestedDepID = null): ?int
+    {
+        return $this->isPrivileged()
+            ? $requestedDepID
+            : auth()->user()->depID;
     }
 
-     public function FuelCreditReport(){
-        $customers = Customers::all();
-        $products = Products::all();
-        return view('layout.reports.fuel_credit_sale', compact('products', 'customers'));
+    private function getAccessibleDepartments()
+    {
+        return $this->isPrivileged()
+            ? Departments::get()
+            : Departments::where('id', auth()->user()->depID)->get();
     }
-    
-    
-    // Credit Transactions
-    public function getCreditsReport(Request $request) {
-        $clientID = $request->input('clientID');
-        $startDate = $request->input('startDate');
-        $endDate = $request->input('endDate');
-        $depID = $request->input('depID');
-        $sellerID = $request->input('seller');
 
-        // Fetch query for the Credits model
-        $query = Credits::with(['customer', 'sellerUser']); // assuming sellerUser relation exists
+    /* =====================================================
+     |  VIEW LOADERS
+     ===================================================== */
+    public function Credits()
+    {
+        $depID = $this->resolveDepartmentId();
 
-        if ($clientID) {
-            $query->where('customerID', 'like', '%' . $clientID . '%');
-        }
-        if ($depID) {
-            $query->where('depID', $depID);
-        }
-        if ($sellerID) {
-            $query->where('seller', $sellerID); // make sure this matches your DB column
-        }
+        return view('layout.reports.credits', [
+            'departments' => $this->getAccessibleDepartments(),
+            'customers' => Customers::when($depID, fn($q) => $q->where('depID', $depID))->get(),
+            'users' => User::where('role', 'sales')
+                ->when($depID, fn($q) => $q->where('depID', $depID))
+                ->get()
+        ]);
+    }
 
-        // Handle date filtering
-        if ($startDate && $endDate) {
-            $query->whereBetween('date', [$startDate, $endDate]);
-        } elseif ($startDate || $endDate) {
-            return response()->json(['success' => false, 'message' => 'Both start date and end date are required']);
-        }
+    public function Liability()
+    {
+        $depID = $this->resolveDepartmentId();
 
-        // Execute the query
-        $report = $query->get();
+        return view('layout.reports.liability', [
+            'departments' => $this->getAccessibleDepartments(),
+            'suppliers' => Suppliers::when($depID, fn($q) => $q->where('depID', $depID))->get()
+        ]);
+    }
 
-        if ($report->isEmpty()) {
-            return response()->json(['success' => false, 'message' => 'No records found']);
-        }
+    public function Expense()
+    {
+        $depID = $this->resolveDepartmentId();
 
-        // Group by payment type
-        $grouped = $report->groupBy('type')->map(function ($group) {
-            return [
-                'count' => $group->count(),
-                'total_amount' => $group->sum('amount'),
-                'transactions' => $group->map(function ($payment) {
-                    return [
-                        'date' => $payment->date,
-                        'client' => $payment->customer->customer_name ?? 'Cash Sales',
-                        'phone' => $payment->customer->phone ?? 'N/A',
-                        'amount' => number_format($payment->amount, 2), 
-                        'type' => $payment->type,
-                        'seller' => $payment->sellerUser->name ?? 'Admin'
-                    ];
-                })->values()
-            ];
-        });
+        return view('layout.reports.expense', [
+            'departments' => $this->getAccessibleDepartments(),
+            'salesman' => Salesman::when($depID, fn($q) => $q->where('depID', $depID))->get()
+        ]);
+    }
 
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'grouped_by_type' => $grouped,
-                'total_types' => $grouped->count(),
-                'start_date' => $startDate,
-                'end_date' => $endDate
+    public function BankStatement()
+    {
+        return view('layout.reports.bankSatement', [
+            'departments' => $this->getAccessibleDepartments()
+        ]);
+    }
+
+    public function SalesPayment()
+    {
+        $depID = $this->resolveDepartmentId();
+
+        return view('layout.reports.salesPayment', [
+            'departments' => $this->getAccessibleDepartments(),
+            'customers' => Customers::when($depID, fn($q) => $q->where('depID', $depID))->get(),
+            'users' => User::when($depID, fn($q) => $q->where('depID', $depID))->get()
+        ]);
+    }
+
+    public function Sales()
+    {
+        $depID = $this->resolveDepartmentId();
+
+        return view('layout.reports.sales', [
+            'departments' => $this->getAccessibleDepartments(),
+            'customers' => Customers::when($depID, fn($q) => $q->where('depID', $depID))->get(),
+            'products' => Products::when($depID, fn($q) => $q->where('depID', $depID))->get()
+        ]);
+    }
+
+    public function PurchasePayment()
+    {
+        $depID = $this->resolveDepartmentId();
+
+        return view('layout.reports.purchasePayment', [
+            'departments' => $this->getAccessibleDepartments(),
+            'suppliers' => Suppliers::when($depID, fn($q) => $q->where('depID', $depID))->get()
+        ]);
+    }
+
+    public function Purchase()
+    {
+        $depID = $this->resolveDepartmentId();
+
+        return view('layout.reports.purchase', [
+            'departments' => $this->getAccessibleDepartments(),
+            'products' => Products::when($depID, fn($q) => $q->where('depID', $depID))->get()
+        ]);
+    }
+
+    public function FinanceActivity()
+    {
+        $depID = $this->resolveDepartmentId();
+
+        return view('layout.reports.FinanceAcc', [
+            'departments' => $this->getAccessibleDepartments(),
+            'users' => User::when($depID, fn($q) => $q->where('depID', $depID))->get()
+        ]);
+    }
+
+    public function IncomeStatement()
+    {
+        return view('layout.reports.incomeStatement', [
+            'formattedIncomeStatement' => [
+                'SalesRevenue' => 0,
+                'netIncome' => 0,
+                'expense' => 0,
+                'startDate' => '',
+                'endDate' => ''
             ]
         ]);
     }
 
-
-    // Purchase Payment Transactions
-    public function getPurchasePaymentReport(Request $request) {
-        $clientID = $request->input('clientID');
-        $type = $request->input('type');
-        $payMethod = $request->input('payMethod');
-        $startDate = $request->input('startDate');
-        $endDate = $request->input('endDate');
-        $depID = $request->input('depID');
-    
-        // Fetch query for the Payment model
-        $query = PurchaseTransactions::query();
-        if ($clientID) {
-            $query->where('customerID', 'like', '%' . $clientID . '%');
-        }
-        if ($depID) {
-            $query->where('depID', $depID);
-        }
-    
-        if ($type) {
-            $query->where('type', 'like', '%' . $type . '%');
-        }
-    
-        // Handle date filtering
-        if ($startDate && $endDate) {
-            $query->whereBetween('date', [$startDate, $endDate]);
-        } elseif ($startDate || $endDate) {
-            return response()->json(['success' => false, 'message' => 'Both start date and end date are required']);
-        }
-    
-        // Execute the query
-        $report = $query->get();
-    
-        // Check if the query returned any records
-        if ($report->isEmpty()) {
-            return response()->json(['success' => false, 'message' => 'No records found']);
-        }
-    
-        // Format the report data
-        $formattedReport = $report->map(function ($payment) {
-            return [
-                'date' => $payment->date,
-                'client' => $payment->customer->name ?? 'Cash Sales',
-                'phone' => $payment->customer->phone ?? 'N/A',
-                'type' => $payment->type, 
-                'subTotal' => number_format($payment->subTotal, 2), 
-                'discount' => number_format($payment->discount, 2), 
-                'net_price' => number_format($payment->net_price, 2), 
-                'add_cost' => number_format($payment->add_cost, 2), 
-                'paidAmount' => number_format($payment->paidAmount, 2), 
-                'balance' => number_format($payment->balance, 2), 
-                'payMethod' => $payment->payMethod,
-                'purchased' => $payment->purchased ? $payment->user->name : 'N/A',
-            ];
-        });
-    
-        // Return the response
-        return response()->json(['success' => true, 'data' => $formattedReport]);
+    public function customerBalanceReport()
+    {
+        return view('layout.reports.customerBalance', [
+            'departments' => $this->getAccessibleDepartments()
+        ]);
     }
 
-    
-    // Purchase Transactions
-    public function getPurchaseReport(Request $request)
-{
-    $proID = $request->input('proID');
-    $salesID = $request->input('salesID');
-    $depID = $request->input('depID');
-    $payMethod = $request->input('payMethod');
-    $startDate = $request->input('startDate');
-    $endDate = $request->input('endDate');
+    public function InventoryReport()
+    {
+        return view('layout.reports.inventory');
+    }
 
-    // ✅ Query from PurchaseTransactions instead of Purchases
-    $query = PurchaseTransactions::with(['purchase.pro', 'customer', 'department', 'user']);
+    public function FuelCreditReport()
+    {
+        $depID = $this->resolveDepartmentId();
+
+        return view('layout.reports.fuel_credit_sale', [
+            'customers' => Customers::when($depID, fn($q) => $q->where('depID', $depID))->get(),
+            'products' => Products::when($depID, fn($q) => $q->where('depID', $depID))->get()
+        ]);
+    }
+
+    /* =====================================================
+     |  REPORT ENGINES
+     ===================================================== */
+public function getCreditsReport(Request $request)
+{
+    $user = auth()->user();
+    $isAdmin = in_array($user->role, ['admin', 'manager']);
+
+    $clientID  = $request->input('clientID');
+    $startDate = $request->input('startDate');
+    $endDate   = $request->input('endDate');
+    $sellerID  = $request->input('seller');
+
+    // 🔐 ROLE-BASED DEPARTMENT RESOLUTION
+    $depID = $isAdmin 
+        ? $request->input('depID')     // admin/manager can filter any dep
+        : $user->depID;                // others forced to own dep
+
+    // Fetch query for the Credits model
+    $query = Credits::with(['customer', 'sellerUser']);
+
+    if ($clientID) {
+        $query->where('customerID', 'like', '%' . $clientID . '%');
+    }
 
     if ($depID) {
         $query->where('depID', $depID);
     }
 
-    if ($salesID) {
-        $query->where('id', 'like', '%' . $salesID . '%'); // since transID = transaction id
+    if ($sellerID) {
+        $query->where('seller', $sellerID);
     }
 
-    if ($payMethod) {
-        $query->where('payMethod', 'like', '%' . $payMethod . '%');
-    }
-
-    // ✅ Date filtering (by transaction date)
+    // Handle date filtering
     if ($startDate && $endDate) {
-        $query->whereBetween(DB::raw('DATE(created_at)'), [$startDate, $endDate]);
+        $query->whereBetween('date', [$startDate, $endDate]);
     } elseif ($startDate || $endDate) {
-        return response()->json(['success' => false, 'message' => 'Both start date and end date are required']);
+        return response()->json([
+            'success' => false,
+            'message' => 'Both start date and end date are required'
+        ]);
+    }
+
+    // Execute the query
+    $report = $query->get();
+
+    if ($report->isEmpty()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No records found'
+        ]);
+    }
+
+    // Group by payment type (UNCHANGED)
+    $grouped = $report->groupBy('type')->map(function ($group) {
+        return [
+            'count' => $group->count(),
+            'total_amount' => $group->sum('amount'),
+            'transactions' => $group->map(function ($payment) {
+                return [
+                    'date'   => $payment->date,
+                    'client' => $payment->customer->customer_name ?? 'Cash Sales',
+                    'phone'  => $payment->customer->phone ?? 'N/A',
+                    'amount' => number_format($payment->amount, 2),
+                    'type'   => $payment->type,
+                    'seller' => $payment->sellerUser->name ?? 'Admin',
+                ];
+            })->values()
+        ];
+    });
+
+    return response()->json([
+        'success' => true,
+        'data' => [
+            'grouped_by_type' => $grouped,
+            'total_types' => $grouped->count(),
+            'start_date' => $startDate,
+            'end_date' => $endDate
+        ]
+    ]);
+}
+
+
+
+   public function getPurchasePaymentReport(Request $request)
+{
+    $depID = $this->resolveDepartmentId($request->depID);
+
+    $query = PurchaseTransactions::with(['supplier', 'purchasedByUser'])
+// ✅ IMPORTANT
+        ->when($depID, fn ($q) => $q->where('depID', $depID));
+
+    if ($request->startDate && $request->endDate) {
+        $query->whereBetween('date', [$request->startDate, $request->endDate]);
+    }
+
+    return response()->json([
+        'success' => true,
+        'data' => $query->get()
+    ]);
+}
+
+
+public function getPurchaseReport(Request $request)
+{
+    $user = auth()->user();
+    $isAdmin = in_array($user->role, ['admin', 'manager']);
+
+    $query = PurchaseTransactions::with([
+        'purchases.pro',
+        'supplier',
+        'department',
+        'purchasedByUser'
+    ]);
+
+    // 🔐 Role restriction
+    if (!$isAdmin) {
+        $query->where('depID', $user->depID);
+    }
+
+    if ($request->depID) {
+        $query->where('depID', $request->depID);
+    }
+
+    if ($request->salesID) {
+        $query->where('id', $request->salesID);
+    }
+
+    if ($request->payMethod) {
+        $query->where('payMethod', $request->payMethod);
+    }
+
+    if ($request->startDate && $request->endDate) {
+        $query->whereBetween('date', [$request->startDate, $request->endDate]);
+    } elseif ($request->startDate || $request->endDate) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Both start date and end date are required'
+        ]);
     }
 
     $transactions = $query->latest()->get();
 
     if ($transactions->isEmpty()) {
-        return response()->json(['success' => false, 'message' => 'No records found']);
+        return response()->json([
+            'success' => false,
+            'message' => 'No records found'
+        ]);
     }
 
-    // ✅ Format each transaction and include its purchase details
-    $formattedReport = $transactions->map(function ($trans) use ($proID) {
-        $purchases = $trans->purchase;
+    $data = $transactions->map(function ($trans) use ($request) {
+        $items = $trans->purchases;
 
-        // Filter products if proID is provided
-        if ($proID) {
-            $purchases = $purchases->where('proID', $proID);
+        if ($request->proID) {
+            $items = $items->where('proID', $request->proID);
         }
 
-        $purchaseItems = $purchases->map(function ($p) {
-            return [
+        return [
+            'transaction_id' => $trans->id,
+            'supplier' => $trans->supplier->name ?? 'N/A',
+            'phone' => $trans->supplier->phone ?? 'N/A',
+           'department' => optional($trans->department)->name ?? 'N/A',
+            'user' => $trans->purchasedByUser->username ?? 'N/A',
+            'date' => $trans->date,
+            'subtotal' => number_format($trans->subTotal, 2),
+            'discount' => number_format($trans->discount, 2),
+            'net_price' => number_format($trans->net_price, 2),
+            'paidAmount' => number_format($trans->paidAmount, 2),
+            'balance' => number_format($trans->balance, 2),
+            'payMethod' => $trans->payMethod,
+            'type' => $trans->type,
+            'items' => $items->map(fn ($p) => [
                 'item' => $p->pro->name ?? 'U/K',
                 'unit' => $p->pro->unit ?? 'N/A',
                 'quantity' => number_format($p->quantity),
@@ -346,32 +360,19 @@ class ReportsController extends Controller
                 'add_cost' => number_format($p->add_cost, 2),
                 'total_cost' => number_format($p->total_cost, 2),
                 'remaining' => number_format($p->remaining),
-            ];
-        });
-
-        return [
-            'transaction_id' => $trans->id,
-            'supplier' => $trans->customer->name ?? 'Unknown Supplier',
-            'dep' => $trans->department->name ?? 'N/A',
-            'user' => $trans->user->username ?? 'N/A',
-            'date' => $trans->created_at->format('Y-m-d'),
-            'subtotal' => number_format($trans->subTotal, 2),
-            'discount' => number_format($trans->discount, 2),
-            'add_cost' => number_format($trans->add_cost, 2),
-            'net_price' => number_format($trans->net_price, 2),
-            'paidAmount' => number_format($trans->paidAmount, 2),
-            'balance' => number_format($trans->balance, 2),
-            'payMethod' => $trans->payMethod,
-            'type' => $trans->type,
-            'items' => $purchaseItems,
+            ])->values()
         ];
     });
 
-    return response()->json(['success' => true, 'data' => $formattedReport]);
+    return response()->json([
+        'success' => true,
+        'data' => $data
+    ]);
 }
 
-    
-    public function getSalesPaymentReport(Request $request) 
+
+
+   public function getSalesPaymentReport(Request $request) 
     {
             try {
                 $request->validate([
@@ -501,237 +502,260 @@ class ReportsController extends Controller
         }
 
 
-    public function getSalesReport(Request $request) {
-        $proID = $request->input('proID');
-        $salesID = $request->input('salesID');
-        $depID = $request->input('depID');
-        $payMethod = $request->input('payMethod');
-        $startDate = $request->input('startDate');
-        $endDate = $request->input('endDate');
 
-        $query = Sales::with(['product', 'transaction'])
-            ->select('*',
-                DB::raw('(quantity * price) as calculated_total')
-            );
 
-        if ($proID) {
-            $query->where('proID', 'like', '%' . $proID . '%');
-        }
-        if ($depID) {
-            $query->where('depID', $depID);
-        }
-        if ($salesID) {
-            $query->where('sales_transaction_id', 'like', '%' . $salesID . '%');
-        }
-        if ($payMethod) {
-            $query->whereHas('transaction', function($q) use ($payMethod) {
-                $q->where('payment_method', $payMethod);
-            });
-        }
+ public function getSalesReport(Request $request)
+{
+    $user = auth()->user();
 
-        // Date filtering
-        if ($startDate && $endDate) {
-            $endDateAdjusted = Carbon::parse($endDate)->endOfDay();
-            $query->whereBetween('created_at', [$startDate, $endDateAdjusted]);
-        } elseif ($startDate || $endDate) {
-            return response()->json([
-                'success' => false, 
-                'message' => 'Both start date and end date are required'
-            ]);
-        }
+    $proID = $request->input('proID');
+    $salesID = $request->input('salesID');
+    $payMethod = $request->input('payMethod');
+    $startDate = $request->input('startDate');
+    $endDate = $request->input('endDate');
 
-        $salesData = $query->get();
+    /**
+     * =========================
+     * ROLE RESTRICTION (ONLY)
+     * =========================
+     */
+    $isAdmin = in_array($user->role, ['admin', 'manager']);
 
-        if ($salesData->isEmpty()) {
-            return response()->json([
-                'success' => false, 
-                'message' => 'No records found'
-            ]);
-        }
+    // If NOT admin/manager → force user's department
+    $depID = $isAdmin
+        ? $request->input('depID')
+        : $user->depID;
 
-        // Group by product name instead of proID and sort by product name
-        $groupedProducts = $salesData->groupBy(function($item) {
-            return $item->product->name ?? 'U/K';
-        })->map(function ($group) {
-            $firstItem = $group->first();
-            $totalProfit = $group->sum(function($sale) {
-                return ($sale->price - ($sale->product->actual_price ?? 0)) * $sale->quantity;
-            });
-            
-            $totalRevenue = $group->sum('total_price');
-            $profitMargin = $totalRevenue > 0 ? ($totalProfit / $totalRevenue) * 100 : 0;
-            
-            return [
-                'product_name' => $firstItem->product->name ?? 'U/K',
-                'unit' => $firstItem->product->unit ?? 'N/A',
-                'total_quantity' => $group->sum('quantity'),
-                'average_price' => $group->avg('price'),
-                'average_actual_price' => $group->avg(function($sale) {
-                    return $sale->product->actual_price ?? 0;
-                }),
-                'total_revenue' => $totalRevenue,
-                'total_profit' => $totalProfit,
-                'profit_margin' => number_format($profitMargin, 2) . '%',
-                'sales_count' => $group->count(),
-                'product_ids' => $group->pluck('proID')->unique()->values()
-            ];
-        })
-        ->sortBy('product_name') // Sort grouped products by name in ascending order
-        ->values();
+    /**
+     * =========================
+     * ORIGINAL QUERY (UNCHANGED)
+     * =========================
+     */
+    $query = Sales::with(['product', 'transaction'])
+        ->select('*', DB::raw('(quantity * price) as calculated_total'));
 
-        // Detailed records with profit per item, sorted by product name and date
-        $detailedRecords = $salesData->sortBy(function($item) {
-            return [$item->product->name ?? 'U/K', $item->created_at];
-        })->map(function ($sale) {
-            $actualPrice = $sale->product->actual_price ?? 0;
-            $profitPerUnit = $sale->price - $actualPrice;
-            $totalProfit = $profitPerUnit * $sale->quantity;
-            
-            return [
-                'date' => $sale->created_at->format('Y-m-d H:i:s'),
-                'item' => $sale->product->name ?? 'U/K',
-                'unit' => $sale->product->unit ?? 'N/A',
-                'quantity' => number_format($sale->quantity, 2),
-                'price' => number_format($sale->price, 2),
-                'actual_price' => number_format($actualPrice, 2),
-                'profit_per_unit' => number_format($profitPerUnit, 2),
-                'total' => number_format($sale->total_price, 2),
-                'total_profit' => number_format($totalProfit, 2),
-                'salesID' => $sale->sales_transaction_id,
-                'payment_method' => $sale->transaction->payment_method ?? 'N/A',
-                'product_id' => $sale->proID
-            ];
-        })->values();
+    if ($proID) {
+        $query->where('proID', 'like', '%' . $proID . '%');
+    }
 
-        // Calculate grand totals
-        $grandTotalRevenue = $groupedProducts->sum('total_revenue');
-        $grandTotalProfit = $groupedProducts->sum('total_profit');
-        $grandTotalProfitMargin = $grandTotalRevenue > 0 
-            ? ($grandTotalProfit / $grandTotalRevenue) * 100 
-            : 0;
+    if ($depID) {
+        $query->where('depID', $depID);
+    }
 
+    if ($salesID) {
+        $query->where('sales_transaction_id', 'like', '%' . $salesID . '%');
+    }
+
+    if ($payMethod) {
+        $query->whereHas('transaction', function ($q) use ($payMethod) {
+            $q->where('payment_method', $payMethod);
+        });
+    }
+
+    // Date filtering
+    if ($startDate && $endDate) {
+        $endDateAdjusted = Carbon::parse($endDate)->endOfDay();
+        $query->whereBetween('created_at', [$startDate, $endDateAdjusted]);
+    } elseif ($startDate || $endDate) {
         return response()->json([
-            'success' => true,
-            'data' => [
-                'summary' => $groupedProducts,
-                'detailed' => $detailedRecords
-            ],
-            'metadata' => [
-                'total_products' => $groupedProducts->count(),
-                'total_quantity' => $groupedProducts->sum('total_quantity'),
-                'grand_total_revenue' => $grandTotalRevenue,
-                'grand_total_profit' => $grandTotalProfit,
-                'overall_profit_margin' => number_format($grandTotalProfitMargin, 2) . '%',
-                'timeframe' => [
-                    'start' => $startDate,
-                    'end' => $endDate
-                ]
-            ]
+            'success' => false,
+            'message' => 'Both start date and end date are required'
         ]);
     }
 
+    $salesData = $query->get();
+
+    if ($salesData->isEmpty()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No records found'
+        ]);
+    }
+
+    /**
+     * =========================
+     * REST OF YOUR LOGIC
+     * (UNCHANGED)
+     * =========================
+     */
+
+    $groupedProducts = $salesData->groupBy(function ($item) {
+        return $item->product->name ?? 'U/K';
+    })->map(function ($group) {
+        $firstItem = $group->first();
+
+        $totalProfit = $group->sum(function ($sale) {
+            return ($sale->price - ($sale->product->actual_price ?? 0)) * $sale->quantity;
+        });
+
+        $totalRevenue = $group->sum('total_price');
+        $profitMargin = $totalRevenue > 0 ? ($totalProfit / $totalRevenue) * 100 : 0;
+
+        return [
+            'product_name' => $firstItem->product->name ?? 'U/K',
+            'unit' => $firstItem->product->unit ?? 'N/A',
+            'total_quantity' => $group->sum('quantity'),
+            'average_price' => $group->avg('price'),
+            'average_actual_price' => $group->avg(fn ($sale) => $sale->product->actual_price ?? 0),
+            'total_revenue' => $totalRevenue,
+            'total_profit' => $totalProfit,
+            'profit_margin' => number_format($profitMargin, 2) . '%',
+            'sales_count' => $group->count(),
+            'product_ids' => $group->pluck('proID')->unique()->values()
+        ];
+    })->sortBy('product_name')->values();
+
+    $detailedRecords = $salesData->sortBy(fn ($item) => [
+        $item->product->name ?? 'U/K',
+        $item->created_at
+    ])->map(function ($sale) {
+        $actualPrice = $sale->product->actual_price ?? 0;
+        $profitPerUnit = $sale->price - $actualPrice;
+        $totalProfit = $profitPerUnit * $sale->quantity;
+
+        return [
+            'date' => $sale->created_at->format('Y-m-d H:i:s'),
+            'item' => $sale->product->name ?? 'U/K',
+            'unit' => $sale->product->unit ?? 'N/A',
+            'quantity' => number_format($sale->quantity, 2),
+            'price' => number_format($sale->price, 2),
+            'actual_price' => number_format($actualPrice, 2),
+            'profit_per_unit' => number_format($profitPerUnit, 2),
+            'total' => number_format($sale->total_price, 2),
+            'total_profit' => number_format($totalProfit, 2),
+            'salesID' => $sale->sales_transaction_id,
+            'payment_method' => $sale->transaction->payment_method ?? 'N/A',
+            'product_id' => $sale->proID
+        ];
+    })->values();
+
+    $grandTotalRevenue = $groupedProducts->sum('total_revenue');
+    $grandTotalProfit = $groupedProducts->sum('total_profit');
+    $grandTotalProfitMargin = $grandTotalRevenue > 0
+        ? ($grandTotalProfit / $grandTotalRevenue) * 100
+        : 0;
+
+    return response()->json([
+        'success' => true,
+        'data' => [
+            'summary' => $groupedProducts,
+            'detailed' => $detailedRecords
+        ],
+        'metadata' => [
+            'total_products' => $groupedProducts->count(),
+            'total_quantity' => $groupedProducts->sum('total_quantity'),
+            'grand_total_revenue' => $grandTotalRevenue,
+            'grand_total_profit' => $grandTotalProfit,
+            'overall_profit_margin' => number_format($grandTotalProfitMargin, 2) . '%',
+            'timeframe' => [
+                'start' => $startDate,
+                'end' => $endDate
+            ]
+        ]
+    ]);
+}
+
+
 
     // Student Balance Report
-    public function getCustomerBalanceReport(Request $request) {
-        $name = $request->input('name');
-        $depID = $request->input('depID');
+ public function getCustomerBalanceReport(Request $request)
+{
+    $user = auth()->user();
 
-        $query = Customers::query();
+    $name  = $request->input('name');
+    $depID = $request->input('depID');
 
-        if ($name) {
-            $query->where('customer_name', 'like', '%' . $name . '%');
-        }
+    $query = Customers::query();
+
+    // 🔐 Role-based department restriction
+    if (in_array($user->role, ['admin', 'manager'])) {
+        // Admin / Manager can choose department
         if ($depID) {
             $query->where('depID', $depID);
         }
-
-        // Only customers with balance > 0
-        $query->where('balance', '>', 0);
-
-        // 👉 Order by balance (highest first)
-        $query->orderBy('balance', 'desc');
-
-        $report = $query->get();
-
-        if ($report->isNotEmpty()) {
-            $formattedReport = $report->map(function ($student) {
-                return [
-                    'serial' => $student->serial,
-                    'name' => $student->customer_name,
-                    'phone' => $student->phone,
-                    'address' => $student->address,
-                    'balance' => $student->balance,
-                ];
-            });
-
-            return response()->json($formattedReport);
-        } else {
-            return response()->json(['error' => 'No records found'], 404);
-        }
+    } else {
+        // Other users can ONLY see their own department
+        $query->where('depID', $user->depID);
     }
+
+    // 🔍 Filter by customer name
+    if ($name) {
+        $query->where('customer_name', 'like', '%' . $name . '%');
+    }
+
+    // 💰 Balance filter (>= 0 means include zero balances)
+    $query->where('balance', '>=', 0);
+
+    // ⬇ Order by highest balance first
+    $query->orderBy('balance', 'desc');
+
+    $report = $query->get();
+
+    // ✅ ALWAYS return 200 (even if empty)
+    return response()->json(
+        $report->map(function ($customer) {
+            return [
+                'serial'  => $customer->serial,
+                'name'    => $customer->customer_name,
+                'phone'   => $customer->phone,
+                'address' => $customer->address,
+                'balance' => number_format($customer->balance, 2),
+            ];
+        }),
+        200
+    );
+}
+
+
+
+
 
 
 
     // Liability Transactions
-    public function getLiabilityReport(Request $request) {
-        $supplier = $request->input('supplier');
-        $type = $request->input('type');
-        $depID = $request->input('depID');
-        $trnsType = $request->input('trnsType');
-        $startDate = $request->input('startDate');
-        $endDate = $request->input('endDate');
-    
-        // Fetch query for the Payment model
-        $query = AccountPayables::query();
-        if ($supplier) {
-            $query->where('received_from', 'like', '%' . $supplier . '%');
-        }
-        if ($depID) {
-            $query->where('depID', $depID);
-        }
-        if ($type) {
-            $query->where('type', 'like', '%' . $type . '%');
-        }
-        if ($trnsType) {
-            $query->where('transaction_type', 'like', '%' . $trnsType . '%');
-        }
-    
-        // Handle date filtering
-        if ($startDate && $endDate) {
-            $query->whereBetween('date', [$startDate, $endDate]);
-        } elseif ($startDate || $endDate) {
-            return response()->json(['success' => false, 'message' => 'Both start date and end date are required']);
-        }
-    
-        // Execute the query
-        $report = $query->get();
-    
-        // Check if the query returned any records
-        if ($report->isEmpty()) {
-            return response()->json(['success' => false, 'message' => 'No records found']);
-        }
-    
-        // Format the report data
-        $formattedReport = $report->map(function ($payment) {
-            return [
-                'date' => $payment->date,
-                'client' => $payment->received_from,
-                'amount' => number_format($payment->amount, 2), 
-                'type' => $payment->type,
-                'trnsType' => $payment->transaction_type, 
-                'info' => $payment->description, 
-            ];
-        });
-    
-        // Return the response
-        return response()->json(['success' => true, 'data' => $formattedReport]);
+   public function getLiabilityReport(Request $request)
+{
+    $depID = $this->resolveDepartmentId($request->depID);
+
+    $query = AccountPayables::when($depID, fn ($q) => $q->where('depID', $depID))
+        ->when($request->supplier, fn ($q) =>
+            $q->where('received_from', 'like', "%{$request->supplier}%")
+        )
+        ->when($request->type, fn ($q) =>
+            $q->where('type', 'like', "%{$request->type}%")
+        )
+        ->when($request->trnsType, fn ($q) =>
+            $q->where('transaction_type', 'like', "%{$request->trnsType}%")
+        );
+
+    if ($request->startDate && $request->endDate) {
+        $query->whereBetween('date', [$request->startDate, $request->endDate]);
     }
+
+    $data = $query->get();
+
+    if ($data->isEmpty()) {
+        return response()->json(['success' => false, 'message' => 'No records found']);
+    }
+
+    return response()->json([
+        'success' => true,
+        'data' => $data->map(fn ($p) => [
+            'date' => $p->date,
+            'client' => $p->received_from,
+            'amount' => number_format($p->amount, 2),
+            'type' => $p->type,
+            'trnsType' => $p->transaction_type,
+            'info' => $p->description,
+        ])
+    ]);
+}
 
 
     // Expense Transactions
    public function getExpenseReport(Request $request)
 {
-    $user = auth()->user();
+    $depID = $this->resolveDepartmentId();
 
     $type = $request->input('type');
     $salesman_id = $request->input('salesman_id');
@@ -743,11 +767,11 @@ class ReportsController extends Controller
 
     /**
      * ===================== ROLE + DEPARTMENT FILTER =====================
-     * Sales → only their department
-     * Admin/Manager/Acc → all departments
+     * Admin -> all departments
+     * Non-admin -> only their department
      */
-    if ($user->role === 'sales') {
-        $query->where('depID', $user->depID);
+    if ($depID) {
+        $query->where('depID', $depID);
     }
 
     /**
@@ -757,13 +781,8 @@ class ReportsController extends Controller
         $query->where('type', 'like', "%{$type}%");
     }
 
-    // Prevent sales from filtering other salesmen
     if ($salesman_id) {
-        if ($user->role === 'sales') {
-            $query->where('salesman_id', $user->id);
-        } else {
-            $query->where('salesman_id', $salesman_id);
-        }
+        $query->where('salesman_id', $salesman_id);
     }
 
     /**
@@ -817,277 +836,385 @@ class ReportsController extends Controller
 
 
     // Finance Activity Transactions
-    public function getFinanceAccReport(Request $request) {
-        $userID = $request->input('userID');
-        $depID = $request->input('depID');
-        $startDate = $request->input('startDate');
-        $endDate = $request->input('endDate');
-    
-        // Fetch query for the Payment model
-        $query = FinanceTrans::query();
-        if ($userID) {
-            $query->where('user', 'like', '%' . $userID . '%');
-        }
-        if ($depID) {
-            $query->where('depID', $depID);
-        }
-    
-        // Handle date filtering
-        if ($startDate && $endDate) {
-            $query->whereBetween('date', [$startDate, $endDate]);
-        } elseif ($startDate || $endDate) {
-            return response()->json(['success' => false, 'message' => 'Both start date and end date are required']);
-        }
-    
-        // Execute the query
-        $report = $query->get();
-    
-        // Check if the query returned any records
-        if ($report->isEmpty()) {
-            return response()->json(['success' => false, 'message' => 'No records found']);
-        }
-    
-        // Format the report data
-        $formattedReport = $report->map(function ($activity) {
-            return [
-                'date' => $activity->date,
-                'depitAcc' => $activity->depitAcc,
-                'depitAmount' => number_format($activity->depitAmount, 2), 
-                'creditAcc' => $activity->creditAcc,
-                'creditAmount' => number_format($activity->creditAmount, 2), 
-                'formType' => $activity->formType,
-                'action' => $activity->action,
-                'user' => $activity->users->name,
-                'info' => $activity->info, 
-            ];
-        });
-    
-        // Return the response
-        return response()->json(['success' => true, 'data' => $formattedReport]);
-    }
-
-
-    // bank Statement Transactions
-public function getBankSatementReport(Request $request) {
-    $type = $request->input('type');
+   // Finance Activity Transactions
+public function getFinanceAccReport(Request $request)
+{
+    $userID    = $request->input('userID');
     $startDate = $request->input('startDate');
-    $endDate = $request->input('endDate');
-    $depID = $request->input('depID');
+    $endDate   = $request->input('endDate');
 
-    // Validate date inputs
-    if (($startDate && !$endDate) || (!$startDate && $endDate)) {
-        return response()->json(['success' => false, 'message' => 'Both start date and end date are required']);
-    }
+    // 🔐 Resolve department based on role
+    // Admin → can pass depID
+    // Non-admin → forced to own depID
+    $depID = $this->resolveDepartmentId($request->input('depID'));
 
-    // Calculate beginning balance (all transactions before start date)
-    $beginningBalance = 0;
-    if ($startDate) {
-        $beginningQuery = BankStatement::query();
-        
-        if ($type) {
-            $beginningQuery->where('type', 'like', '%' . $type . '%');
-        }
-        if ($depID) {
-            $beginningQuery->where('depID', $depID);
-        }
-        
-        // Get all transactions before the start date
-        $beginningTransactions = $beginningQuery->where('date', '<', $startDate)->get();
-        
-        foreach ($beginningTransactions as $transaction) {
-            // REVERSED LOGIC: Debit increases balance, Credit decreases balance
-            if ($transaction->type == 'Debit') {
-                $beginningBalance += $transaction->amount;
-            } else {
-                $beginningBalance -= $transaction->amount;
-            }
-        }
-    }
+    $query = FinanceTrans::with('users'); // eager load user relation
 
-    // Fetch query for the BankStatement model for the date range
-    $query = BankStatement::query();
-    if ($type) {
-        $query->where('type', 'like', '%' . $type . '%');
-    }
+    /**
+     * ===================== ROLE + DEPARTMENT =====================
+     */
     if ($depID) {
         $query->where('depID', $depID);
     }
 
-    // Handle date filtering
-    if ($startDate && $endDate) {
-        $query->whereBetween('date', [$startDate, $endDate]);
+    /**
+     * ===================== OPTIONAL FILTERS =====================
+     */
+    if ($userID) {
+        $query->where('user', $userID); // numeric comparison ✔
     }
 
-    // Execute the query and order by date
-    $report = $query->orderBy('date')->get();
+    /**
+     * ===================== DATE FILTER =====================
+     */
+    if ($startDate && $endDate) {
+        $query->whereBetween('date', [
+            Carbon::parse($startDate)->startOfDay(),
+            Carbon::parse($endDate)->endOfDay()
+        ]);
+    } elseif ($startDate || $endDate) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Both start date and end date are required'
+        ]);
+    }
 
-    // Check if the query returned any records
+    /**
+     * ===================== EXECUTE =====================
+     */
+    $report = $query->orderBy('date', 'asc')->get();
+
     if ($report->isEmpty()) {
         return response()->json([
-            'success' => false, 
+            'success' => false,
+            'message' => 'No records found'
+        ]);
+    }
+
+    /**
+     * ===================== FORMAT =====================
+     */
+    $formattedReport = $report->map(function ($activity) {
+        return [
+            'date' => $activity->date,
+            'depitAcc' => $activity->depitAcc,
+            'depitAmount' => number_format($activity->depitAmount, 2),
+            'creditAcc' => $activity->creditAcc,
+            'creditAmount' => number_format($activity->creditAmount, 2),
+            'formType' => $activity->formType,
+            'action' => $activity->action,
+            'user' => optional($activity->users)->name ?? 'System',
+            'info' => $activity->info,
+        ];
+    });
+
+    return response()->json([
+        'success' => true,
+        'data' => $formattedReport
+    ]);
+}
+
+
+
+    // bank Statement Transactions
+// Bank Statement Transactions
+public function getBankSatementReport(Request $request)
+{
+    $type      = $request->input('type');
+    $startDate = $request->input('startDate');
+    $endDate   = $request->input('endDate');
+
+    // 🔐 Resolve department (admin vs non-admin)
+    $depID = $this->resolveDepartmentId($request->input('depID'));
+
+    /**
+     * ===================== DATE VALIDATION =====================
+     */
+    if (($startDate && !$endDate) || (!$startDate && $endDate)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Both start date and end date are required'
+        ]);
+    }
+
+    /**
+     * ===================== OPENING BALANCE =====================
+     */
+    $beginningBalance = 0;
+
+    if ($startDate) {
+        $openingQuery = BankStatement::query()
+            ->when($type, fn ($q) =>
+                $q->where('type', 'like', "%{$type}%")
+            )
+            ->when($depID, fn ($q) =>
+                $q->where('depID', $depID)
+            )
+            ->where('date', '<', Carbon::parse($startDate)->startOfDay())
+            ->get();
+
+        foreach ($openingQuery as $row) {
+            // Debit increases, Credit decreases
+            $beginningBalance += $row->type === 'Debit'
+                ? $row->amount
+                : -$row->amount;
+        }
+    }
+
+    /**
+     * ===================== MAIN QUERY =====================
+     */
+    $query = BankStatement::with('department')
+        ->when($type, fn ($q) =>
+            $q->where('type', 'like', "%{$type}%")
+        )
+        ->when($depID, fn ($q) =>
+            $q->where('depID', $depID)
+        );
+
+    if ($startDate && $endDate) {
+        $query->whereBetween('date', [
+            Carbon::parse($startDate)->startOfDay(),
+            Carbon::parse($endDate)->endOfDay()
+        ]);
+    }
+
+    $statements = $query->orderBy('date')->get();
+
+    if ($statements->isEmpty()) {
+        return response()->json([
+            'success' => false,
             'message' => 'No records found',
             'opening_balance' => number_format($beginningBalance, 2)
         ]);
     }
 
-    // Calculate running balance starting from beginning balance
+    /**
+     * ===================== RUNNING BALANCE =====================
+     */
     $balance = $beginningBalance;
     $formattedReport = [];
-    
-    foreach ($report as $statement) {
-        // Use the row ID as reference instead of extracting from description
-        $ref = $statement->id;
-        
-        // REVERSED LOGIC: Debit increases balance, Credit decreases balance
-        if ($statement->type == 'Debit') {
-            $balance += $statement->amount;
-        } else {
-            $balance -= $statement->amount;
-        }
-        
+
+    foreach ($statements as $statement) {
+        $balance += $statement->type === 'Debit'
+            ? $statement->amount
+            : -$statement->amount;
+
         $formattedReport[] = [
             'date' => $statement->date,
-            'ref' => $ref, // Using the row ID as reference
+            'ref' => $statement->id,
             'branch' => $statement->branch ?? '001',
             'particulars' => $statement->description,
             'cheque_no' => $statement->check_no,
-            'withdrawal' => $statement->type == 'Credit' ? number_format($statement->amount, 2) : '0.00', // REVERSED
-            'deposit' => $statement->type == 'Debit' ? number_format($statement->amount, 2) : '0.00',    // REVERSED
+            'withdrawal' => $statement->type === 'Credit'
+                ? number_format($statement->amount, 2)
+                : '0.00',
+            'deposit' => $statement->type === 'Debit'
+                ? number_format($statement->amount, 2)
+                : '0.00',
             'balance' => number_format($balance, 2),
             'type' => $statement->type,
-            'department' => $statement->department->name ?? '',
+            'department' => optional($statement->department)->name ?? '',
         ];
     }
-    
-    // Return the response with calculated opening balance
+
     return response()->json([
-        'success' => true, 
-        'data' => $formattedReport, 
+        'success' => true,
+        'data' => $formattedReport,
         'opening_balance' => number_format($beginningBalance, 2)
     ]);
 }
-    
+
 
     
-    public function getIncomeStatementReport(Request $request)
-    {
-        try {
-            $startDate = $request->input('startDate');
-            $endDate = $request->input('endDate');
-    
-            // Helper function for date validation
-            if (($startDate && !$endDate) || (!$startDate && $endDate)) {
-                return response()->json(['error' => 'Both start date and end date are required.'], 422);
+  public function getIncomeStatementReport(Request $request)
+{
+    try {
+        $startDate = $request->input('startDate');
+        $endDate   = $request->input('endDate');
+
+        // 🔐 Department resolution (ADMIN = all, others = own)
+        $depID = $this->resolveDepartmentId();
+
+        /**
+         * ===================== DATE VALIDATION =====================
+         */
+        if (($startDate && !$endDate) || (!$startDate && $endDate)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Both start date and end date are required.'
+            ], 422);
+        }
+
+        $start = $startDate ? Carbon::parse($startDate)->startOfDay() : null;
+        $end   = $endDate ? Carbon::parse($endDate)->endOfDay() : null;
+
+        /**
+         * ===================== PAYMENT METHODS =====================
+         */
+        $paymentMethods = [
+            'Zaad Service',
+            'Cash On Hand',
+            'Credit on Book',
+            'Premier Wallet',
+            'E-Dahab',
+            'MERCHANT'
+        ];
+
+        /**
+         * ===================== BASE QUERIES =====================
+         */
+        $salesQuery               = Sales::with('product');
+        $salesTransactionsQuery   = SalesTransactions::query();
+        $creditPaymentsQuery      = Credits::query();
+        $regularFuelSalesQuery    = FuelSale::with(['transactions.product', 'creditSales.product']);
+        $fuelCreditSalesQuery     = FuelCreditSale::with('product');
+        $expenseQuery             = Expenses::query();
+
+        /**
+         * ===================== DEPARTMENT FILTER =====================
+         */
+        if ($depID) {
+            $salesQuery->where('depID', $depID);
+            $salesTransactionsQuery->where('depID', $depID);
+            $creditPaymentsQuery->where('depID', $depID);
+            $regularFuelSalesQuery->where('depID', $depID);
+            $fuelCreditSalesQuery->where('depID', $depID);
+            $expenseQuery->where('depID', $depID);
+        }
+
+        /**
+         * ===================== DATE FILTER =====================
+         */
+        if ($start && $end) {
+            $salesQuery->whereBetween('created_at', [$start, $end]);
+            $salesTransactionsQuery->whereBetween('paid_date', [$start, $end]);
+            $creditPaymentsQuery->whereBetween('date', [$start, $end]);
+            $regularFuelSalesQuery->whereBetween('date', [$start, $end]);
+            $fuelCreditSalesQuery->whereBetween('date', [$start, $end]);
+            $expenseQuery->whereBetween('date', [$start, $end]);
+        }
+
+        /**
+         * ===================== EXECUTE =====================
+         */
+        $sales             = $salesQuery->get();
+        $salesTransactions = $salesTransactionsQuery->get();
+        $creditPayments    = $creditPaymentsQuery->get();
+        $regularFuelSales  = $regularFuelSalesQuery->get();
+        $fuelCreditSales   = $fuelCreditSalesQuery->get();
+        $expenses          = $expenseQuery->get();
+
+        if (
+            $sales->isEmpty() &&
+            $expenses->isEmpty() &&
+            $regularFuelSales->isEmpty() &&
+            $fuelCreditSales->isEmpty() &&
+            $start && $end
+        ) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No records found for the selected date range.'
+            ], 404);
+        }
+
+        /**
+         * ===================== PAYMENT METHOD TOTALS =====================
+         */
+        $paymentMethodTotalsSales = [];
+        foreach ($paymentMethods as $method) {
+            $paymentMethodTotalsSales[$method] =
+                $salesTransactions->where('payment_method', $method)->sum('net_price');
+        }
+
+        $paymentMethodTotalsCredits = [];
+        foreach ($paymentMethods as $method) {
+            $paymentMethodTotalsCredits[$method] =
+                $creditPayments->where('payment_method', $method)->sum('amount');
+        }
+
+        /**
+         * ===================== SALES REVENUE =====================
+         */
+        $totalSalesRevenue   = $salesTransactions->sum('net_price');
+        $totalDiscount       = $salesTransactions->sum('discount');
+        $totalCreditPayments = $creditPayments->sum('amount');
+        $netSalesRevenue     = $totalSalesRevenue - $totalDiscount;
+
+        /**
+         * ===================== FUEL REVENUE =====================
+         */
+        $totalRegularFuelRevenue = 0;
+        $regularFuelDiscount     = 0;
+
+        foreach ($regularFuelSales as $fuelSale) {
+            foreach ($fuelSale->transactions as $transaction) {
+                $totalRegularFuelRevenue += $transaction->total;
             }
-    
-            // Define payment methods
-            $paymentMethods = ['Zaad Service', 'Cash On Hand', 'Credit on Book', 'Premier Wallet', 'E-Dahab', 'MERCHANT'];
-    
-            // Initialize base queries
-            $salesQuery = Sales::with('product');
-            $salesTransactionsQuery = SalesTransactions::query();
-            $creditPaymentsQuery = Credits::query();
-            $regularFuelSalesQuery = FuelSale::with(['transactions.product', 'creditSales.product']);
-            $expenseQuery = Expenses::query();
-            $fuelCreditSalesQuery = FuelCreditSale::with('product');
-    
-            // Conditionally apply date filters to the queries
-            if ($startDate && $endDate) {
-                $salesQuery->whereBetween('created_at', [$startDate, $endDate]);
-                $salesTransactionsQuery->whereBetween('paid_date', [$startDate, $endDate]);
-                $creditPaymentsQuery->whereBetween('date', [$startDate, $endDate]);
-                $regularFuelSalesQuery->whereBetween('date', [$startDate, $endDate]);
-                $fuelCreditSalesQuery->whereBetween('date', [$startDate, $endDate]);
-                $expenseQuery->whereBetween('date', [$startDate, $endDate]);
+            $regularFuelDiscount += $fuelSale->discount;
+        }
+
+        $totalCreditFuelRevenue = $fuelCreditSales->sum('total');
+
+        $netRegularFuelRevenue = $totalRegularFuelRevenue - $regularFuelDiscount;
+        $netCreditFuelRevenue  = $totalCreditFuelRevenue;
+
+        $totalFuelSalesRevenue = $totalRegularFuelRevenue + $totalCreditFuelRevenue;
+        $totalFuelDiscount     = $regularFuelDiscount;
+        $netFuelSalesRevenue   = $netRegularFuelRevenue + $netCreditFuelRevenue;
+
+        /**
+         * ===================== TOTAL REVENUE =====================
+         */
+        $totalRevenue = $netSalesRevenue + $netFuelSalesRevenue;
+
+        /**
+         * ===================== COGS =====================
+         */
+        $totalCOGS = 0;
+
+        foreach ($sales as $sale) {
+            if ($sale->product) {
+                $totalCOGS += $sale->product->actual_price * $sale->quantity;
             }
-    
-            // Execute queries and get results
-            $sales = $salesQuery->get();
-            $salesTransactions = $salesTransactionsQuery->get();
-            $creditPayments = $creditPaymentsQuery->get();
-            $regularFuelSales = $regularFuelSalesQuery->get();
-            $fuelCreditSales = $fuelCreditSalesQuery->get();
-            $expenseData = $expenseQuery->get();
-            
-            // Check if any data exists
-            if ($sales->isEmpty() && $expenseData->isEmpty() && $regularFuelSales->isEmpty() && $fuelCreditSales->isEmpty() && $startDate && $endDate) {
-                return response()->json(['error' => 'No records found for the selected date range.'], 404);
-            }
-    
-            // Payment method totals
-            $paymentMethodTotalsSales = [];
-            foreach ($paymentMethods as $method) {
-                $paymentMethodTotalsSales[$method] = $salesTransactions->where('payment_method', $method)->sum('net_price');
-            }
-    
-            $paymentMethodTotalsCredits = [];
-            foreach ($paymentMethods as $method) {
-                $paymentMethodTotalsCredits[$method] = $creditPayments->where('payment_method', $method)->sum('amount');
-            }
-    
-            // Revenue calculations
-            $totalSalesRevenue = $salesTransactions->sum('net_price');
-            $totalDiscount = $salesTransactions->sum('discount');
-            $totalCreditPayments = $creditPayments->sum('amount');
-            $netSalesRevenue = $totalSalesRevenue - $totalDiscount;
-    
-            // Fuel revenue calculations
-            $totalRegularFuelRevenue = 0;
-            $regularFuelDiscount = 0;
-            foreach ($regularFuelSales as $fuelSale) {
-                foreach ($fuelSale->transactions as $transaction) {
-                    $totalRegularFuelRevenue += $transaction->total;
+        }
+
+        $totalRegularFuelCOGS = 0;
+        foreach ($regularFuelSales as $fuelSale) {
+            foreach ($fuelSale->transactions as $transaction) {
+                if ($transaction->product) {
+                    $cost = $transaction->product->cost_price
+                        ?? $transaction->product->actual_price;
+                    $totalRegularFuelCOGS += $cost * $transaction->liters;
                 }
-                $regularFuelDiscount += $fuelSale->discount;
             }
-    
-            $totalCreditFuelRevenue = $fuelCreditSales->sum('total');
-            $netRegularFuelRevenue = $totalRegularFuelRevenue - $regularFuelDiscount;
-            $netCreditFuelRevenue = $totalCreditFuelRevenue; // Credit sales typically don't get discount at sale time
-    
-            $totalFuelSalesRevenue = $totalRegularFuelRevenue + $totalCreditFuelRevenue;
-            $totalFuelDiscount = $regularFuelDiscount;
-            $netFuelSalesRevenue = $netRegularFuelRevenue + $netCreditFuelRevenue;
-    
-            // Total revenue
-            $totalRevenue = $netSalesRevenue + $netFuelSalesRevenue;
-    
-            // CORRECT COGS CALCULATION (as you provided)
-            $totalCOGS = 0;
-            foreach ($sales as $sale) {
-                if ($sale->product) {
-                    $totalCOGS += $sale->product->actual_price * $sale->quantity;
-                }
+        }
+
+        $totalFuelCreditCOGS = 0;
+        foreach ($fuelCreditSales as $fuelSale) {
+            if ($fuelSale->product) {
+                $cost = $fuelSale->product->cost_price
+                    ?? $fuelSale->product->actual_price;
+                $totalFuelCreditCOGS += $cost * $fuelSale->quantity;
             }
-    
-            $totalRegularFuelCOGS = 0;
-            foreach ($regularFuelSales as $fuelSale) {
-                foreach ($fuelSale->transactions as $transaction) {
-                    if ($transaction->product) {
-                        $costPrice = $transaction->product->cost_price ?? $transaction->product->actual_price;
-                        $totalRegularFuelCOGS += $costPrice * $transaction->liters;
-                    }
-                }
-            }
-    
-            $totalFuelCreditCOGS = 0;
-            foreach ($fuelCreditSales as $fuelSale) {
-                if ($fuelSale->product) {
-                    $costPrice = $fuelSale->product->cost_price ?? $fuelSale->product->actual_price;
-                    $totalFuelCreditCOGS += $costPrice * $fuelSale->quantity;
-                }
-            }
-    
-            $totalFuelCOGS = $totalRegularFuelCOGS + $totalFuelCreditCOGS;
-            $totalCOGS += $totalFuelCOGS;
-    
-            // Expenses and profit calculations
-            $totalExpenses = $expenseData->sum('amount');
-            $grossProfit = $totalRevenue - $totalCOGS;
-            $netIncome = $grossProfit - $totalExpenses;
-    
-            // Populate the formattedIncomeStatement array
-            $formattedIncomeStatement = [
+        }
+
+        $totalFuelCOGS = $totalRegularFuelCOGS + $totalFuelCreditCOGS;
+        $totalCOGS += $totalFuelCOGS;
+
+        /**
+         * ===================== PROFIT =====================
+         */
+        $totalExpenses = $expenses->sum('amount');
+        $grossProfit   = $totalRevenue - $totalCOGS;
+        $netIncome     = $grossProfit - $totalExpenses;
+
+        /**
+         * ===================== RESPONSE =====================
+         */
+        return response()->json([
+            'success' => true,
+            'data' => [
                 'SalesRevenue' => $totalSalesRevenue,
                 'RegularFuelSalesRevenue' => $totalRegularFuelRevenue,
                 'CreditFuelSalesRevenue' => $totalCreditFuelRevenue,
@@ -1115,505 +1242,612 @@ public function getBankSatementReport(Request $request) {
                 'regularSalesCount' => $sales->count(),
                 'regularFuelSalesCount' => $regularFuelSales->count(),
                 'creditFuelSalesCount' => $fuelCreditSales->count(),
-            ];
-    
-            Log::info('Income Statement Data:', $formattedIncomeStatement);
-    
-            return response()->json(['data' => $formattedIncomeStatement]);
-    
-        } catch (\Throwable $e) {
-            Log::error('Income Statement Report Failed', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-    
-            return response()->json(['error' => 'Unexpected error while generating report.'], 500);
-        }
+            ]
+        ]);
+
+    } catch (\Throwable $e) {
+        Log::error('Income Statement Report Failed', [
+            'message' => $e->getMessage()
+        ]);
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Unexpected error while generating report.'
+        ], 500);
     }
+}
+
     
 
     
     // Report Of System Balance Sheet
-    public function getBalanceSheet(Request $request) {
-
-        $startDate = $request->input('startDate');
-        $endDate = $request->input('endDate');
-
-
-        $accounts = CashAccount::get();
-        $clients = Customers::get();
-        $assets = Assets::get();
-        // Filtered queries with date range
-        $Expense = Expenses::whereBetween('date', [$startDate, $endDate])->sum('amount');
-        $CashPayment = SalesTransactions::whereBetween('paid_date', [$startDate, $endDate])->sum('net_price');
-        $sales = Sales::whereBetween('created_at', [$startDate, $endDate])->get();
-        // $liability = Recliability::get();
-
-        // Cash accounts
-        $depitCash = $accounts->where('AccCode', 'Cash')->sum('debit');
-        $CreditCash = $accounts->where('AccCode', 'Cash')->sum('credit');
-        $totalCash = $depitCash - $CreditCash;
-
-        // Bank accounts
-        $depitBank = $accounts->where('AccCode', 'Bank')->sum('debit');
-        $CreditBank = $accounts->where('AccCode', 'Bank')->sum('credit');
-        $totalBank = $depitBank - $CreditBank;
-
-        // Inventory accounts
-        $depitInventory = $accounts->where('AccCode', 'Inventory')->sum('debit');
-        $CreditInventory = $accounts->where('AccCode', 'Inventory')->sum('credit');
-        $totalInventory = $depitInventory - $CreditInventory;
-
-        // Inventory accounts
-        $depitasset = $accounts->where('AccCode', 'Fixed')->sum('debit');
-        $Creditasset = $accounts->where('AccCode', 'Fixed')->sum('credit');
-        $fixedAsset = $depitasset - $Creditasset;
-        
-        // account Receivable
-        $receivable = $clients->sum('balance');
-
-        $totalAssets = $totalCash + $receivable + $fixedAsset + $totalInventory + $totalBank;
-
-        // Long Term Liability  
-        $depitliability = $accounts->where('AccCode', 'Long Term')->sum('debit');
-        $Creditliability = $accounts->where('AccCode', 'long Term')->sum('credit');
-        $longTerm =  $depitliability - $Creditliability;
-        
-        // Short Term Liability
-        $depitshort = $accounts->where('AccCode', 'Short Term')->sum('debit');
-        $Creditshort = $accounts->where('AccCode', 'Short Term')->sum('credit');
-        $shortTerm =  $Creditshort - $depitshort;
-
-        $totalLiabilities = $longTerm + $shortTerm;
-
-
-
-        // Owner's Equity
-        $capital = $accounts->where('AccCode', 'Capital')->sum('credit');
-        $totalrevenue = $CashPayment;
-        // / Calculate Total Cost Of Goods Sold (COGS)
-            $totalCOGS = 0;
-            foreach ($sales as $sale) {
-                $product = $sale->product; // Get the related product
-                if ($product) {
-                    $totalCOGS += $product->actual_price * $sale->quantity;
-                }
-            }
-        $totalexpense = $Expense + $totalCOGS;
-        $netIncome = $totalrevenue - $totalexpense;
-        $ownerEquity = $capital + $netIncome;
-
-        // Balncesheet Totals
-        $Assets = $totalAssets; 
-        $capitalLiability = $ownerEquity + $totalLiabilities; 
-
-        // Prepare data for the view
-        $balanceSheetData = [
-            'totalCash' => $totalCash,
-            'capital' => $capital,
-            'retained' => $netIncome,
-            'receivable' => $receivable,
-            'Bank' => $totalBank,
-            'Inventory' => $totalInventory,
-            'fixedAsset' => $fixedAsset,
-            'totalAssets' => $totalAssets,
-            'longTerm' => $longTerm,
-            'shortTerm' => $shortTerm,
-            'totalLiabilities' => $totalLiabilities,
-            'TotalEquity' => $ownerEquity,
-            'Assets' => $Assets,
-            'capitalLiability' => $capitalLiability,
-        ];
-
-        // Pass data to the view
-        return view('layout.reports.balancesheet', compact('balanceSheetData'));
-    }
-
-    public function getMedicationReport(Request $request)
-    {
-        $query = MedicationLog::with(['medication', 'user', 'customer']);
-    
-        if ($request->has('patient_id')) {
-            $query->where('patient_id', $request->patient_id);
-        }
-    
-        if ($request->has('start_date') && $request->has('end_date')) {
-            $query->whereBetween('taken_at', [
-                $request->start_date . ' 00:00:00',
-                $request->end_date . ' 23:59:59'
-            ]);
-        }
-    
-        $logs = $query->orderBy('taken_at', 'desc')->get();
-    
-        return response()->json([
-            'success' => true,
-            'data' => $logs
-        ]);
-    }
-
-
-
-    public function getInventoryReport(Request $request) {
-        // Validate
-        $request->validate([
-            'startDate' => 'nullable|date',
-            'endDate' => 'nullable|date|after_or_equal:startDate',
-        ]);
-    
-        // Dates as Carbon (inclusive)
-        $startDate = $request->filled('startDate')
-            ? Carbon::parse($request->input('startDate'))->startOfDay()
-            : Carbon::now()->subWeek()->startOfDay();
-    
-        $endDate = $request->filled('endDate')
-            ? Carbon::parse($request->input('endDate'))->endOfDay()
-            : Carbon::now()->endOfDay();
-    
-        // Products that existed on or before endDate
-        $products = Products::where('created_at', '<=', $endDate->toDateTimeString())->get();
-    
-        if ($products->isEmpty()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No products found for the selected period.'
-            ]);
-        }
-    
-        // Group by product name
-        $groups = $products->groupBy('name');
-    
-        // All product ids we're interested in (used for aggregated queries)
-        $allProductIds = $products->pluck('id')->unique()->values()->all();
-    
-        // --- determine purchases quantity column (some schemas use different names) ---
-        $purchaseQtyCol = null;
-        if (Schema::hasTable('purchases')) {
-            foreach (['quantity', 'qty', 'received', 'received_qty'] as $c) {
-                if (Schema::hasColumn('purchases', $c)) {
-                    $purchaseQtyCol = $c;
-                    break;
-                }
-            }
-        }
-    
-        // --- Pre-aggregate sales and purchases to avoid N+1 queries ---
-        // Sales up to start (exclusive)
-        $salesUpToStart = Sales::whereIn('proID', $allProductIds)
-            ->whereHas('transaction', function ($q) use ($startDate) {
-                $q->where('created_at', '<', $startDate->toDateTimeString());
-            })
-            ->select('proID', DB::raw('SUM(quantity) as qty'))
-            ->groupBy('proID')
-            ->pluck('qty', 'proID')
-            ->toArray();
-    
-        // Sales during period (inclusive)
-        $salesDuring = Sales::whereIn('proID', $allProductIds)
-            ->whereHas('transaction', function ($q) use ($startDate, $endDate) {
-                $q->whereBetween('created_at', [
-                    $startDate->toDateTimeString(),
-                    $endDate->toDateTimeString()
-                ]);
-            })
-            ->select('proID', DB::raw('SUM(quantity) as qty'))
-            ->groupBy('proID')
-            ->pluck('qty', 'proID')
-            ->toArray();
-    
-        // Purchases up to start (if we detect a purchases qty column)
-        $purchasesUpToStart = [];
-        $purchasesDuring = [];
-        if ($purchaseQtyCol) {
-            $purchasesUpToStart = Purchases::whereIn('proID', $allProductIds)
-                ->where('created_at', '<', $startDate->toDateTimeString())
-                ->select('proID', DB::raw("SUM($purchaseQtyCol) as qty"))
-                ->groupBy('proID')
-                ->pluck('qty', 'proID')
-                ->toArray();
-    
-            $purchasesDuring = Purchases::whereIn('proID', $allProductIds)
-                ->whereBetween('created_at', [
-                    $startDate->toDateTimeString(),
-                    $endDate->toDateTimeString()
-                ])
-                ->select('proID', DB::raw("SUM($purchaseQtyCol) as qty"))
-                ->groupBy('proID')
-                ->pluck('qty', 'proID')
-                ->toArray();
-        } else {
-            // If we cannot find a purchases quantity column, we'll warn (logged) and treat purchases as 0.
-            \Log::warning('getInventoryReport: purchases quantity column not found; purchases treated as 0 for calculations.');
-        }
-    
-        // Helper to sum aggregated maps by a list of ids
-        $sumMapForIds = function(array $map, array $ids) {
-            $s = 0;
-            foreach ($ids as $id) {
-                if (isset($map[$id])) $s += floatval($map[$id]);
-            }
-            return $s;
-        };
-    
-        $result = $groups->map(function ($group) use (
-            $startDate, $endDate, $sumMapForIds,
-            $salesUpToStart, $salesDuring, $purchasesUpToStart, $purchasesDuring, $purchaseQtyCol
-        ) {
-            $productIds = $group->pluck('id')->all();
-            $representative = $group->first();
-    
-            // Aggregates
-            $soldBefore = $sumMapForIds($salesUpToStart, $productIds);
-            $soldDuring = $sumMapForIds($salesDuring, $productIds);
-    
-            $purchasedBefore = $purchaseQtyCol ? $sumMapForIds($purchasesUpToStart, $productIds) : 0;
-            $purchasedDuring = $purchaseQtyCol ? $sumMapForIds($purchasesDuring, $productIds) : 0;
-    
-            // initial = purchases before - sales before
-            $initialQuantity = $purchasedBefore - $soldBefore;
-    
-            // remaining = initial + purchases during - sold during
-            $remainingQuantity = $initialQuantity + $purchasedDuring - $soldDuring;
-    
-            // If remaining is negative, keep it (but log) — alternatively clamp to 0
-            if ($remainingQuantity < 0) {
-                \Log::warning("Negative remaining inventory for '{$representative->name}' calculated: {$remainingQuantity}. Check data integrity.");
-            }
-    
-            // Estimate unit cost: average of purchase costs for these product ids, fallback to product actual_price
-            $avgUnitCost = null;
-            if (Schema::hasTable('purchases') && Schema::hasColumn('purchases', 'unit_cost')) {
-                $avgUnitCost = Purchases::whereIn('proID', $productIds)
-                    ->whereNotNull('unit_cost')
-                    ->select(DB::raw('AVG(unit_cost + COALESCE(add_cost,0)) as avg_cost'))
-                    ->value('avg_cost');
-            }
-            $unitCostToUse = $avgUnitCost ? floatval($avgUnitCost) : floatval($representative->actual_price ?? 0);
-    
-            $totalValue = $unitCostToUse * max(0, $remainingQuantity);
-    
-            return [
-                'date' => $endDate->toDateString(),
-                'item' => $representative->name ?? 'Unknown',
-                'initial_quantity' => number_format($initialQuantity, 2),
-                'purchased_quantity' => number_format($purchasedDuring, 2),
-                'sold_quantity' => number_format($soldDuring, 2),
-                'remaining_quantity' => number_format($remainingQuantity, 2),
-                'price' => number_format($representative->actual_price ?? 0, 2),
-                'selling_price' => number_format($representative->selling_price ?? 0, 2),
-                'unit_cost_used' => number_format($unitCostToUse, 2),
-                'total_value' => number_format($totalValue, 2),
-            ];
-        })
-        // keep only items with remaining > 0 (or change this if you want all items)
-        ->filter(function ($item) {
-            return (float)str_replace(',', '', $item['remaining_quantity']) > 0;
-        })
-        ->sortBy('item')
-        ->values();
-    
-        return response()->json([
-            'success' => true,
-            'data' => $result,
-            'meta' => [
-                'date_range' => [
-                    'start' => $startDate->toDateString(),
-                    'end' => $endDate->toDateString(),
-                    'description' => $startDate->eq($endDate)
-                        ? 'Inventory snapshot on ' . $endDate->toDateString()
-                        : 'Inventory changes between ' . $startDate->toDateString() . ' and ' . $endDate->toDateString()
-                ]
-            ]
-        ]);
-    }
-
-
- public function getFuelCreditsReport(Request $request) {
-    $clientID = $request->input('clientID');
+public function getBalanceSheet(Request $request)
+{
     $startDate = $request->input('startDate');
-    $endDate = $request->input('endDate');
-    $productType = $request->input('product_type');
-    $status = $request->input('status');
-    
-    // Validate date range
+    $endDate   = $request->input('endDate');
+
+    $depID = $this->resolveDepartmentId();
+
+    /**
+     * ===================== DATE VALIDATION =====================
+     */
     if (($startDate && !$endDate) || (!$startDate && $endDate)) {
-        return response()->json(['success' => false, 'message' => 'Both start date and end date are required']);
+        return back()->withErrors(['Both start date and end date are required']);
     }
 
-    // Fetch total payments made by customer for this period
-    $totalPaymentsRaw = 0;
-    if ($clientID && $startDate && $endDate) {
-        $payments = Credits::where('customerID', $clientID)
-            ->whereBetween('date', [$startDate, $endDate])
-            ->sum('amount');
-        
-        $totalPaymentsRaw = (float) $payments;
+    $start = $startDate ? Carbon::parse($startDate)->startOfDay() : null;
+    $end   = $endDate ? Carbon::parse($endDate)->endOfDay() : null;
+
+    /**
+     * ===================== ACCOUNTS (FILTER BY DEP) =====================
+     */
+    $accounts = CashAccount::when($depID, function ($q) use ($depID) {
+        $q->where('depID', $depID);
+    })->get();
+
+    /**
+     * ===================== CLIENTS & ASSETS =====================
+     */
+    $clients = Customers::when($depID, fn($q) => $q->where('depID', $depID))->get();
+    $assets  = Assets::when($depID, fn($q) => $q->where('depID', $depID))->get();
+
+    /**
+     * ===================== EXPENSE =====================
+     */
+    $totalExpense = Expenses::when($depID, fn($q) => $q->where('depID', $depID))
+        ->when($start && $end, fn($q) => $q->whereBetween('date', [$start, $end]))
+        ->sum('amount');
+
+    /**
+     * ===================== CASH SALES =====================
+     */
+    $cashRevenue = SalesTransactions::when($depID, fn($q) => $q->where('depID', $depID))
+        ->when($start && $end, fn($q) => $q->whereBetween('paid_date', [$start, $end]))
+        ->sum('net_price');
+
+    /**
+     * ===================== SALES (FOR COGS) =====================
+     */
+    $sales = Sales::with('product')
+        ->when($depID, fn($q) => $q->where('depID', $depID))
+        ->when($start && $end, fn($q) => $q->whereBetween('created_at', [$start, $end]))
+        ->get();
+
+    /**
+     * ===================== CASH =====================
+     */
+    $totalCash = $accounts->where('AccCode', 'Cash')->sum('debit')
+               - $accounts->where('AccCode', 'Cash')->sum('credit');
+
+    /**
+     * ===================== BANK =====================
+     */
+    $totalBank = $accounts->where('AccCode', 'Bank')->sum('debit')
+               - $accounts->where('AccCode', 'Bank')->sum('credit');
+
+    /**
+     * ===================== INVENTORY =====================
+     */
+    $totalInventory = $accounts->where('AccCode', 'Inventory')->sum('debit')
+                    - $accounts->where('AccCode', 'Inventory')->sum('credit');
+
+    /**
+     * ===================== FIXED ASSETS =====================
+     */
+    $fixedAsset = $accounts->where('AccCode', 'Fixed')->sum('debit')
+                - $accounts->where('AccCode', 'Fixed')->sum('credit');
+
+    /**
+     * ===================== RECEIVABLE =====================
+     */
+    $receivable = $clients->sum('balance');
+
+    /**
+     * ===================== TOTAL ASSETS =====================
+     */
+    $totalAssets = $totalCash + $totalBank + $totalInventory + $fixedAsset + $receivable;
+
+    /**
+     * ===================== LIABILITIES =====================
+     */
+    $longTerm = $accounts->where('AccCode', 'Long Term')->sum('debit')
+               - $accounts->where('AccCode', 'Long Term')->sum('credit');
+
+    $shortTerm = $accounts->where('AccCode', 'Short Term')->sum('credit')
+                - $accounts->where('AccCode', 'Short Term')->sum('debit');
+
+    $totalLiabilities = $longTerm + $shortTerm;
+
+    /**
+     * ===================== CAPITAL =====================
+     */
+    $capital = $accounts->where('AccCode', 'Capital')->sum('credit');
+
+    /**
+     * ===================== COGS =====================
+     */
+    $totalCOGS = 0;
+    foreach ($sales as $sale) {
+        if ($sale->product) {
+            $totalCOGS += $sale->product->actual_price * $sale->quantity;
+        }
     }
 
-    // Fetch Fuel Credits
-    $fuelQuery = FuelCreditSale::with(['customer', 'product'])
-        ->when($clientID, function($q) use ($clientID) {
-            $q->where('customer_id', $clientID);
-        })
-        ->when($productType, function($q) use ($productType) {
-            $q->whereHas('product', function($q) use ($productType) {
-                $q->where('name', 'LIKE', '%' . $productType . '%');
-            });
-        })
-        ->when($status, function($q) use ($status) {
-            $q->where('status', $status);
-        })
-        ->when($startDate && $endDate, function($q) use ($startDate, $endDate) {
-            $q->whereBetween('date', [$startDate, $endDate]);
-        });
+    /**
+     * ===================== NET INCOME =====================
+     */
+    $totalCost = $totalExpense + $totalCOGS;
+    $netIncome = $cashRevenue - $totalCost;
 
-    $fuelCredits = $fuelQuery->get();
+    /**
+     * ===================== EQUITY =====================
+     */
+    $ownerEquity = $capital + $netIncome;
+    $capitalLiability = $ownerEquity + $totalLiabilities;
 
-    // Fetch Oil Sales Credits
-    $oilQuery = SalesTransactions::with(['customer', 'sales.product'])
-        ->where('balance', '>', 0)
-        ->when($clientID, function($q) use ($clientID) {
-            $q->where('customerID', $clientID);
-        })
-        ->when($status, function($q) use ($status) {
-            $statusMap = [
-                'pending' => 'credit',
-                'partial' => 'partial',
-                'paid' => 'cash'
-            ];
-            if (isset($statusMap[$status])) {
-                $q->where('type', $statusMap[$status]);
+    /**
+     * ===================== RESPONSE =====================
+     */
+    $balanceSheetData = [
+        'totalCash' => $totalCash,
+        'Bank' => $totalBank,
+        'Inventory' => $totalInventory,
+        'fixedAsset' => $fixedAsset,
+        'receivable' => $receivable,
+        'totalAssets' => $totalAssets,
+        'longTerm' => $longTerm,
+        'shortTerm' => $shortTerm,
+        'totalLiabilities' => $totalLiabilities,
+        'capital' => $capital,
+        'retained' => $netIncome,
+        'TotalEquity' => $ownerEquity,
+        'Assets' => $totalAssets,
+        'capitalLiability' => $capitalLiability,
+    ];
+
+    return view('layout.reports.balancesheet', compact('balanceSheetData'));
+}
+
+
+//   public function getMedicationReport(Request $request)
+// {
+//     $query = MedicationLog::with(['medication', 'user', 'customer']);
+
+//     if ($request->filled('patient_id')) {
+//         $query->where('patient_id', $request->patient_id);
+//     }
+
+//     if ($request->filled('start_date') && $request->filled('end_date')) {
+//         $query->whereBetween('taken_at', [
+//             Carbon::parse($request->start_date)->startOfDay(),
+//             Carbon::parse($request->end_date)->endOfDay()
+//         ]);
+//     }
+
+//     return response()->json([
+//         'success' => true,
+//         'data' => $query->latest()->get()
+//     ]);
+// }
+
+
+
+
+public function getInventoryReport(Request $request)
+{
+    // ============================
+    // Role restriction
+    // ============================
+    $user = auth()->user();
+    $isAdmin = in_array($user->role, ['admin', 'manager']);
+
+    $depID = $isAdmin ? null : $user->depID;
+
+    // ============================
+    // Validate
+    // ============================
+    $request->validate([
+        'startDate' => 'nullable|date',
+        'endDate' => 'nullable|date|after_or_equal:startDate',
+    ]);
+
+    // Dates as Carbon (inclusive)
+    $startDate = $request->filled('startDate')
+        ? Carbon::parse($request->input('startDate'))->startOfDay()
+        : Carbon::now()->subWeek()->startOfDay();
+
+    $endDate = $request->filled('endDate')
+        ? Carbon::parse($request->input('endDate'))->endOfDay()
+        : Carbon::now()->endOfDay();
+
+    // ============================
+    // Products (role restricted)
+    // ============================
+    $products = Products::where('created_at', '<=', $endDate->toDateTimeString())
+        ->when($depID, fn ($q) => $q->where('depID', $depID))
+        ->get();
+
+    if ($products->isEmpty()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'No products found for the selected period.'
+        ]);
+    }
+
+    // Group by product name
+    $groups = $products->groupBy('name');
+
+    $allProductIds = $products->pluck('id')->unique()->values()->all();
+
+    // ============================
+    // Detect purchases qty column
+    // ============================
+    $purchaseQtyCol = null;
+    if (Schema::hasTable('purchases')) {
+        foreach (['quantity', 'qty', 'received', 'received_qty'] as $c) {
+            if (Schema::hasColumn('purchases', $c)) {
+                $purchaseQtyCol = $c;
+                break;
             }
-        })
-        ->when($startDate && $endDate, function($q) use ($startDate, $endDate) {
-            $q->whereBetween('paid_date', [$startDate, $endDate]);
-        });
+        }
+    }
 
-    $oilCredits = $oilQuery->get();
+    // ============================
+    // Sales (role restricted)
+    // ============================
+    $salesUpToStart = Sales::whereIn('proID', $allProductIds)
+        ->when($depID, fn ($q) => $q->where('depID', $depID))
+        ->whereHas('transaction', fn ($q) =>
+            $q->where('created_at', '<', $startDate)
+        )
+        ->select('proID', DB::raw('SUM(quantity) as qty'))
+        ->groupBy('proID')
+        ->pluck('qty', 'proID')
+        ->toArray();
 
-    // Transform data (same as before)
-    $fuelData = $fuelCredits->map(function ($credit) {
+    $salesDuring = Sales::whereIn('proID', $allProductIds)
+        ->when($depID, fn ($q) => $q->where('depID', $depID))
+        ->whereHas('transaction', fn ($q) =>
+            $q->whereBetween('created_at', [$startDate, $endDate])
+        )
+        ->select('proID', DB::raw('SUM(quantity) as qty'))
+        ->groupBy('proID')
+        ->pluck('qty', 'proID')
+        ->toArray();
+
+    // ============================
+    // Purchases (role restricted)
+    // ============================
+    $purchasesUpToStart = [];
+    $purchasesDuring = [];
+
+    if ($purchaseQtyCol) {
+        $purchasesUpToStart = Purchases::whereIn('proID', $allProductIds)
+            ->when($depID, fn ($q) => $q->where('depID', $depID))
+            ->where('created_at', '<', $startDate)
+            ->select('proID', DB::raw("SUM($purchaseQtyCol) as qty"))
+            ->groupBy('proID')
+            ->pluck('qty', 'proID')
+            ->toArray();
+
+        $purchasesDuring = Purchases::whereIn('proID', $allProductIds)
+            ->when($depID, fn ($q) => $q->where('depID', $depID))
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->select('proID', DB::raw("SUM($purchaseQtyCol) as qty"))
+            ->groupBy('proID')
+            ->pluck('qty', 'proID')
+            ->toArray();
+    }
+
+    // ============================
+    // Helper
+    // ============================
+    $sumMapForIds = function (array $map, array $ids) {
+        return collect($ids)->sum(fn ($id) => (float)($map[$id] ?? 0));
+    };
+
+    // ============================
+    // Build result
+    // ============================
+    $result = $groups->map(function ($group) use (
+        $startDate, $endDate,
+        $sumMapForIds,
+        $salesUpToStart, $salesDuring,
+        $purchasesUpToStart, $purchasesDuring,
+        $purchaseQtyCol
+    ) {
+        $productIds = $group->pluck('id')->all();
+        $p = $group->first();
+
+        $soldBefore = $sumMapForIds($salesUpToStart, $productIds);
+        $soldDuring = $sumMapForIds($salesDuring, $productIds);
+
+        $purchasedBefore = $purchaseQtyCol ? $sumMapForIds($purchasesUpToStart, $productIds) : 0;
+        $purchasedDuring = $purchaseQtyCol ? $sumMapForIds($purchasesDuring, $productIds) : 0;
+
+        $initial = $purchasedBefore - $soldBefore;
+        $remaining = $initial + $purchasedDuring - $soldDuring;
+
+        $unitCost = $p->actual_price ?? 0;
+        $totalValue = $unitCost * max(0, $remaining);
+
         return [
-            'type' => 'fuel',
-            'id' => $credit->id,
-            'date' => $credit->date->format('Y-m-d'),
-            'invoice_number' => $credit->invoice_number ?? 'N/A',
-            'client' => $credit->customer->customer_name ?? 'N/A',
-            'phone' => $credit->customer->phone ?? 'N/A',
-            'product' => $credit->product->name ?? 'N/A',
-            'quantity' => $credit->quantity . ' L',
-            'quantity_raw' => (float) $credit->quantity, // Raw quantity for calculations
-            'rate' => number_format($credit->rate, 2),
-            'description' => $credit->description,
-            'total' => (float) $credit->total,
-            'status' => $credit->status,
-            'payment_method' => $credit->payment_method ?? 'N/A'
+            'date' => $endDate->toDateString(),
+            'item' => $p->name,
+            'initial_quantity' => number_format($initial, 2),
+            'purchased_quantity' => number_format($purchasedDuring, 2),
+            'sold_quantity' => number_format($soldDuring, 2),
+            'remaining_quantity' => number_format($remaining, 2),
+            'price' => number_format($p->actual_price ?? 0, 2),
+            'selling_price' => number_format($p->selling_price ?? 0, 2),
+            'unit_cost_used' => number_format($unitCost, 2),
+            'total_value' => number_format($totalValue, 2),
         ];
-    });
-
-    $oilData = $oilCredits->flatMap(function ($transaction) {
-        return $transaction->sales->map(function ($sale) use ($transaction) {
-            $itemBalance = $transaction->balance * ($sale->total_price / $transaction->net_price);
-            $paidDate = \Carbon\Carbon::parse($transaction->paid_date)->format('Y-m-d');
-            
-            return [
-                'type' => 'oil',
-                'id' => $transaction->id . '-' . $sale->id,
-                'date' => $paidDate,
-                'invoice_number' => $transaction->id,
-                'client' => $transaction->customer->customer_name ?? 'N/A',
-                'phone' => $transaction->customer->phone ?? 'N/A',
-                'product' => $sale->product->name ?? 'N/A',
-                'quantity' => $sale->quantity . ' ' . ($sale->unit ?? 'units'),
-                'quantity_raw' => (float) $sale->quantity, // Raw quantity for calculations
-                'rate' => number_format($sale->price, 2),
-                'description' => $transaction->note,
-                'total' => (float) $itemBalance,
-                'status' => $this->mapOilStatus($transaction->type),
-                'payment_method' => $transaction->payment_method ?? 'N/A'
-            ];
-        });
-    });
-
-    // Combine all data
-    $allCredits = collect($fuelData->merge($oilData));
-
-    if ($allCredits->isEmpty()) {
-        return response()->json(['success' => false, 'message' => 'No credit records found']);
-    }
-
-    // Get current customer balance
-    $customerBalance = 0;
-    if ($clientID) {
-        $customer = Customers::find($clientID);
-        $customerBalance = $customer ? (float) $customer->balance : 0;
-    }
-
-    // Calculate grand total of current period credit transactions
-    $grandTotal = $allCredits->sum('total');
-    
-    // Calculate total quantity
-    $totalQuantity = $allCredits->sum('quantity_raw');
-
-    // CORRECTED LOGIC: Calculate previous balance and adjust paid amount
-    $previousBalance = $customerBalance - $grandTotal + $totalPaymentsRaw;
-    
-    // NEW: Adjust paid amount to show only the portion that exceeds previous balance
-    $adjustedPaidAmount = $totalPaymentsRaw;
-    
-    // If payment covers previous balance, adjust both values
-    if ($totalPaymentsRaw >= $previousBalance && $previousBalance > 0) {
-        $adjustedPaidAmount = $totalPaymentsRaw - $previousBalance;
-        $previousBalance = 0;
-    }
-    
-    $totalInvoice = $previousBalance + $grandTotal;
-    
-    // Group by status
-    $grouped = $allCredits->groupBy('status')->map(function ($group, $status) {
-        return [
-            'count' => $group->count(),
-            'total_amount' => $group->sum('total'),
-            'total_quantity' => $group->sum('quantity_raw'),
-            'transactions' => $group->map(function ($item) {
-                return array_merge($item, [
-                    'total_formatted' => number_format($item['total'], 2)
-                ]);
-            })->values()
-        ];
-    });
-
-    // Calculate totals
-    $totalTransactions = $allCredits->count();
+    })
+    ->filter(fn ($i) => (float)str_replace(',', '', $i['remaining_quantity']) > 0)
+    ->sortBy('item')
+    ->values();
 
     return response()->json([
         'success' => true,
-        'data' => [
-            'grouped_by_status' => $grouped,
-            'total_transactions' => $totalTransactions,
-            'grand_total' => $grandTotal,
-            'total_quantity' => $totalQuantity,
-            'totalInvoice' => $totalInvoice,
-            'customer_balance' => $customerBalance,
-            'previous_balance' => number_format($previousBalance, 2),
-            'total_payments_made' => number_format($adjustedPaidAmount, 2), // ADJUSTED: Shows only excess payment
-            'total_payments_made_raw' => $adjustedPaidAmount, // ADJUSTED: Raw adjusted amount
-            'original_payments_raw' => $totalPaymentsRaw, // NEW: Keep original for reference
-            'start_date' => $startDate,
-            'end_date' => $endDate,
-            'summary' => [
-                'fuel_credits_count' => $fuelData->count(),
-                'fuel_credits_total' => $fuelData->sum('total'),
-                'fuel_credits_quantity' => $fuelData->sum('quantity_raw'),
-                'oil_credits_count' => $oilData->count(),
-                'oil_credits_total' => $oilData->sum('total'),
-                'oil_credits_quantity' => $oilData->sum('quantity_raw'),
-                'payments_made' => number_format($adjustedPaidAmount, 2) // ADJUSTED
+        'data' => $result,
+        'meta' => [
+            'date_range' => [
+                'start' => $startDate->toDateString(),
+                'end' => $endDate->toDateString(),
             ]
         ]
     ]);
 }
 
+
+
+// public function getFuelCreditsReport(Request $request)
+// {
+//     $depID = $this->resolveDepartmentId();
+
+//     $clientID = $request->clientID;
+//     $start    = $request->startDate ? Carbon::parse($request->startDate)->startOfDay() : null;
+//     $end      = $request->endDate ? Carbon::parse($request->endDate)->endOfDay() : null;
+
+//     if (($start && !$end) || (!$start && $end)) {
+//         return response()->json(['success' => false, 'message' => 'Both start date and end date are required']);
+//     }
+
+//     /**
+//      * ===================== PAYMENTS =====================
+//      */
+//     $totalPayments = Credits::when($clientID, fn($q) => $q->where('customerID', $clientID))
+//         ->when($depID, fn($q) => $q->where('depID', $depID))
+//         ->when($start && $end, fn($q) => $q->whereBetween('date', [$start, $end]))
+//         ->sum('amount');
+
+//     /**
+//      * ===================== FUEL CREDITS =====================
+//      */
+//     $fuelCredits = FuelCreditSale::with(['customer', 'product'])
+//         ->when($clientID, fn($q) => $q->where('customer_id', $clientID))
+//         ->when($depID, fn($q) => $q->where('depID', $depID))
+//         ->when($start && $end, fn($q) => $q->whereBetween('date', [$start, $end]))
+//         ->get();
+
+//     /**
+//      * ===================== OIL CREDITS =====================
+//      */
+//     $oilCredits = SalesTransactions::with(['customer', 'sales.product'])
+//         ->where('balance', '>', 0)
+//         ->when($clientID, fn($q) => $q->where('customerID', $clientID))
+//         ->when($depID, fn($q) => $q->where('depID', $depID))
+//         ->when($start && $end, fn($q) => $q->whereBetween('paid_date', [$start, $end]))
+//         ->get();
+
+//     /**
+//      * ===================== TRANSFORM =====================
+//      */
+//     $records = collect();
+
+//     foreach ($fuelCredits as $c) {
+//         $records->push([
+//             'type' => 'fuel',
+//             'date' => Carbon::parse($c->date)->toDateString(),
+//             'client' => $c->customer->customer_name ?? 'N/A',
+//             'product' => $c->product->name ?? 'N/A',
+//             'quantity' => $c->quantity,
+//             'total' => $c->total,
+//             'status' => $c->status,
+//             'description' => $c->description ?? ''
+//         ]);
+//     }
+
+//     foreach ($oilCredits as $t) {
+//         foreach ($t->sales as $s) {
+//             $records->push([
+//                 'type' => 'oil',
+//                 'date' => Carbon::parse($t->paid_date)->toDateString(),
+//                 'client' => $t->customer->customer_name ?? 'N/A',
+//                 'product' => $s->product->name ?? 'N/A',
+//                 'quantity' => $s->quantity,
+//                 'total' => ($t->balance * ($s->total_price / $t->net_price)),
+//                 'status' => $t->type,
+//                 'description' => ''  
+//             ]);
+//         }
+//     }
+
+//     if ($records->isEmpty()) {
+//         return response()->json(['success' => false, 'message' => 'No credit records found']);
+//     }
+
+//     /**
+//      * ===================== BALANCES =====================
+//      */
+//     $customerBalance = Customers::when($clientID, fn($q) => $q->where('id', $clientID))
+//         ->when($depID, fn($q) => $q->where('depID', $depID))
+//         ->value('balance') ?? 0;
+
+//     $grandTotal = $records->sum('total');
+//     $previousBalance = max(0, $customerBalance - $grandTotal + $totalPayments);
+
+//     return response()->json([
+//         'success' => true,
+//         'data' => [
+//             'transactions' => $records,
+//             'grand_total' => $grandTotal,
+//             'payments_made' => $totalPayments,
+//             'previous_balance' => $previousBalance,
+//             'customer_balance' => $customerBalance
+//         ]
+//     ]);
+// }
+
+public function getFuelCreditsReport(Request $request)
+{
+    try {
+        $depID = $this->resolveDepartmentId();
+
+        $clientID = $request->clientID;
+        $fuelType = $request->fuel_type;
+        $start    = $request->startDate ? Carbon::parse($request->startDate)->startOfDay() : null;
+        $end      = $request->endDate ? Carbon::parse($request->endDate)->endOfDay() : null;
+
+        if (($start && !$end) || (!$start && $end)) {
+            return response()->json(['success' => false, 'message' => 'Both start date and end date are required']);
+        }
+
+        $paymentsWithinPeriod = Credits::when($clientID, fn($q) => $q->where('customerID', $clientID))
+            ->when($depID, fn($q) => $q->where('depID', $depID))
+            ->when($start && $end, fn($q) => $q->whereBetween('date', [$start, $end]))
+            ->sum('amount');
+
+        $fuelCredits = FuelCreditSale::with(['customer', 'product'])
+            ->when($clientID, fn($q) => $q->where('customer_id', $clientID))
+            ->when($depID, fn($q) => $q->where('depID', $depID))
+            ->when($fuelType, fn($q) => $q->where('product_id', $fuelType))
+            ->when($start && $end, fn($q) => $q->whereBetween('date', [$start, $end]))
+            ->get();
+
+        $oilCredits = SalesTransactions::with(['customer', 'sales.product'])
+            ->where('balance', '>', 0)
+            ->when($clientID, fn($q) => $q->where('customerID', $clientID))
+            ->when($depID, fn($q) => $q->where('depID', $depID))
+            ->when($start && $end, fn($q) => $q->whereBetween('paid_date', [$start, $end]))
+            ->when($fuelType, fn($q) => $q->whereHas('sales', fn($sq) => $sq->where('proID', $fuelType)))
+            ->get();
+
+        $records = collect();
+
+        foreach ($fuelCredits as $c) {
+            $records->push([
+                'type' => 'fuel',
+                'date' => Carbon::parse($c->date)->toDateString(),
+                'client' => $c->customer?->customer_name ?? 'N/A',
+                'product' => $c->product?->name ?? 'N/A',
+                'quantity' => $c->quantity,
+                'total' => $c->total,
+                'status' => $c->status,
+                'description' => $c->description ?? '',
+            ]);
+        }
+
+        foreach ($oilCredits as $t) {
+            $netPrice = (float) ($t->net_price ?? 0);
+
+            foreach ($t->sales as $s) {
+                if ($fuelType && (int) $s->proID !== (int) $fuelType) {
+                    continue;
+                }
+
+                $lineTotal = $netPrice > 0
+                    ? ($t->balance * ((float) $s->total_price / $netPrice))
+                    : (float) ($s->total_price ?? 0);
+
+                $records->push([
+                    'type' => 'oil',
+                    'date' => $t->paid_date ? Carbon::parse($t->paid_date)->toDateString() : null,
+                    'client' => $t->customer?->customer_name ?? 'N/A',
+                    'product' => $s->product?->name ?? 'N/A',
+                    'quantity' => $s->quantity,
+                    'total' => $lineTotal,
+                    'status' => $t->type,
+                    'description' => '',
+                ]);
+            }
+        }
+
+        if ($records->isEmpty()) {
+            return response()->json(['success' => false, 'message' => 'No credit records found']);
+        }
+
+        $currentBalance = Customers::when($clientID, fn($q) => $q->where('id', $clientID))
+            ->when($depID, fn($q) => $q->where('depID', $depID))
+            ->when(!$clientID && $depID, fn($q) => $q->limit(1))
+            ->value('balance') ?? 0;
+
+        $newCreditsDuringPeriod = $records->sum('total');
+        $previousBalance = max(0, $currentBalance - $newCreditsDuringPeriod + $paymentsWithinPeriod);
+
+        $showPreviousBalanceSection = ($previousBalance > 0 && $currentBalance > 0)
+            || ($previousBalance > 0 && $paymentsWithinPeriod < $previousBalance);
+
+        if ($previousBalance > 0 && $paymentsWithinPeriod >= $previousBalance && $currentBalance == $newCreditsDuringPeriod) {
+            $showPreviousBalanceSection = false;
+            $balanceDue = $newCreditsDuringPeriod;
+        } else {
+            $balanceDue = $currentBalance;
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'transactions' => $records->values()->all(),
+                'grand_total' => $newCreditsDuringPeriod,
+                'payments_made' => $paymentsWithinPeriod,
+                'previous_balance' => $previousBalance,
+                'customer_balance' => $currentBalance,
+                'show_previous_balance_section' => $showPreviousBalanceSection,
+                'balance_due' => $balanceDue,
+            ],
+        ]);
+    } catch (\Throwable $e) {
+        Log::error('Fuel credits report failed', [
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+        ]);
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to generate report. Please try again.',
+        ], 500);
+    }
+}
+
+    private function isAdmin(): bool
+    {
+        $user = auth()->user();
+        return $user && $user->role === 'admin';
+    }
+
+    // private function resolveDepartmentId(?int $requestedDepID = null): ?int
+    // {
+    //     $user = auth()->user();
+
+    //     if (!$user) {
+    //         return $requestedDepID;
+    //     }
+
+    //     return $user->role === 'admin' ? $requestedDepID : $user->depID;
+    // }
+
+    // private function getAccessibleDepartments()
+    // {
+    //     $user = auth()->user();
+
+    //     if ($user && $user->role === 'admin') {
+    //         return Departments::get();
+    //     }
+
+    //     return Departments::where('id', $user->depID)->get();
+    // }
 
     private function mapOilStatus($type)
     {

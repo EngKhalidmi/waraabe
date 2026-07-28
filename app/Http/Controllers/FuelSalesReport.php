@@ -3,279 +3,205 @@
 namespace App\Http\Controllers;
 
 use App\Models\FuelSale;
-use App\Models\FuelSaleTransaction;
 use App\Models\FuelCreditSale;
 use App\Models\Salesman;
 use App\Models\Customers;
 use App\Models\Products;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Carbon\Carbon;
+
 class FuelSalesReport extends Controller
 {
     /**
-     * Display fuel sales report
+     * ============================
+     * Fuel Sales Report Page
+     * ============================
      */
-    public function fuelSalesReport(Request $request)
+    public function fuelSalesReport()
     {
-        $salesmen = Salesman::all();
-        $products = Products::where('type', 'fuel')->get();
-        
+        $user = auth()->user();
+        $isAdmin = in_array($user->role, ['admin', 'manager']);
+
+        $salesmen = Salesman::when(!$isAdmin, fn ($q) =>
+            $q->where('depID', $user->depID)
+        )->get();
+
+        $products = Products::where('type', 'fuel')
+            ->when(!$isAdmin, fn ($q) =>
+                $q->where('depID', $user->depID)
+            )
+            ->get();
+
         return view('admin.fuel_report.report', compact('salesmen', 'products'));
     }
 
     /**
-     * Get fuel sales report data
+     * ============================
+     * Combined Fuel Sales Page
+     * ============================
      */
-    public function getFuelSalesReport(Request $request)
+    public function combinedFuelReport()
     {
-        $startDate = $request->input('startDate');
-        $endDate = $request->input('endDate');
-        $shift = $request->input('shift');
-        $salesmanId = $request->input('salesman_id');
-        $productId = $request->input('product_id');
+        $user = auth()->user();
+        $isAdmin = in_array($user->role, ['admin', 'manager']);
 
-        $query = FuelSale::with(['salesman', 'transaction.product']);
+        $salesmen = Salesman::when(!$isAdmin, fn ($q) =>
+            $q->where('depID', $user->depID)
+        )->get();
 
-        if ($startDate && $endDate) {
-            $query->whereBetween('date', [$startDate, $endDate]);
-        }
+        $customers = Customers::when(!$isAdmin, fn ($q) =>
+            $q->where('depID', $user->depID)
+        )->get();
 
-        if ($shift) {
-            $query->where('shift', $shift);
-        }
+        $products = Products::where('type', 'fuel')
+            ->when(!$isAdmin, fn ($q) =>
+                $q->where('depID', $user->depID)
+            )
+            ->get();
 
-        if ($salesmanId) {
-            $query->where('salesman_id', $salesmanId);
-        }
-
-        $fuelSales = $query->orderBy('date', 'desc')->get();
-
-        // Filter by product if specified
-        if ($productId) {
-            $fuelSales = $fuelSales->filter(function ($sale) use ($productId) {
-                return $sale->transactions->where('product_id', $productId)->count() > 0;
-            });
-        }
-
-        $reportData = $fuelSales->map(function ($sale) use ($productId) {
-            $transactions = $sale->transactions;
-            
-            // Filter transactions by product if specified
-            if ($productId) {
-                $transactions = $transactions->where('product_id', $productId);
-            }
-            
-            return [
-                'id' => $sale->id,
-                'date' => $sale->date,
-                'shift' => $sale->shift,
-                'salesman' => $sale->salesman->full_name ?? 'N/A',
-                'transactions' => $transactions->map(function ($transaction) {
-                    return [
-                        'product' => $transaction->product->name ?? 'N/A',
-                        'liters' => $transaction->liters,
-                        'rate' => $transaction->rate,
-                        'total' => $transaction->total,
-                    ];
-                }),
-                'discount' => $sale->discount,
-                'net_total' => $sale->net_total,
-                'cash_on_hand' => $sale->cash_on_hand,
-                'balance' => $sale->balance,
-            ];
-        });
-
-        $totals = [
-            'total_liters' => $fuelSales->sum(function ($sale) use ($productId) {
-                $transactions = $sale->transactions;
-                if ($productId) {
-                    $transactions = $transactions->where('product_id', $productId);
-                }
-                return $transactions->sum('liters');
-            }),
-            'total_sales' => $fuelSales->sum('net_total'),
-            'total_cash' => $fuelSales->sum('cash_on_hand'),
-            'total_discount' => $fuelSales->sum('discount'),
-        ];
-
-        return response()->json([
-            'success' => true,
-            'data' => $reportData,
-            'totals' => $totals,
-            'start_date' => $startDate,
-            'end_date' => $endDate,
-        ]);
+        return view('layout.fuel_sale_report.combined', compact(
+            'salesmen',
+            'customers',
+            'products'
+        ));
     }
 
     /**
-     * Display combined fuel sales report (regular + credit)
-     */
-    public function combinedFuelReport(Request $request)
-    {
-        $salesmen = Salesman::all();
-        $products = Products::where('type', 'fuel')->get();
-        $customers = Customers::all();
-        
-        return view('layout.fuel_sale_report.combined', compact('salesmen', 'products', 'customers'));
-    }
-
-    /**
-     * Get combined fuel sales report data
+     * ============================
+     * Combined Fuel Sales Report (API)
+     * ============================
      */
     public function getCombinedFuelReport(Request $request)
     {
-        $startDate = $request->input('startDate');
-        $endDate = $request->input('endDate');
-        $reportType = $request->input('report_type', 'all');
-        $productId = $request->input('product_id');
+        $user = auth()->user();
+        $isAdmin = in_array($user->role, ['admin', 'manager']);
 
-        $regularSales = collect();
-        $creditSales = collect();
+        $startDate = $request->startDate;
+        $endDate   = $request->endDate;
+        $productId = $request->product_id;
 
-        // Get regular fuel sales
-        if ($reportType === 'all' || $reportType === 'regular') {
-            $regularQuery = FuelSale::with(['salesman', 'transactions.product']);
+        /**
+         * ----------------------------
+         * REGULAR FUEL SALES
+         * ----------------------------
+         */
+        $regularSales = FuelSale::with(['transactions.product'])
+            ->when(!$isAdmin, fn ($q) =>
+                $q->where('depID', $user->depID)
+            )
+            ->when($startDate && $endDate, fn ($q) =>
+                $q->whereBetween('date', [$startDate, $endDate])
+            )
+            ->get();
 
-            if ($startDate && $endDate) {
-                $regularQuery->whereBetween('date', [$startDate, $endDate]);
-            }
+        /**
+         * ----------------------------
+         * CREDIT FUEL SALES
+         * ----------------------------
+         */
+        $creditSales = FuelCreditSale::with(['product'])
+            ->when(!$isAdmin, fn ($q) =>
+                $q->where('depID', $user->depID)
+            )
+            ->when($startDate && $endDate, fn ($q) =>
+                $q->whereBetween('date', [$startDate, $endDate])
+            )
+            ->get();
 
-            $regularSales = $regularQuery->orderBy('date', 'desc')->get();
+        /**
+         * ----------------------------
+         * BUILD UNIFIED ROWS
+         * ----------------------------
+         */
+        $rows = collect();
 
-            // Filter by product if specified
-            if ($productId) {
-                $regularSales = $regularSales->filter(function ($sale) use ($productId) {
-                    return $sale->transactions && $sale->transactions->where('product_id', $productId)->count() > 0;
-                });
+        // Regular (Cash)
+        foreach ($regularSales as $sale) {
+            foreach ($sale->transactions as $t) {
+
+                if ($productId && $t->product_id != $productId) {
+                    continue;
+                }
+
+                $rows->push([
+                    'product' => $t->product->name ?? 'Unknown',
+                    'liters' => (float) $t->liters,
+                    'rate' => (float) $t->rate,
+                    'total' => (float) $t->total,
+                    'payment_type' => 'Cash',
+                    'type' => 'regular',
+                ]);
             }
         }
 
-        // Get credit fuel sales
-        if ($reportType === 'all' || $reportType === 'credit') {
-            $creditQuery = FuelCreditSale::with(['customer', 'product']);
+        // Credit
+        foreach ($creditSales as $sale) {
 
-            if ($startDate && $endDate) {
-                $creditQuery->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+            if ($productId && $sale->product_id != $productId) {
+                continue;
             }
 
-            $creditSales = $creditQuery->orderBy('created_at', 'desc')->get();
-
-            // Filter by product if specified
-            if ($productId) {
-                $creditSales = $creditSales->where('product_id', $productId);
-            }
-        }
-
-        // Prepare regular sales data
-        $regularData = $regularSales->map(function ($sale) use ($productId) {
-            // Ensure transactions is always a collection, even if null
-            $transactions = $sale->transactions ?? new Collection();
-            
-            // Filter transactions by product if specified
-            if ($productId && $transactions->isNotEmpty()) {
-                $transactions = $transactions->where('product_id', $productId);
-            }
-            
-            return [
-                'type' => 'regular',
-                'id' => $sale->id,
-                'date' => $sale->date,
-                'shift' => $sale->shift,
-                'salesman' => $sale->salesman->full_name ?? 'N/A',
-                'customer' => 'Walk-in Customer',
-                'transactions' => $transactions->map(function ($transaction) {
-                    return [
-                        'product' => $transaction->product->name ?? 'N/A',
-                        'liters' => $transaction->liters,
-                        'rate' => $transaction->rate,
-                        'total' => $transaction->total,
-                    ];
-                })->toArray(), // Convert to array to avoid issues
-                'discount' => $sale->discount,
-                'net_total' => $sale->net_total,
-                'payment_type' => 'Cash',
-                'status' => 'Paid',
-            ];
-        });
-
-        // Prepare credit sales data
-        $creditData = $creditSales->map(function ($sale) {
-            return [
-                'type' => 'credit',
-                'id' => $sale->id,
-                'date' => $sale->created_at->format('Y-m-d'),
-                'shift' => 'N/A',
-                'salesman' => 'N/A',
-                'customer' => $sale->customer->customer_name ?? 'N/A',
-                'transactions' => [
-                    [
-                        'product' => $sale->product->name ?? 'N/A',
-                        'liters' => $sale->quantity,
-                        'rate' => $sale->rate,
-                        'total' => $sale->total,
-                    ]
-                ],
-                'discount' => 0,
-                'net_total' => $sale->total,
+            $rows->push([
+                'product' => $sale->product->name ?? 'Unknown',
+                'liters' => (float) $sale->quantity,
+                'rate' => (float) $sale->rate,
+                'total' => (float) $sale->total,
                 'payment_type' => 'Credit',
-                'status' => ucfirst($sale->status),
-            ];
-        });
-        $combinedData = $regularData->merge($creditData);
+                'type' => 'credit',
+            ]);
+        }
 
-        // Group by product + payment_type
-        $groupedData = $combinedData->flatMap(function ($sale) {
-            return collect($sale['transactions'])->map(function ($transaction) use ($sale) {
+        /**
+         * ----------------------------
+         * SAFETY FILTER (IMPORTANT)
+         * ----------------------------
+         */
+        $rows = $rows->filter(fn ($r) =>
+            !empty($r['product']) &&
+            !empty($r['payment_type']) &&
+            !empty($r['type'])
+        );
+
+        if ($rows->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No data found for the selected criteria'
+            ]);
+        }
+
+        /**
+         * ----------------------------
+         * GROUPING (FINAL & CORRECT)
+         * ----------------------------
+         */
+        $grouped = $rows
+            ->groupBy(fn ($r) => $r['product'] . '_' . $r['payment_type'])
+            ->map(function ($group) {
+
+                $types = $group->pluck('type')->unique()->values();
+
                 return [
-                    'product' => $transaction['product'],
-                    'liters' => $transaction['liters'],
-                    'rate' => $transaction['rate'],
-                    'total' => $transaction['total'],
-                    'payment_type' => $sale['payment_type'], // Cash or Credit
-                    'type' => $sale['type'], // regular / credit
-                    'date' => $sale['date'],
+                    'product' => $group->first()['product'],
+                    'payment_type' => $group->first()['payment_type'],
+                    'type' => $types->count() === 1 ? $types->first() : 'mixed',
+                    'total_liters' => $group->sum('liters'),
+                    'total_sales' => $group->sum('total'),
+                    'rate' => round($group->avg('rate'), 2),
                 ];
-            });
-        })->groupBy(function ($item) {
-            // group key = "Product + PaymentType"
-            return $item['product'].'_'.$item['payment_type'];
-        })->map(function ($group) {
-            return [
-                'product' => $group->first()['product'],
-                'payment_type' => $group->first()['payment_type'],
-                'type' => $group->first()['type'],
-                'total_liters' => $group->sum('liters'),
-                'total_sales' => $group->sum('total'),
-                'rate' => $group->avg('rate'), // average rate if needed
-            ];
-        })->values();
+            })
+            ->values();
 
-
-        // Calculate totals
-        $totals = [
-            'regular_sales_count' => $regularSales->count(),
-            'credit_sales_count' => $creditSales->count(),
-            'total_liters' => $regularSales->sum(function ($sale) use ($productId) {
-                    $transactions = $sale->transactions ?? new Collection();
-                    if ($productId && $transactions->isNotEmpty()) {
-                        $transactions = $transactions->where('product_id', $productId);
-                    }
-                    return $transactions->sum('liters');
-                }) + $creditSales->sum('quantity'),
-            'total_sales' => $regularSales->sum('net_total') + $creditSales->sum('total'),
-            'regular_sales_total' => $regularSales->sum('net_total'),
-            'credit_sales_total' => $creditSales->sum('total'),
-            'total_discount' => $regularSales->sum('discount'),
-        ];
-
+        /**
+         * ----------------------------
+         * RESPONSE
+         * ----------------------------
+         */
         return response()->json([
             'success' => true,
-            'data' => $groupedData,
-            'totals' => $totals,
+            'data' => $grouped,
             'start_date' => $startDate,
             'end_date' => $endDate,
         ]);
-        
     }
 }

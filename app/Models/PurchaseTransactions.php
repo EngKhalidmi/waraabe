@@ -7,9 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class PurchaseTransactions extends Model
 {
+    use HasFactory;
+
     protected $table = 'returned_credits';
+
     protected $fillable = [
-        'customerID',
+        'customerID',   // supplier id
         'subTotal',
         'discount',
         'net_price',
@@ -21,25 +24,38 @@ class PurchaseTransactions extends Model
         'reference',
         'type',
         'depID',
-        'purchased',
+        'purchased',    // user id
     ];
-    // user relationship
-    public function user() {
-        return $this->belongsTo(User::class, 'purchased', 'id'); // Assuming 'userID' is the foreign key in the 'users' table
-    }
-    public function purchase()
-    {
-        return $this->hasMany(Purchases::class, 'transID', 'id');
-    }
 
-    public function customer() {
+    /* =========================
+       SUPPLIER (IMPORTANT FIX)
+    ========================== */
+    public function supplier()
+    {
         return $this->belongsTo(Suppliers::class, 'customerID', 'id');
     }
 
-    // department relationship
-    public function department() {
+    /* =========================
+       PURCHASED BY (USER)
+    ========================== */
+    public function purchasedByUser()
+    {
+        return $this->belongsTo(User::class, 'purchased', 'id');
+    }
+
+    /* =========================
+       DEPARTMENT
+    ========================== */
+    public function department()
+    {
         return $this->belongsTo(Departments::class, 'depID', 'id');
     }
+
+    /* =========================
+       PURCHASE ITEMS (if needed)
+    ========================== */
+    public function purchases()
+    {
+        return $this->hasMany(Purchases::class, 'transID', 'id');
+    }
 }
-
-

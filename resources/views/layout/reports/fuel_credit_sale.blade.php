@@ -155,144 +155,116 @@
         </div>
     </div>
 
-        
-        <!-- Hidden Print Area with Enhanced Design -->
+    <!-- Hidden Print Area with Enhanced Design -->
     <div class="d-none">
-    <div id="printArea">
-       
-        <div class="invoice-container" style="max-width: 800px; margin: 0 auto; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333;">
-            <!-- Header Section -->
-            <div class="invoice-header" style="text-align: center; padding: 20px 0; border-bottom: 2px solid #2c5aa0;">
-                <div style="display: flex; align-items: center; justify-content: center;">
-                    <!-- Increased logo size -->
-                    <div style="width: 120px; height: 120px; background: #2c5aa0; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; overflow: hidden;">
-                        <img src="{{ asset('/Logo/maal.png') }}" alt="Company Logo" width="110" height="110" style="object-fit: contain;">
+        <div id="printArea">
+            <div class="invoice-container" style="max-width: 800px; margin: 0 auto; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333;">
+                <!-- Header Section -->
+                <div class="invoice-header" style="text-align: center; padding: 20px 0; border-bottom: 2px solid #2c5aa0;">
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                        <div style="width: 120px; height: 120px; background: #2c5aa0; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; overflow: hidden;">
+                            <img src="{{ asset('/Logo/Logo1.png') }}" alt="Company Logo" width="110" height="110" style="object-fit: contain;">
+                        </div>
+                        <div>
+                            <h1 style="font-size: 28px; font-weight: bold; margin: 0; color: #2c5aa0;">WARAABE FUEL STATION</h1>
+                            <p style="margin: 5px 0; font-size: 14px;"></p>
+                            <p style="margin: 3px 0;">
+                                <i class="fas fa-phone-alt" style="color: #2c5aa0; margin-right: 5px;"></i>
+                                <strong>Tell:</strong> 713013 | 063-XXXXXXX | 063-XXXXX
+                            </p>
+                            <p style="margin: 5px 0; font-size: 14px;">
+                                <i class="fas fa-wallet" style="color: #2c5aa0; margin-right: 5px;"></i>
+                                <strong>Merchant Accounts: Zaad : XXXXXX &nbsp; | &nbsp; E-dahab : XXXXXX</strong>
+                            </p>
+                        </div>
                     </div>
+                </div>
+                
+                <!-- Invoice Info Section -->
+                <div class="invoice-info" style="display: flex; justify-content: space-between; padding: 15px; background: #f8f9fa; border-radius: 8px; margin-top: 10px;">
                     <div>
-                        <h1 style="font-size: 28px; font-weight: bold; margin: 0; color: #2c5aa0;">TABANTAABO FUEL STATION</h1>
-                        <p style="margin: 5px 0; font-size: 14px;"></p>
-                        
-                        <p style="margin: 3px 0;">
-                            <i class="fas fa-phone-alt" style="color: #2c5aa0; margin-right: 5px;"></i>
-                            <strong>Tell:</strong> 713013 | 063-4042473 | 063-4357338
-                        </p>
-                        
+                        <h3 style="margin: 0 0 10px 0; font-size: 18px; color: #2c5aa0;">INVOICE</h3>
                         <p style="margin: 5px 0; font-size: 14px;">
-                            <i class="fas fa-wallet" style="color: #2c5aa0; margin-right: 5px;"></i>
-                            <strong>Merchant Accounts:  Zaad : 400723 &nbsp; | &nbsp; E-dahab : 731684</strong>
+                            <strong>Date:</strong> <span id="invoiceDate">{{ now()->format('F j, Y') }}</span>
+                        </p>
+                        <p style="margin: 5px 0; font-size: 14px;">
+                            <strong>Invoice #:</strong> FC-<span id="invoiceNumber">{{ sprintf('%05d', rand(1000, 99999)) }}</span>
+                        </p>
+                    </div>
+                    
+                    <div style="text-align: right;">
+                        <h3 style="margin: 0 0 10px 0; font-size: 18px; color: #2c5aa0;" id="printCustomerName">Customer Name</h3>
+                        <p style="margin: 5px 0; font-size: 14px;">
+                            <i class="fas fa-calendar-alt" style="color: #2c5aa0; margin-right: 5px;"></i>
+                            <span id="printDateRange">Date Range</span>
                         </p>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Invoice Info Section -->
-            <div class="invoice-info" style="display: flex; justify-content: space-between; padding: 15px; background: #f8f9fa; border-radius: 8px; top: 10px;">
-                <div>
-                    <h3 style="margin: 0 0 10px 0; font-size: 18px; color: #2c5aa0;">INVOICE</h3>
-                    <p style="margin: 5px 0; font-size: 14px;">
-                        <strong>Date:</strong> <span id="invoiceDate">{{ now()->format('F j, Y') }}</span>
-                    </p>
-                    <p style="margin: 5px 0; font-size: 14px;">
-                        <strong>Invoice #:</strong> FC-<span id="invoiceNumber">{{ sprintf('%05d', rand(1000, 99999)) }}</span>
-                    </p>
+                
+                <!-- Items Table -->
+                <table class="invoice-table" style="width: 100%; border-collapse: collapse; margin-bottom: 25px;">
+                    <thead>
+                        <tr style="background: #2c5aa0; color: white;">
+                            <th style="text-align: left; padding: 12px; font-weight: bold;">Date</th>
+                            <th style="text-align: left; padding: 12px; font-weight: bold;">Item Name</th>
+                            <th style="text-align: left; padding: 12px; font-weight: bold;">Description</th>
+                            <th style="text-align: right; padding: 12px; font-weight: bold;">Qty (L)</th>
+                            <th style="text-align: right; padding: 12px; font-weight: bold;">Rate ($)</th>
+                            <th style="text-align: right; padding: 12px; font-weight: bold;">Amount ($)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="printTableBody">
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 20px; color: #6c757d;">
+                                No transaction data available
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr style="background: #f8f9fa; border-top: 2px solid #2c5aa0;">
+                            <td colspan="3" style="text-align: right; padding: 12px; font-weight: bold; border: none;">Total Liters</td>
+                            <td id="printTotalQuantity" style="text-align: right; padding: 12px; font-weight: bold; border: none;">0.00</td>
+                            <td style="text-align: right; padding: 12px; font-weight: bold; border: none;"></td>
+                            <td id="printGrandTotal" style="text-align: right; padding: 12px; font-weight: bold; border: none;">$0.00</td>
+                        </tr>
+                    </tfoot>
+                </table>
+                
+                <!-- Dynamic Summary Container - FIXED -->
+                <div style="display: flex; justify-content: flex-end; padding-right: 10px;">
+                    <div style="width: 300px;" class="summary-container">
+                        <!-- This will be dynamically populated by JavaScript -->
+                        <div style="display: flex; justify-content: space-between; border-bottom: 2px solid #2c5aa0; padding: 5px 0;">
+                            <span style="font-weight: bold;">Balance Due:</span>
+                            <span id="printCustomerBalance">$0.00</span>
+                        </div>
+                    </div>
                 </div>
                 
-                <div style="text-align: right;">
-                    <h3 style="margin: 0 0 10px 0; font-size: 18px; color: #2c5aa0;" id="printCustomerName">Customer Name</h3>
-                   
-                    <p style="margin: 5px 0; font-size: 14px;">
-                        <i class="fas fa-calendar-alt" style="color: #2c5aa0; margin-right: 5px;"></i>
-                        <span id="printDateRange">Date Range</span>
-                    </p>
-                </div>
-            </div>
-            
-            <!-- Items Table -->
-            <table class="invoice-table" style="width: 100%; border-collapse: collapse; margin-bottom: 25px;">
-                <thead>
-                    <tr style="background: #2c5aa0; color: white;">
-                        <th style="text-align: left; padding: 12px; font-weight: bold;">Date</th>
-                        <th style="text-align: left; padding: 12px; font-weight: bold;">Item Name</th>
-                        <th style="text-align: left; padding: 12px; font-weight: bold;">Description</th>
-                        <th style="text-align: right; padding: 12px; font-weight: bold;">Qty (L)</th>
-                        <th style="text-align: right; padding: 12px; font-weight: bold;">Rate ($)</th>
-                        <th style="text-align: right; padding: 12px; font-weight: bold;">Amount ($)</th>
-                    </tr>
-                </thead>
-                <tbody id="printTableBody">
-                    <!-- Data will be appended here by JS -->
-                    <tr>
-                        <td colspan="6" style="text-align: center; padding: 20px; color: #6c757d;">
-                            No transaction data available
-                        </td>
-                    </tr>
-                </tbody>
-                <!-- NEW: Summary Row at the bottom of the table -->
-                <tfoot>
-                    <tr style="background: #f8f9fa; border-top: 2px solid #2c5aa0;">
-                        <td colspan="3" style="text-align: right; padding: 12px; font-weight: bold; border: none;">Total Liters</td>
-                        <td id="printTotalQuantity" style="text-align: right; padding: 12px; font-weight: bold; border: none;">0.00</td>
-                        <td style="text-align: right; padding: 12px; font-weight: bold; border: none;"></td>
-                        <td id="printGrandTotal" style="text-align: right; padding: 12px; font-weight: bold; border: none;">$0.00</td>
-                    </tr>
-                </tfoot>
-            </table>
-            
-            <!-- Updated Summary Section to match the screenshot -->
-            <div style="display: flex; justify-content: flex-end; padding-right: 10px;">
-                <div style="width: 300px;">
-                    <!-- Previous Balance -->
-                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #dee2e6; padding: 5px 0;">
-                        <span style="font-weight: bold;">Previous Balance:</span>
-                        <span id="printPreviousBalance">$0.00</span>
+                <!-- Signature and Stamp Section -->
+                <div style="display: flex; justify-content: space-between; padding-top: 20px; border-top: 1px dashed #ccc;">
+                    <div style="text-align: center; width: 45%;">
+                        <div style="height: 1px; background: #ccc; margin: 15px 0;"></div>
+                        <p style="font-weight: bold; margin-bottom: 5px;">Signature</p>
                     </div>
                     
-                    <!-- Paid Amount -->
-                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #dee2e6; padding: 5px 0;">
-                        <span style="font-weight: bold;">Paid:</span>
-                        <span id="printPaidAmount">$0.00</span>
+                    <div style="text-align: center; width: 45%; margin-top: 10px;">
+                        <p style="font-weight: bold; margin-bottom: 5px;">Official Stamp</p>
+                        <p style="font-size: 12px; color: #666; margin: 0;">TABANTAABO FUEL STATION</p>
                     </div>
-                    
-                    <!-- Balance Due -->
-                    <div style="display: flex; justify-content: space-between; border-bottom: 2px solid #2c5aa0; padding: 5px 0;">
-                        <span style="font-weight: bold;">Balance Due:</span>
-                        <span id="printCustomerBalance">$0.00</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Signature and Stamp Section -->
-            <div style="display: flex; justify-content: space-between; padding-top: 20px; border-top: 1px dashed #ccc;">
-                <!-- Customer Signature -->
-                <div style="text-align: center; width: 45%;">
-                    <div style="height: 1px; background: #ccc; margin: 15px 0;"></div>
-                    <p style="font-weight: bold; margin-bottom: 5px;">Signature</p>
-                   
                 </div>
                 
-                <!-- Company Stamp -->
-                <div style="text-align: center; width: 45%; margin-top: 10px;">
-                    
-                    <p style="font-weight: bold; margin-bottom: 5px;">Official Stamp</p>
-                    <p style="font-size: 12px; color: #666; margin: 0;">TABANTAABO FUEL STATION</p>
-                </div>
-            </div>
-            
-            <!-- Footer Section -->
-            <div class="invoice-footer" style="margin-top: 30px; border-top: 2px solid #2c5aa0;">
-                <div style="text-align: center; margin-bottom: 20px; padding-top: 15px;">
-                    <p style="font-size: 16px; font-weight: bold; color: #2c5aa0;">
-                        <i class="fas fa-handshake" style="margin-right: 8px;"></i>Thank you for your business!
-                    </p>
+                <!-- Footer Section -->
+                <div class="invoice-footer" style="margin-top: 30px; border-top: 2px solid #2c5aa0;">
+                    <div style="text-align: center; margin-bottom: 20px; padding-top: 15px;">
+                        <p style="font-size: 16px; font-weight: bold; color: #2c5aa0;">
+                            <i class="fas fa-handshake" style="margin-right: 8px;"></i>Thank you for your business!
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
-
-
-
 
     <!-- Invoice Modal -->
     <div class="modal fade" id="invoiceModal" tabindex="-1" aria-hidden="true">
@@ -313,22 +285,6 @@
         </div>
     </div>
 
-    <!-- Loading Spinner -->
-    <div class="modal fade" id="loadingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content bg-transparent border-0 shadow-none">
-                <div class="modal-body text-center">
-                    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <p class="text-white mt-2">Processing your request...</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
     <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -346,168 +302,275 @@
             toastList.forEach(toast => toast.show());
         });
 
-        function showLoading() {
-            const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
-            loadingModal.show();
-            return loadingModal;
+        function showReportLoading() {
+            return Swal.fire({
+                title: 'Loading...',
+                text: 'Processing your request...',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => Swal.showLoading(),
+            });
         }
 
-
-    function getFuelCreditsReport() {
-    let client = document.getElementById('clientID').value;
-    let startDate = document.getElementById('startDate').value;
-    let endDate = document.getElementById('endDate').value;
-    let fuelType = document.getElementById('fuel_type').value;
-
-    if (!startDate || !endDate) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Date Range Required',
-            text: 'Please select both start date and end date.',
-            confirmButtonColor: '#0d6efd'
-        });
-        return;
-    }
-
-    const loadingModal = showLoading();
-    let visibleTableBody = document.getElementById('visibleTableBody');
-    let printTableBody = document.getElementById('printTableBody');
-    visibleTableBody.innerHTML = '';
-    printTableBody.innerHTML = '';
-
-    let url = `{{ route('fuel_credit.report') }}`;
-
-    axios.get(url, {
-        params: {
-            startDate: startDate,
-            endDate: endDate,
-            clientID: client,
-            fuel_type: fuelType,
-        }
-    })
-    .then(response => {
-        loadingModal.hide();
-
-        if (response.data.success) {
-            const reportData = response.data.data;
-            
-            // Store the report data globally for printing
-            window.currentReportData = reportData;
-
-            let allTransactions = [];
-            if (reportData.grouped_by_status) {
-                Object.values(reportData.grouped_by_status).forEach(group => {
-                    if (group.transactions && group.transactions.length > 0) {
-                        allTransactions = allTransactions.concat(group.transactions);
-                    }
-                });
-
-                if (allTransactions.length > 0) {
-                    allTransactions.forEach(transaction => {
-                        appendToTable(transaction, visibleTableBody, true);
-                        appendToPrintTable(transaction, printTableBody);
-                    });
-                    
-                    console.log('Report Data:', reportData);
-                    
-                    // ✅ Use the ADJUSTED values from response
-                    document.getElementById('printCustomerBalance').textContent = 
-                        "$" + parseFloat(reportData.customer_balance).toFixed(2);
-                    document.getElementById('printGrandTotal').textContent = 
-                        "$" + parseFloat(reportData.grand_total).toFixed(2);
-                        
-                    // Use the ADJUSTED paid amount (payment minus previous balance)
-                    let adjustedPaidAmount = reportData.total_payments_made_raw;
-                    document.getElementById('printPaidAmount').textContent = 
-                        "$" + parseFloat(adjustedPaidAmount).toFixed(2);
-                    
-                    // Use the ADJUSTED previous balance (will be 0 if payment covered it)
-                    let previousBalance = reportData.previous_balance;
-                    if (typeof previousBalance === 'string') {
-                        previousBalance = previousBalance.replace(/,/g, '');
-                    }
-                    document.getElementById('printPreviousBalance').textContent = 
-                        "$" + parseFloat(previousBalance).toFixed(2);
-
-                    // Set total quantity for print
-                    document.getElementById('printTotalQuantity').textContent = 
-                        parseFloat(reportData.total_quantity).toFixed(2);
-
-                    document.getElementById('visibleTotalQuantity').textContent = 
-                        parseFloat(reportData.total_quantity).toFixed(2) + ' L';
-                    document.getElementById('visibleGrandTotal').textContent = 
-                        "$" + parseFloat(reportData.grand_total).toFixed(2);
-
-                } else {
-                    showNoDataMessage(visibleTableBody, printTableBody);
-                }
-            } else {
-                showNoDataMessage(visibleTableBody, printTableBody);
+        function normalizeTransactions(transactions) {
+            if (Array.isArray(transactions)) {
+                return transactions;
             }
-        } else {
-            showNoDataMessage(visibleTableBody, printTableBody, response.data.message);
+            if (transactions && typeof transactions === 'object') {
+                return Object.values(transactions);
+            }
+            return [];
         }
-    })
-    .catch(error => {
-        loadingModal.hide();
-        console.error('Error:', error);
-        showNoDataMessage(visibleTableBody, printTableBody, 'Error fetching data');
-        Swal.fire({
-            icon: 'error',
-            title: 'Request Failed',
-            text: 'An error occurred while fetching the report data.',
-            confirmButtonColor: '#0d6efd'
-        });
-    });
-}
+
+        function getFuelCreditsReport() {
+            let client = document.getElementById('clientID').value;
+            let startDate = document.getElementById('startDate').value;
+            let endDate = document.getElementById('endDate').value;
+            let fuelType = document.getElementById('fuel_type').value;
+
+            if (!startDate || !endDate) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Date Range Required',
+                    text: 'Please select both start date and end date.',
+                    confirmButtonColor: '#0d6efd'
+                });
+                return;
+            }
+
+            const loading = showReportLoading();
+            let visibleTableBody = document.getElementById('visibleTableBody');
+            let printTableBody = document.getElementById('printTableBody');
+            visibleTableBody.innerHTML = '';
+            printTableBody.innerHTML = '';
+
+            let url = `{{ route('fuel_credit.report') }}`;
+
+            axios.get(url, {
+                params: {
+                    startDate: startDate,
+                    endDate: endDate,
+                    clientID: client,
+                    fuel_type: fuelType,
+                },
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            })
+            .then(response => {
+                if (response.data.success) {
+                    const reportData = response.data.data;
+                    
+                    // Store the report data globally for printing
+                    window.currentReportData = reportData;
+
+                    const transactions = normalizeTransactions(reportData.transactions);
+                    reportData.transactions = transactions;
+                    
+                    if (transactions.length > 0) {
+                        // Display all transactions
+                        transactions.forEach(transaction => {
+                            appendToTable(transaction, visibleTableBody, true);
+                            appendToPrintTable(transaction, printTableBody);
+                        });
+                        
+                        console.log('Report Data:', reportData);
+                        
+                        // Calculate total quantity
+                        let totalQuantity = transactions.reduce((sum, t) => sum + (parseFloat(t.quantity) || 0), 0);
+                        document.getElementById('printTotalQuantity').textContent = totalQuantity.toFixed(2);
+                        document.getElementById('visibleTotalQuantity').textContent = totalQuantity.toFixed(2) + ' L';
+                        document.getElementById('visibleGrandTotal').textContent = 
+                            "$" + parseFloat(reportData.grand_total || 0).toFixed(2);
+
+                    } else {
+                        showNoDataMessage(visibleTableBody, printTableBody);
+                    }
+                } else {
+                    showNoDataMessage(visibleTableBody, printTableBody, response.data.message || 'No data available');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const serverMessage = error.response?.data?.message;
+                showNoDataMessage(visibleTableBody, printTableBody, serverMessage || 'Error fetching data');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Request Failed',
+                    text: serverMessage || 'An error occurred while fetching the report data.',
+                    confirmButtonColor: '#0d6efd'
+                });
+            })
+            .finally(() => {
+                if (loading && typeof loading.close === 'function') {
+                    loading.close();
+                }
+                Swal.close();
+            });
+        }
 
         function appendToTable(data, tableBody, showActions) {
             const date = data.date ? new Date(data.date).toLocaleDateString('en-GB') : 'N/A';
+            const quantity = data.quantity ? parseFloat(data.quantity).toFixed(3) : '0.000';
+            const rate = data.total && data.quantity ? (parseFloat(data.total) / parseFloat(data.quantity)).toFixed(2) : '0.00';
+            const total = data.total ? parseFloat(data.total).toFixed(2) : '0.00';
+            const description = data.description || '';
 
             let row = document.createElement('tr');
             row.innerHTML = `
                 <td>${date}</td>
                 <td>${data.client || 'N/A'}</td>
                 <td>${data.product || 'N/A'}</td>
-                <td>${data.quantity || '0'}</td>
-                <td>$${data.rate ? parseFloat(data.rate).toFixed(2) : '0.00'}</td>
-                <td>$${data.total ? parseFloat(data.total).toFixed(2) : '0.00'}</td>
-                <td>${data.description || ''}</td>
+                <td>${quantity}</td>
+                <td>$${rate}</td>
+                <td>$${total}</td>
+                <td>${description}</td>
             `;
             tableBody.appendChild(row);
         }
-
 
         function showNoDataMessage(visibleTableBody, printTableBody, message = 'No data available for the selected filters') {
             visibleTableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted"><i class="fas fa-info-circle me-2"></i>${message}</td></tr>`;
             printTableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px;">${message}</td></tr>`;
             
-            // Reset totals - REMOVED printTotalInvoice since it doesn't exist anymore
+            // Reset totals
             document.getElementById('visibleTotalQuantity').textContent = '0.00 L';
             document.getElementById('visibleGrandTotal').textContent = '$0.00';
-            document.getElementById('printGrandTotal').textContent = '$0.00';
-            document.getElementById('printPaidAmount').textContent = '$0.00';
             document.getElementById('printTotalQuantity').textContent = '0.00';
-            // Remove this line: document.getElementById('printTotalInvoice').textContent = '$0.00';
+        }
+
+        function appendToPrintTable(data, tableBody) {
+            const date = data.date ? new Date(data.date).toLocaleDateString('en-GB') : 'N/A';
+            const quantity = data.quantity ? parseFloat(data.quantity).toFixed(3) : '0.000';
+            const rate = (data.total && data.quantity) ? (parseFloat(data.total) / parseFloat(data.quantity)).toFixed(2) : '0.00';
+            const total = data.total ? parseFloat(data.total).toFixed(2) : '0.00';
+            const description = data.description || '';
+
+            let row = document.createElement('tr');
+            row.style.borderBottom = '1px solid #f1f1f1';
+
+            row.innerHTML = `
+                <td style="padding-right:10px;padding-left:10px;">${date}</td>
+                <td style="font-weight:500;">${data.product || 'N/A'}</td>
+                <td>${description}</td>
+                <td style="text-align:right;">${quantity}</td>
+                <td style="text-align:right;">$${rate}</td>
+                <td style="padding-right:10px;padding-left:10px;text-align:right;font-weight:500;">$${total}</td>
+            `;
+
+            tableBody.appendChild(row);
+        }
+
+        function printReport() {
+            // Check if there's data to print
+            if (!window.currentReportData || !window.currentReportData.transactions || window.currentReportData.transactions.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'No Data to Print',
+                    text: 'Please generate a report first before printing.',
+                    confirmButtonColor: '#0d6efd'
+                });
+                return;
+            }
+
+            // Update invoice date and number
+            document.getElementById('invoiceDate').textContent = new Date().toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            document.getElementById('invoiceNumber').textContent = Math.floor(Math.random() * 90000) + 10000;
+            
+            // Update date range in the invoice
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            if (startDate && endDate) {
+                const start = new Date(startDate).toLocaleDateString();
+                const end = new Date(endDate).toLocaleDateString();
+                document.getElementById('printDateRange').textContent = `${start} to ${end}`;
+            }
+
+            // Update customer name if selected
+            const clientSelect = document.getElementById('clientID');
+            if (clientSelect.value) {
+                const selectedOption = clientSelect.options[clientSelect.selectedIndex];
+                document.getElementById('printCustomerName').textContent = selectedOption.text;
+            }
+
+            // Get values from the report data
+            const showPreviousBalanceSection = window.currentReportData?.show_previous_balance_section || false;
+            const previousBalance = window.currentReportData?.previous_balance || 0;
+            const paymentsMade = window.currentReportData?.payments_made || 0;
+            const balanceDue = window.currentReportData?.balance_due || window.currentReportData?.customer_balance || 0;
+            const grandTotal = window.currentReportData?.grand_total || 0;
+            const totalQuantity = window.currentReportData?.transactions?.reduce((sum, t) => sum + (parseFloat(t.quantity) || 0), 0) || 0;
+
+            // Format and display values
+            document.getElementById('printGrandTotal').textContent = "$" + grandTotal.toFixed(2);
+            document.getElementById('printTotalQuantity').textContent = totalQuantity.toFixed(2);
+            
+            // Conditionally show/hide the previous balance section - FIXED
+            const summaryContainer = document.querySelector('.summary-container');
+            if (summaryContainer) {
+                if (showPreviousBalanceSection) {
+                    // Show the full summary with previous balance and paid
+                    summaryContainer.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #dee2e6; padding: 5px 0;">
+                            <span style="font-weight: bold;">Previous Balance:</span>
+                            <span>$${previousBalance.toFixed(2)}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #dee2e6; padding: 5px 0;">
+                            <span style="font-weight: bold;">Paid:</span>
+                            <span>$${paymentsMade.toFixed(2)}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; border-bottom: 2px solid #2c5aa0; padding: 5px 0;">
+                            <span style="font-weight: bold;">Balance Due:</span>
+                            <span>$${balanceDue.toFixed(2)}</span>
+                        </div>
+                    `;
+                } else {
+                    // Show only the balance due
+                    summaryContainer.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; border-bottom: 2px solid #2c5aa0; padding: 5px 0;">
+                            <span style="font-weight: bold;">Balance Due:</span>
+                            <span>$${balanceDue.toFixed(2)}</span>
+                        </div>
+                    `;
+                }
+            }
+
+            // Print
+            const printContents = document.getElementById('printArea').innerHTML;
+            const originalContents = document.body.innerHTML;
+            
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+            location.reload();
         }
 
         function viewInvoice(saleId) {
-            const loadingModal = showLoading();
+            const loading = showReportLoading();
             axios.get(`/fuel-credit-sales/${saleId}/invoice`)
                 .then(response => {
-                    loadingModal.hide();
                     document.getElementById('invoiceContent').innerHTML = response.data;
-                    new bootstrap.Modal(document.getElementById('invoiceModal')).show();
+                    bootstrap.Modal.getOrCreateInstance(document.getElementById('invoiceModal')).show();
                 })
                 .catch(error => {
-                    loadingModal.hide();
                     console.error('Error:', error);
                     Swal.fire({
                         icon: 'error',
                         title: 'Error Loading Invoice',
-                        text: 'Could not load the invoice details.',
+                        text: error.response?.data?.message || 'Could not load the invoice details.',
                         confirmButtonColor: '#0d6efd'
                     });
+                })
+                .finally(() => {
+                    if (loading && typeof loading.close === 'function') {
+                        loading.close();
+                    }
+                    Swal.close();
                 });
         }
 
@@ -583,8 +646,6 @@
             doc.save('FuelCreditsReport.pdf');
         }
 
-  
-
         function generateInvoice() {
             // Get filter values
             let client = document.getElementById('clientID').value;
@@ -607,7 +668,7 @@
             
             // Show success message and offer to print
             setTimeout(() => {
-                if (document.getElementById('printTableBody').children.length > 0) {
+                if (window.currentReportData && window.currentReportData.transactions && window.currentReportData.transactions.length > 0) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Report Generated',
@@ -624,130 +685,6 @@
                 }
             }, 1000);
         }
-        
-        // Function to ensure minimum 15 rows per page
-        function ensureMinimumRows(tableBody, data) {
-            // Clear existing content
-            tableBody.innerHTML = '';
-            
-            // Add actual data rows
-            data.forEach(item => {
-                appendToPrintTable(item, tableBody);
-            });
-            
-            // Calculate how many empty rows we need to add
-            const actualRows = data.length;
-            const emptyRowsNeeded = Math.max(0, 15 - actualRows);
-            
-            // Add empty rows to meet the minimum requirement
-            for (let i = 0; i < emptyRowsNeeded; i++) {
-                let emptyRow = document.createElement('tr');
-                emptyRow.style.borderBottom = '1px solid #f1f1f1';
-                emptyRow.innerHTML = `
-                    <td style="">&nbsp;</td>
-                    <td style=""></td>
-                    <td style=""></td>
-                    <td style=" text-align: right;"></td>
-                    <td style=" text-align: right;"></td>
-                    <td style="text-align: right;"></td>
-                `;
-                tableBody.appendChild(emptyRow);
-            }
-        }
-
-        // Enhanced function to populate the print table
-        function appendToPrintTable(data, tableBody) {
-            const date = data.date ? new Date(data.date).toLocaleDateString('en-GB') : 'N/A';
-
-            let row = document.createElement('tr');
-            row.style.borderBottom = '1px solid #f1f1f1';
-            row.innerHTML = `
-                <td style="padding-right: 10px; padding-left: 10px;">${date}</td>
-                <td style=" font-weight: 500;">${data.product || 'N/A'}</td>
-                <td style="">${data.description || ''}</td>
-                <td style="text-align: right;">${data.quantity || '0'}</td>
-                <td style=" text-align: right;">$${data.rate ? parseFloat(data.rate).toFixed(2) : '0.00'}</td>
-                <td style="padding-right: 10px; padding-left: 10px; text-align: right; font-weight: 500;">$${data.total ? parseFloat(data.total).toFixed(2) : '0.00'}</td>
-            `;
-            tableBody.appendChild(row);
-        }
-
-        function printReport() {
-    // Check if there's data to print
-    if (
-        document.getElementById('printTableBody').children.length === 0 ||
-        document.getElementById('printTableBody').children[0].children.length === 1
-    ) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'No Data to Print',
-            text: 'Please generate a report first before printing.',
-            confirmButtonColor: '#0d6efd'
-        });
-        return;
-    }
-
-    // Update invoice date and number
-    document.getElementById('invoiceDate').textContent = new Date().toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-    });
-    
-    document.getElementById('invoiceNumber').textContent = {{ sprintf('%05d', rand(1000, 99999)) }};
-    
-    // Update date range in the invoice
-    const startDate = document.getElementById('startDate').value;
-    const endDate = document.getElementById('endDate').value;
-    if (startDate && endDate) {
-        const start = new Date(startDate).toLocaleDateString();
-        const end = new Date(endDate).toLocaleDateString();
-        document.getElementById('printDateRange').textContent = `${start} to ${end}`;
-    }
-
-    // Update customer name if selected
-    const clientSelect = document.getElementById('clientID');
-    if (clientSelect.value) {
-        const selectedOption = clientSelect.options[clientSelect.selectedIndex];
-        document.getElementById('printCustomerName').textContent = selectedOption.text;
-    }
-
-    // Get the values directly from the elements that were populated by getFuelCreditsReport
-    const customerBalanceText = document.getElementById('printCustomerBalance').textContent;
-    const grandTotalText = document.getElementById('printGrandTotal').textContent;
-    const grandPaidAmount = document.getElementById('printPaidAmount').textContent;
-    const previousBalanceText = document.getElementById('printPreviousBalance').textContent;
-    // const printTotalInvoiceText = document.getElementById('printTotalInvoice').textContent;
-    const totalQuantityText = document.getElementById('printTotalQuantity').textContent;
-    
-    console.log('grandPaidAmount raw:', grandPaidAmount);
-    console.log('grandPaidAmount cleaned:', grandPaidAmount.replace(/[$,]/g, ''));
-    console.log('parseFloat result:', parseFloat(grandPaidAmount.replace(/[$,]/g, '')));
-
-    // Parse the values correctly (handle commas and dollar signs)
-    const customerBalance = parseFloat(customerBalanceText.replace(/[$,]/g, '')) || 0;
-    const grandTotal = parseFloat(grandTotalText.replace(/[$,]/g, '')) || 0;
-    const PaidAmount = parseFloat(grandPaidAmount.replace(/[$,]/g, '')) || 0;
-    // const totalInvoice = parseFloat(printTotalInvoiceText.replace(/[$,]/g, '')) || 0;
-    const previousBalance = parseFloat(previousBalanceText.replace(/[$,]/g, '')) || 0;
-    
-    // Format and display the values
-    document.getElementById('printCustomerBalance').textContent = "$" + customerBalance.toFixed(2);
-    document.getElementById('printGrandTotal').textContent = "$" + grandTotal.toFixed(2);
-    document.getElementById('printPaidAmount').textContent = "$" + PaidAmount.toFixed(2);
-    // document.getElementById('printTotalInvoice').textContent = "$" + totalInvoice.toFixed(2);
-    document.getElementById('printPreviousBalance').textContent = "$" + previousBalance.toFixed(2);
-    document.getElementById('printTotalQuantity').textContent = totalQuantityText; // Keep the original format
-
-    // Print
-    const printContents = document.getElementById('printArea').innerHTML;
-    const originalContents = document.body.innerHTML;
-    
-    document.body.innerHTML = printContents;
-    window.print();
-    document.body.innerHTML = originalContents;
-    location.reload();
-}
     </script>
 
     <style>
@@ -776,15 +713,11 @@
         .toast {
             border-radius: 8px;
         }
-        #loadingModal .modal-content {
-            background: transparent;
-            border: none;
-        }
         .table-hover tbody tr:hover {
             background-color: rgba(13, 110, 253, 0.05);
         }
         
-           /* Print-specific styles */
+        /* Print-specific styles */
         @media print {
             @page {
                 margin: 1cm;
@@ -818,32 +751,30 @@
             .invoice-header, 
             .invoice-table thead {
                 -webkit-print-color-adjust: exact;
-                color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+        
+        @media print {
+            @page {
+                size: portrait;
+                margin: 0;
+            }
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            .invoice-container {
+                margin: 0;
+                padding: 15px;
+                width: 100%;
+            }
+            .page-break {
+                page-break-after: always;
+            }
+            .invoice-table tbody tr {
+                height: 20px;
             }
         }
     </style>
-     <style>
-            @media print {
-                @page {
-                    size: portrait;
-                    margin: 0; /* Remove margins for printing */
-                }
-                body {
-                    margin: 0;
-                    padding: 0;
-                }
-                .invoice-container {
-                    margin: 0;
-                    padding: 15px;
-                    width: 100%;
-                }
-                .page-break {
-                    page-break-after: always;
-                }
-                /* Ensure minimum 15 rows per page */
-                .invoice-table tbody tr {
-                    height: 20px; /* Fixed row height for consistent pagination */
-                }
-            }
-        </style>
 @endsection

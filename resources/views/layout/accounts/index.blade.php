@@ -109,6 +109,10 @@
 
 <script>
     $(document).ready(function() {
+        if (!navigator.onLine && window.StoreManagementFinanceModule) {
+            window.StoreManagementFinanceModule.mountListPage('cashAccount');
+            return;
+        }
 
     // Initialize the DataTable
     let table = $('#accountTable').DataTable({
@@ -122,6 +126,9 @@
                 d.account = $('#name').val();
             },
             dataSrc: function (json) {
+                if (window.StoreManagementFinanceModule) {
+                    window.StoreManagementFinanceModule.cacheList('cashAccount', json.data || []);
+                }
                 console.log("AJAX response received:", json);
                 return json.data;
             },

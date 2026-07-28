@@ -155,80 +155,11 @@
     </div>
 
     <script>
-        $(document).ready(function() {
-            // Initialize the DataTable
-            let table = $('#fuelCreditSalesTable').DataTable({
-                processing: true,
-                serverSide: true,
-                lengthMenu: [10, 25, 50],
-                ajax: {
-                    url: "{{ route('fuel.sales.credit.index') }}",
-                    type: 'GET',
-                    data: function(d) {
-                        d.customer_name = $('#customer_name').val();
-                        d.fuel_type = $('#fuel_type').val();
-                        d.status = $('#status').val();
-                        d.startDate = $('#startDate').val();
-                        d.endDate = $('#endDate').val();
-                    }
-                },
-                columns: [{
-                        data: 'id',
-                        name: 'id'
-                    },
-                    {
-                        data: 'customer_name',
-                        name: 'customer_name'
-                    },
-                    {
-                        data: 'customer_phone',
-                        name: 'customer_phone'
-                    },
-                    {
-                        data: 'fuel_type',
-                        name: 'fuel_type'
-                    },
-                    {
-                        data: 'quantity',
-                        name: 'quantity'
-                    },
-                    {
-                        data: 'rate',
-                        name: 'rate'
-                    },
-                    {
-                        data: 'total',
-                        name: 'total'
-                    },
-                    {
-                        data: 'status',
-                        name: 'status',
-                        orderable: false,
-                        searchable: false
-                    },
-                    {
-                        data: 'date',
-                        name: 'date'
-                    },
-                    {
-                        data: 'created_at',
-                        name: 'created_at'
-                    }
-                ],
-                createdRow: function(row, data, dataIndex) {
-                    // Add any custom row styling if needed
-                    if (data.status.includes('badge-danger')) {
-                        $(row).addClass('bg-light-danger');
-                    } else if (data.status.includes('badge-warning')) {
-                        $(row).addClass('bg-light-warning');
-                    }
-                }
-            });
-
-            // Filter search button click
-            $('#searchBtn').click(function() {
-                table.draw();
-            });
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.StoreManagementFuelSalesModule && typeof window.StoreManagementFuelSalesModule.boot === 'function') {
+                window.StoreManagementFuelSalesModule.boot();
+            }
         });
     </script>
 @endsection
+

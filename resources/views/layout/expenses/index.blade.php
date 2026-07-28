@@ -128,6 +128,10 @@
 
     <script>
         $(document).ready(function() {
+            if (!navigator.onLine && window.StoreManagementFinanceModule) {
+                window.StoreManagementFinanceModule.mountListPage('expenses');
+                return;
+            }
 
             // Initialize the DataTable
             let table = $('#expenseTable').DataTable({
@@ -144,6 +148,9 @@
                         d.endDate = $('#endDate').val();
                     },
                     dataSrc: function(json) {
+                        if (window.StoreManagementFinanceModule) {
+                            window.StoreManagementFinanceModule.cacheList('expenses', json.data || []);
+                        }
                         console.log("AJAX response received:", json);
                         return json.data;
                     },

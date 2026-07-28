@@ -1,10 +1,10 @@
 <div class="header">
-    <div class="header-left active">
+    <div class="header-left active" style="padding-bottom:50px; margin-top:25px">
         <a href="{{ route('dashboard') }}" class="logo">
-            <img style="width: 300px;"  src="{{ asset('Logo/mainLogo.jpg') }}" alt="">
+            <img style="width: 130px; " height="auto" src="{{ asset('Logo/Logo1.png') }}" alt="">
         </a>
         <a href="{{ route('dashboard') }}" class="logo-small">
-            <img  src="{{ asset('Logo/maal.png') }}" style="width: 300px;" alt="">
+            <img  src="{{ asset('Logo/Logo1.png') }}" style="width: 130px; " height="auto" alt="">
         </a>
         <a id="toggle_btn" href="javascript:void(0);">
         </a>

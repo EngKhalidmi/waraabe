@@ -133,6 +133,11 @@
     <script>
         $(document).ready(function() {
             const userRole = "{{ auth()->user()->role ?? '' }}"; 
+            const customerOfflineModule = window.StoreManagementCustomerOfflineModule || window.StoreManagementCustomerModule || {};
+
+            if (!navigator.onLine && customerOfflineModule.isCustomerIndexPage && customerOfflineModule.isCustomerIndexPage()) {
+                return;
+            }
         
             // Initialize the DataTable
             let table = $('#clientTable').DataTable({
@@ -150,6 +155,11 @@
                     },
                     dataSrc: function(json) {
                         console.log("AJAX response received:", json);
+                        if (customerOfflineModule.cacheServerRows) {
+                            customerOfflineModule.cacheServerRows(json.data || []).catch(function(error) {
+                                console.warn('Unable to cache customer rows for offline use:', error);
+                            });
+                        }
                         return json.data;
                     },
                     error: function(xhr, error, thrown) {

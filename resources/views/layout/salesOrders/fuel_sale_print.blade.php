@@ -6,20 +6,21 @@
     <title>Fuel Sale Receipt - Transaction #{{ $fuelSale->id }}</title>
     <style>
         @media print {
-            body * {
-                visibility: hidden;
-            }
-            .print-section, .print-section * {
-                visibility: visible;
-            }
-            .print-section {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-            }
             .no-print {
                 display: none !important;
+            }
+            .print-btn {
+                display: none !important;
+            }
+            body {
+                background: #fff;
+                margin: 0;
+                padding: 0;
+            }
+            .print-container {
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
             }
         }
         
@@ -210,9 +211,9 @@
     <div class="print-container">
         <!-- Header -->
         <div class="header">
-            <div class="company-name">TABANTAABO PETROLEUM</div>
-            <div class="company-address">BURAO SOMALILAND</div>
-            <div class="company-contact">Phone: 713013 | 063-4042473 | 063-4357338</div>
+            <div class="company-name">WARAABE FUEL STATION</div>
+            <div class="company-address">BERBERA SOMALILAND</div>
+            <div class="company-contact">Phone: XXXXX | 063-XXXXX | 063-XXXXXX</div>
             <div class="receipt-title">FUEL SALE ENTRY</div>
         </div>
 
@@ -237,12 +238,13 @@
         </div>
 
         <!-- Cash Sales -->
-        @if($cashTransactions->count() > 0)
+        @if($cashDisplayRows->count() > 0)
         <div class="section-title">CASH SALES</div>
         <div class="cash-transactions">
             <table class="products-table">
                 <thead>
                     <tr>
+                        <th>DP Phase</th>
                         <th>Product</th>
                         <th>Previous Reading</th>
                         <th>Current Reading</th>
@@ -252,15 +254,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @php
-                        $cashTotal = 0;
-                    @endphp
-                    @foreach($cashTransactions as $transaction)
+                    @foreach($cashDisplayRows as $transaction)
                         @php
-                            $amount = $transaction->liters * $transaction->rate;
-                            $cashTotal += $amount;
+                            $amount = $transaction->total ?? ($transaction->liters * $transaction->rate);
                         @endphp
                         <tr>
+                            <td>{{ $transaction->dphase ?? 'N/A' }}</td>
                             <td>{{ $transaction->product->name ?? 'N/A' }}</td>
                             <td>{{ number_format($transaction->previous_reading, 2) }}</td>
                             <td>{{ number_format($transaction->current_reading, 2) }}</td>
@@ -272,7 +271,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="5" style="text-align: right; font-weight: bold;">Cash Total:</td>
+                        <td colspan="6" style="text-align: right; font-weight: bold;">Cash Total:</td>
                         <td style="font-weight: bold;">{{ number_format($cashTotal, 2) }}</td>
                     </tr>
                 </tfoot>
@@ -296,18 +295,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @php
-                        $creditTotal = 0;
-                    @endphp
                     @foreach($creditSales as $credit)
                         @php
-                            $amount = $credit->liters * $credit->rate;
-                            $creditTotal += $amount;
+                            $liters = $credit->quantity ?? 0;
+                            $amount = $credit->total ?? ($liters * $credit->rate);
                         @endphp
                         <tr>
-                            <td>{{ $credit->customer->name ?? 'N/A' }}</td>
+                            <td>{{ $credit->customer->customer_name ?? 'N/A' }}</td>
                             <td>{{ $credit->product->name ?? 'N/A' }}</td>
-                            <td>{{ number_format($credit->liters, 2) }} L</td>
+                            <td>{{ number_format($liters, 2) }} L</td>
                             <td>{{ number_format($credit->rate, 3) }}</td>
                             <td>{{ number_format($amount, 2) }}</td>
                             <td>{{ $credit->description ?? '-' }}</td>

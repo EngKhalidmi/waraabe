@@ -106,7 +106,7 @@
 </div>
 
 <div class="table-responsive">
-<table class="table" id="purchaseDate">
+<table class="table" id="purchaseDate" data-product-page="index">
 <thead>
 <tr class="bg-primary">
 <th class="text-white">#</th>
@@ -131,75 +131,13 @@
 </div>
 
 <script>
-    $(document).ready(function() {
-
-    // Initialize the DataTable
-    let table = $('#purchaseDate').DataTable({
-        processing: true,
-        serverSide: true,
-        lengthMenu: [10, 25, 50],
-        ajax: {
-            url: "{{ route('products') }}",
-            type: 'GET',
-            data: function (d) {
-                d.name = $('#name').val();
-                d.sku_code = $('#sku_code').val();
-                d.type = $('#type').val();
-                d.quantity = $('#quantity').val();
-                d.supplier = $('#supplier').val();
-            },
-            dataSrc: function (json) {
-                console.log("AJAX response received:", json);
-                return json.data;
-            },
-            error: function (xhr, error, thrown) {
-                console.error("AJAX Error:", xhr.responseText);
-            }
-        },
-        columns: [
-            { data: 'id', name: 'id' },
-            { data: 'name', name: 'name' },
-            { data: 'sku_code', name: 'sku_code' },
-            { data: 'type', name: 'type' },
-            { data:'status', name:'status', render: function(data) {
-                    return data == 1? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Disabled</span>';
-                } 
-            },
-            // { data: 'status', name: 'status' },
-            { data: 'quantity', name: 'quantity' },
-            { data: 'actual_price', name: 'actual_price' },
-            { data: 'selling_price', name: 'selling_price' },
-            { data: 'created_at', name: 'created_at' },
-            {
-                data: 'action',
-                name: 'action',
-                orderable: false,
-                searchable: false,
-                render: function (data, type, row) {
-                    let deleteUrl = `{{ url('products/products') }}/${data}`;
-                    let editUrl = `{{ url('products/products/${data}/edit') }}`;
-                    return `
-                    <a href="${editUrl}" class="btn btn-rounded btn-sm bg-outline-light me-2"><i class="fas fa-edit"></i></a>
-                       <form id="deleteForm-${data}" action="${deleteUrl}" method="POST" style="display:inline;">
-                           @csrf
-                           @method('DELETE')
-                           <button style="float:right !important;" type="button" class="btn btn-rounded btn-sm bg-outline-light me-2" onclick="confirmDelete(${data})">
-                               <i class="fas fa-trash"></i>
-                           </button>
-                       </form>`;
-                }
-            }
-        ]
+    document.addEventListener('DOMContentLoaded', function () {
+        if (window.StoreManagementProductModule && typeof window.StoreManagementProductModule.boot === 'function') {
+            window.StoreManagementProductModule.boot();
+        }
     });
 
-    // Filter search button click
-    $('#searchBtn').click(function() {
-        table.draw();
-    });
-});
-
-function confirmDelete(catId) {
-        // Trigger SweetAlert
+    function confirmDelete(catId) {
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -210,7 +148,6 @@ function confirmDelete(catId) {
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                // If confirmed, submit the form
                 document.getElementById('deleteForm-' + catId).submit();
             }
         });

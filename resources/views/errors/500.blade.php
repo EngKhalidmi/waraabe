@@ -54,7 +54,7 @@
 <p class="h4 font-weight-normal">The page you requested was not found.</p>
 <a href="{{route('dashboard')}}" class="btn btn-primary">Back to Home</a>
 <hr>
-<p class="mb-0">Powered by <a href="https://taamsolutions.net" target="_blank">Taam Solutions</a></p>
+<p class="mb-0">Powered by <a href="https://saacid.taamsolutions.net" target="_blank">Taam Solutions</a></p>
 </div>
 </div>
 

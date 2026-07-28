@@ -10,6 +10,8 @@
     <meta name="robots" content="noindex, nofollow">
     <title>@yield('title', 'Saacid - Dashboard')</title>
 
+    @include('partials.pwa-head')
+
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('/Logo/icon.png') }}">
 
     <link rel="stylesheet" href="{{ asset('/assets/css/bootstrap.min.css') }}">

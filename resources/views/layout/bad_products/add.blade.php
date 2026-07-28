@@ -57,7 +57,7 @@
             </div>
             <div class="card">
                 <div class="card-body">
-                    <form id="PurchaseForm" method="POST" action="{{ route("bad_products.store") }}">
+                    <form id="PurchaseForm" method="POST" action="{{ route("bad_products.store") }}" data-bad-product-form="create">
                         @csrf
                         
                         <div class="row">
@@ -143,79 +143,10 @@
     </style>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-
-
-    </script>
-
-    
-    <script>
-        const productSearchInput = document.getElementById('inventorySearch');
-        const productDropdown = document.getElementById('productDropdown');
-        
-        productSearchInput.addEventListener('input', function() {
-            const query = productSearchInput.value;
-
-            if (query.length >= 2) {
-                productDropdown.innerHTML = `
-                <div class="dropdown-item text-center">
-                    <i class="fa fa-spinner fa-spin " style="margin-right:8px !important;"></i> Searching...
-                </div>
-            `;
-                axios.get(`{{ route('products.searchProduct') }}?query=${query}`)
-                    .then(response => {
-                        productDropdown.innerHTML = '';
-                        if (response.data.length > 0) {
-                            response.data.forEach(product => {
-                                const productOption = document.createElement('a');
-                                productOption.className = 'dropdown-item';
-                                productOption.textContent = product.name;
-                                productOption.href = '#';
-                                productOption.dataset.id = product.id;
-                                productOption.dataset.selling_price = product.selling_price;
-                                productOption.addEventListener('click', function(e) {
-                                    e.preventDefault();
-                                    selectproduct(product);
-                                });
-
-                                productDropdown.appendChild(productOption);
-                            });
-
-                            productDropdown.style.display = 'block'; // Show the dropdown
-                        } else {
-                            productDropdown.innerHTML = `
-                            <div class="dropdown-item text-center text-muted">
-                                Lab Doesn't Exist....
-                            </div>
-                        `;
-                            productDropdown.style.display = 'block';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching products:', error);
-                        productDropdown.style.display = 'none'; // Hide on error
-                    });
-            } else {
-                productDropdown.style.display = 'none'; // Hide if query is too short
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.StoreManagementInventoryModule && typeof window.StoreManagementInventoryModule.boot === 'function') {
+                window.StoreManagementInventoryModule.boot();
             }
         });
-
-        // Hide the dropdown when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!productSearchInput.contains(event.target) && !productDropdown.contains(event.target)) {
-                productDropdown.style.display = 'none';
-            }
-        });
-
-        // Function to select a product from the dropdown
-        function selectproduct(product) {
-            productSearchInput.value = product.name;
-          
-            document.getElementById('proID').value = product.id;
-            productDropdown.style.display = 'none';
-        }
-
-
-
-
     </script>
 @endsection

@@ -43,7 +43,7 @@
             @endif
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('opening_inventory.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('opening_inventory.store') }}" method="POST" enctype="multipart/form-data" data-opening-inventory-form="create">
                         @csrf
                         <div class="row">
                             <div class="col-lg-4 col-sm-6 col-12">

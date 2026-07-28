@@ -138,6 +138,10 @@
 
     <script>
         $(document).ready(function() {
+            if (!navigator.onLine && window.StoreManagementFinanceModule) {
+                window.StoreManagementFinanceModule.mountListPage('salesmanPayment');
+                return;
+            }
             // Initialize the DataTable
             let table = $('#creditTable').DataTable({
                 processing: true,
@@ -154,6 +158,9 @@
 
                     },
                     dataSrc: function(json) {
+                        if (window.StoreManagementFinanceModule) {
+                            window.StoreManagementFinanceModule.cacheList('salesmanPayment', json.data || []);
+                        }
                         console.log("AJAX response received:", json);
                         return json.data;
                     },

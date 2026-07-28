@@ -119,8 +119,8 @@
             <div class="centered-form-card card rounded-3 text-black">
                 <div class="card-body p-md-5 mx-md-4">
                     <div class="text-center">
-                        <img src="{{asset('/Logo/maal.png')}}"
-                          style="width: 150px; height: 150px;" alt="logo">
+                        <img src="{{asset('/Logo/Logo1.png')}}"
+                          style="width: 200px; height: 150px;" alt="logo">
                     </div>
       
                     <form method="POST" action="{{ route('login') }}">
@@ -147,7 +147,7 @@
                         <center>
                             <!--<img src="{{asset('Logo/logo.jpg')}}" alt="" width="150">-->
                             <hr>
-                            <p class="small text-muted">Powered By <a target="_blank" href="https://taamsolutions.net">Taam Solutions</a> - All Rights Reserved | {{date('Y')}} <br> <span style="font-family: 'JetBrains Mono'">Saacid V2.0 - For Tabantaabo Management System</span></p>
+                            <p class="small text-muted">Powered By <a target="_blank" href="https://saacid.taamsolutions.net">Taam Solutions</a> - All Rights Reserved | {{date('Y')}} <br> <span style="font-family: 'JetBrains Mono'">Saacid V2.0 - For Waraabe Management System</span></p>
                         </center>
                     </form>
                 </div>

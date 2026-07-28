@@ -80,13 +80,13 @@
                                     <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
                                         <!-- Logo -->
                                         <div style="width: 120px; height: 120px; background: #2c5aa0; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; overflow: hidden;">
-                                            <img src="{{ asset('/Logo/maal.png') }}" alt="Company Logo" width="110" height="110" style="object-fit: contain;">
+                                            <img src="{{ asset('/Logo/Logo1.png') }}" alt="Company Logo" width="110" height="110" style="object-fit: contain;">
                                         </div>
                                         <div>
-                                            <h1 style="font-size: 28px; font-weight: bold; margin: 0; color: #2c5aa0;">TABANTAABO FUEL STATION BURAO</h1>
+                                            <h1 style="font-size: 28px; font-weight: bold; margin: 0; color: #2c5aa0;">WARAABE FUEL STATION</h1>
                                             <p style="margin: 5px 0; font-size: 14px;">
-                                                Kaalinta Shiidaalka Tabantaabo<br>
-                                                Burco Somaliland
+                                                Kaalinta Shiidaalka Waraabe<br>
+                                                Berbera Somaliland
                                             </p>
                                             
                                          
@@ -258,7 +258,7 @@
                         data.forEach(item => {
                             appendToTable(item, visibleTableBody, serialNumber);
                             appendToTable(item, printTableBody, serialNumber);
-                            totalBalance += parseFloat(item.balance) || 0;
+                           totalBalance += parseMoney(item.balance);
                             serialNumber++;
                         });
                     } else {
@@ -272,8 +272,8 @@
                     }
 
                     // Update total fields
-                    document.getElementById('visibleTotalBalance').innerHTML = '<strong>$' + totalBalance.toFixed(2) + '</strong>';
-                    document.getElementById('printTotalBalance').textContent = '$' + totalBalance.toFixed(2);
+                 document.getElementById('visibleTotalBalance').innerHTML = '<strong>$' + formatMoney(totalBalance) + '</strong>';
+document.getElementById('printTotalBalance').textContent = '$' + formatMoney(totalBalance);
                 })
                 .catch(error => {
                     loading.close();
@@ -296,6 +296,23 @@
                     printTableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">' + errorMessage + '</td></tr>';
                 });
         }
+            
+            
+            function parseMoney(value) {
+    if (value === null || value === undefined || value === '') return 0;
+
+    return parseFloat(
+        value.toString().replace(/,/g, '')
+    ) || 0;
+}
+
+function formatMoney(value) {
+    return parseMoney(value).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+}
+
 
         function appendToTable(data, tableBody, serialNumber) {
             if (!tableBody) return;
@@ -305,7 +322,7 @@
                 '<td style="padding: 10px;">' + (data.name || '') + '</td>' +
                 '<td style="padding: 10px;">' + (data.phone || '') + '</td>' +
                 '<td style="padding: 10px;">' + (data.address || '') + '</td>' +
-                '<td style="padding: 10px; text-align: right; font-weight: 500;">$' + (parseFloat(data.balance || 0).toFixed(2)) + '</td>' +
+               '<td style="padding: 10px; text-align: right; font-weight: 500;">$' + formatMoney(data.balance) + '</td>' +
                 '</tr>';
 
             tableBody.innerHTML += tableRow;

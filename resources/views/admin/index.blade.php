@@ -7,71 +7,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0.0/jquery.counterup.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-        {{-- Month Filter --}}
-       {{-- Month and Year Filter --}}
 <div class="row mb-3">
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">Filter by Month & Year</h5>
-                    <div class="d-flex gap-2">
-                        {{-- Year Filter --}}
-                        <div class="dropdown">
-                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="yearDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-calendar me-2"></i>
-                                {{ $data['currentYear'] }}
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="yearDropdown">
-                                @foreach($data['availableYears'] as $year)
-                                    <li>
-                                        <a class="dropdown-item {{ $data['currentYear'] == $year ? 'active' : '' }}" 
-                                           href="?year={{ $year }}{{ $data['selectedMonth'] ? '&month='.$data['selectedMonth'] : '' }}">
-                                            {{ $year }}
-                                        </a>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                        @if(auth()->user()->role === 'admin')
-                        <form method="GET" action="{{ route('dashboard') }}">
-                            <select  class="btn btn-primary btn-sm dropdown-toggle " style="padding-bottom: 7px " data-bs-toggle="dropdown" name="depID" onchange="this.form.submit()">
-                                <option value="">All Departments</option>
-                                @foreach($departments as $dep)
-                                    <option value="{{ $dep->id }}"
-                                        {{ request('depID') == $dep->id ? 'selected' : '' }}>
-                                        {{ $dep->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </form>
-                        @endif
-
-                        {{-- Month Filter --}}
-                        <div class="dropdown mb-3">
-                            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="monthDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-calendar-alt me-2"></i>
-                                {{ $data['selectedMonthName'] }}
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="monthDropdown">
-                                @for($month = 1; $month <= 12; $month++)
-                                    <li>
-                                        <a class="dropdown-item {{ $data['selectedMonth'] == $month ? 'active' : '' }}" 
-                                           href="?month={{ $month }}{{ $data['currentYear'] ? '&year='.$data['currentYear'] : '' }}">
-                                            {{ date('F', mktime(0, 0, 0, $month, 1)) }}
-                                        </a>
-                                    </li>
-                                @endfor
-                            </ul>
-                        </div>
-                        
-                        
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div>
+                        <h5 class="card-title mb-0">Filter by Month & Year</h5>
+                        <small class="text-muted">
+                            Currently viewing: <strong id="dashboardFilterLabel"></strong>
+                        </small>
                     </div>
-                </div>
-                <div class="mt-2">
-                    <small class="text-muted">
-                        Currently viewing: <strong>{{ $data['selectedMonthName'] }} {{ $data['currentYear'] }}</strong>
-                    </small>
+                    <div class="d-flex gap-2 flex-wrap align-items-center" id="dashboardFilterControls"></div>
                 </div>
             </div>
         </div>
@@ -316,31 +263,31 @@
                                 <tbody>
                                     @forelse($data['products'] as $product)
                                         <tr>
-                                            <td>
-                                                <div class="product-info">
-                                                    <strong>{{ $product->name }}</strong>
-                                                    @if($product->quantity < 10)
-                                                        <small class="text-danger d-block">Low Stock</small>
-                                                    @endif
-                                                </div>
-                                            </td>
-                                            <td>$ {{ number_format($product->selling_price, 2) }}</td>
-                                            <td>
-                                                @if($product->quantity < 10)
-                                                    <span class="badge bg-warning text-dark d-inline-block text-center" style="min-width:50px;">{{ $product->quantity }}</span>
-                                                @else
-                                                    <span class="badge bg-success text-white d-inline-block text-center" style="min-width:50px;">{{ $product->quantity }}</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if($product->quantity < 10)
-                                                    <span class="badge bg-danger">Low</span>
-                                                @elseif($product->quantity < 20)
-                                                    <span class="badge bg-warning">Medium</span>
-                                                @else
-                                                    <span class="badge bg-success">Good</span>
-                                                @endif
-                                            </td>
+                                            <!--<td>-->
+                                            <!--    <div class="product-info">-->
+                                            <!--        <strong>{{ $product->name }}</strong>-->
+                                            <!--        @if($product->quantity < 10)-->
+                                            <!--            <small class="text-danger d-block">Low Stock</small>-->
+                                            <!--        @endif-->
+                                            <!--    </div>-->
+                                            <!--</td>-->
+                                            <!--<td>$ {{ number_format($product->selling_price, 2) }}</td>-->
+                                            <!--<td>-->
+                                            <!--    @if($product->quantity < 10)-->
+                                            <!--        <span class="badge bg-warning text-dark d-inline-block text-center" style="min-width:50px;">{{ $product->quantity }}</span>-->
+                                            <!--    @else-->
+                                            <!--        <span class="badge bg-success text-white d-inline-block text-center" style="min-width:50px;">{{ $product->quantity }}</span>-->
+                                            <!--    @endif-->
+                                            <!--</td>-->
+                                            <!--<td>-->
+                                            <!--    @if($product->quantity < 10)-->
+                                            <!--        <span class="badge bg-danger">Low</span>-->
+                                            <!--    @elseif($product->quantity < 20)-->
+                                            <!--        <span class="badge bg-warning">Medium</span>-->
+                                            <!--    @else-->
+                                            <!--        <span class="badge bg-success">Good</span>-->
+                                            <!--    @endif-->
+                                            <!--</td>-->
                                         </tr>
                                     @empty
                                         <tr>
@@ -363,16 +310,157 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
 <script>
+window.addEventListener('pageshow', function (event) {
+    const navigationEntry = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
+    const isHistoryNavigation = event.persisted || (navigationEntry && navigationEntry.type === 'back_forward');
+
+    if (isHistoryNavigation) {
+        window.location.replace(@json(route('login', ['history' => 1])));
+    }
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize feather icons
     feather.replace();
     
     // Get the monthly data from PHP
     const monthlyData = @json($data['monthlyData']);
+    const filterState = {
+        availableYears: @json($data['availableYears']),
+        currentYear: @json($data['currentYear']),
+        selectedMonth: @json($data['selectedMonth']),
+        selectedMonthName: @json($data['selectedMonthName']),
+        departments: @json($departments),
+        selectedDepID: @json($selectedDepID),
+        isAdmin: @json(auth()->user()->role === 'admin'),
+        dashboardUrl: @json(route('dashboard'))
+    };
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     
     let currentView = 'all';
     const selectedViewElement = document.getElementById('selectedView');
+    const dashboardFilterControls = document.getElementById('dashboardFilterControls');
+    const dashboardFilterLabel = document.getElementById('dashboardFilterLabel');
+
+    function escapeHtml(value) {
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function buildDashboardUrl(params) {
+        const url = new URL(filterState.dashboardUrl, window.location.origin);
+
+        if (params.year !== undefined && params.year !== null && params.year !== '') {
+            url.searchParams.set('year', params.year);
+        } else {
+            url.searchParams.delete('year');
+        }
+
+        if (params.month !== undefined && params.month !== null && params.month !== '') {
+            url.searchParams.set('month', params.month);
+        } else {
+            url.searchParams.delete('month');
+        }
+
+        if (params.depID !== undefined && params.depID !== null && params.depID !== '') {
+            url.searchParams.set('depID', params.depID);
+        } else {
+            url.searchParams.delete('depID');
+        }
+
+        return url.pathname + url.search + url.hash;
+    }
+
+    function renderDashboardFilters() {
+        if (!dashboardFilterControls) {
+            return;
+        }
+
+        if (dashboardFilterLabel) {
+            dashboardFilterLabel.textContent = `${filterState.selectedMonthName} ${filterState.currentYear}`;
+        }
+
+        const yearItems = filterState.availableYears.map(function(year) {
+            const activeClass = String(filterState.currentYear) === String(year) ? 'active' : '';
+            const href = buildDashboardUrl({
+                year: year,
+                month: filterState.selectedMonth,
+                depID: filterState.selectedDepID
+            });
+
+            return `
+                <li>
+                    <a class="dropdown-item ${activeClass}" href="${href}">
+                        ${year}
+                    </a>
+                </li>
+            `;
+        }).join('');
+
+        const monthItems = months.map(function(monthName, index) {
+            const monthNumber = index + 1;
+            const activeClass = Number(filterState.selectedMonth) === monthNumber ? 'active' : '';
+            const href = buildDashboardUrl({
+                month: monthNumber,
+                year: filterState.currentYear,
+                depID: filterState.selectedDepID
+            });
+
+            return `
+                <li>
+                    <a class="dropdown-item ${activeClass}" href="${href}">
+                        ${monthName}
+                    </a>
+                </li>
+            `;
+        }).join('');
+
+        const controls = [
+            `
+                <div class="dropdown">
+                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="yearDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-calendar me-2"></i>
+                        ${filterState.currentYear}
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="yearDropdown">
+                        ${yearItems}
+                    </ul>
+                </div>
+            `,
+            filterState.isAdmin ? `
+                <form method="GET" action="${filterState.dashboardUrl}" class="m-0">
+                    <input type="hidden" name="year" value="${filterState.currentYear}">
+                    <input type="hidden" name="month" value="${filterState.selectedMonth}">
+                    <select class="btn btn-primary btn-sm dropdown-toggle" style="padding-bottom: 7px" name="depID" onchange="this.form.submit()">
+                        <option value="">All Departments</option>
+                        ${filterState.departments.map(function(dep) {
+                            const selected = String(filterState.selectedDepID ?? '') === String(dep.id) ? 'selected' : '';
+                            return `<option value="${dep.id}" ${selected}>${escapeHtml(dep.name)}</option>`;
+                        }).join('')}
+                    </select>
+                </form>
+            ` : '',
+            `
+                <div class="dropdown">
+                    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="monthDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-calendar-alt me-2"></i>
+                        ${filterState.selectedMonthName}
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="monthDropdown">
+                        ${monthItems}
+                    </ul>
+                </div>
+            `
+        ].join('');
+
+        dashboardFilterControls.innerHTML = controls;
+    }
+
+    renderDashboardFilters();
 
     // Initialize the chart with all data
     const chartOptions = {

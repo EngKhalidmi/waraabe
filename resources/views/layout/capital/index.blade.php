@@ -121,8 +121,12 @@
 </div>
 </div>
 
-<script>
+    <script>
     $(document).ready(function() {
+        if (!navigator.onLine && window.StoreManagementFinanceModule) {
+            window.StoreManagementFinanceModule.mountListPage('capital');
+            return;
+        }
 
     // Initialize the DataTable
     let table = $('#CapitaTable').DataTable({
@@ -139,6 +143,9 @@
                 d.endDate = $('#endDate').val();
             },
             dataSrc: function (json) {
+                if (window.StoreManagementFinanceModule) {
+                    window.StoreManagementFinanceModule.cacheList('capital', json.data || []);
+                }
                 console.log("AJAX response received:", json);
                 return json.data;
             },

@@ -142,15 +142,17 @@
 <body>
     <div class="invoice-box">
         <div class="header">
-               <img src="{{asset('/Logo/maal.png')}}" alt="Company Logo" width="200">
+                <img src="{{ asset('/Logo/Logo1.png') }}" alt="Company Logo">
             <div class="company-name">
-            
-                        <h1>Maal Spareparts</h1>
-                        <p>Xarunta Iibinta Sparepart-ga TVS 
-                            <br>Sisibta ,Borama,Somaliland
-                            <br>
-                            0634583522 | Merchant  472320 |  Edahab 749109
-                                    </p><hr>
+
+
+                <h1>WARAABE FUEL STATIONS</h1>
+                <p>Kaalinta Shiidaalka Waraabe
+                    <br>Berbera Somaliland
+                    <br>
+                    +252 63XXXXX | 63XXXXXX | 5XXXXX <br>
+                    ZAAD: XXXXX | Edahab: XXXXX
+                </p>
                 <center>
                     <p>Purchases Receipt</p>
                 </center>
