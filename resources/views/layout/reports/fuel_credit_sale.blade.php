@@ -552,7 +552,7 @@
 
         function viewInvoice(saleId) {
             const loading = showReportLoading();
-            axios.get(`/fuel-credit-sales/${saleId}/invoice`)
+            axios.get(`{{ url('fuel-credit-sales') }}/${saleId}/invoice`)
                 .then(response => {
                     document.getElementById('invoiceContent').innerHTML = response.data;
                     bootstrap.Modal.getOrCreateInstance(document.getElementById('invoiceModal')).show();

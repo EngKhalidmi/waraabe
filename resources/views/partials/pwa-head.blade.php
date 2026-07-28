@@ -2,6 +2,7 @@
     $pwaName = config('app.name', 'Laravel');
     $pwaThemeColor = '#3d5ee1';
     $pwaStartUrl = route('dashboard');
+    $appBaseUrl = rtrim(url('/'), '/');
 @endphp
 
 <meta name="theme-color" content="{{ $pwaThemeColor }}">
@@ -26,12 +27,17 @@
         startUrl: @json($pwaStartUrl),
     };
 
+    window.__APP_BASE_URL__ = @json($appBaseUrl);
+    window.__APP_ASSET_URL__ = @json(rtrim(asset(''), '/'));
+    window.__APP_API_URL__ = @json(url('/api'));
+
     window.__OFFLINE_ENGINE_CONFIG__ = {
         appName: @json($pwaName),
         userId: @json(auth()->check() ? auth()->id() : null),
         departmentId: @json(auth()->check() ? auth()->user()->depID : null),
         databaseName: 'StoreManagementOffline',
         widgetId: 'store-offline-sync-widget',
+        syncEndpoint: @json(url('/api/sync')),
     };
 
     window.__PRODUCTS_ROUTE__ = @json(route('products'));

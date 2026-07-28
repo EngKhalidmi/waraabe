@@ -140,7 +140,7 @@
             return;
         }
 
-        navigator.serviceWorker.register(config.serviceWorkerUrl || '/service-worker.js').catch(function (error) {
+        navigator.serviceWorker.register(config.serviceWorkerUrl || new URL('service-worker.js', window.location.href).toString()).catch(function (error) {
             console.warn('Service worker registration failed:', error);
         });
     }

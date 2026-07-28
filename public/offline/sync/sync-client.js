@@ -55,7 +55,7 @@
 
         this.queueManager = options.queueManager || QueueManager;
         this.syncManager = options.syncManager || SyncManager;
-        this.endpoint = options.endpoint || '/api/sync';
+        this.endpoint = options.endpoint || config.syncEndpoint || new URL('api/sync', window.location.href).toString();
         this.batchSize = Number(options.batchSize || syncConfig.batch_size || 20);
         this.userId = typeof options.userId !== 'undefined' ? options.userId : config.userId;
         this.state = {
