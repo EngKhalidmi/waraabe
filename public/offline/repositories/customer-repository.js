@@ -15,6 +15,42 @@
         }, options));
     }
 
+    function snapshotTableSchema(table) {
+        var schema = table && table.schema ? table.schema : null;
+        var primKey = schema && schema.primKey ? schema.primKey : null;
+        var indexes = schema && Array.isArray(schema.indexes) ? schema.indexes : [];
+
+        return {
+            tableName: table && table.name ? table.name : 'customers',
+            primaryKey: primKey ? {
+                name: primKey.name || null,
+                keyPath: primKey.keyPath || null,
+                unique: Boolean(primKey.unique),
+                multi: Boolean(primKey.multi),
+                auto: Boolean(primKey.auto)
+            } : null,
+            indexes: indexes.map(function (index) {
+                return {
+                    name: index && index.name ? index.name : null,
+                    keyPath: index && typeof index.keyPath !== 'undefined' ? index.keyPath : null,
+                    unique: Boolean(index && index.unique),
+                    multi: Boolean(index && index.multi)
+                };
+            })
+        };
+    }
+
+    function logCustomerCacheError(error, row, normalized, table) {
+        console.error('Unable to cache customer rows for offline use', {
+            errorName: error && error.name ? error.name : 'UnknownError',
+            errorMessage: error && error.message ? error.message : String(error || 'Unknown error'),
+            errorStack: error && error.stack ? error.stack : null,
+            customerObject: row || null,
+            normalizedCustomerObject: normalized || null,
+            indexedDbTableSchema: snapshotTableSchema(table)
+        });
+    }
+
     CustomerRepository.prototype = Object.create(namespace.OfflineRepository.prototype);
     CustomerRepository.prototype.constructor = CustomerRepository;
 
@@ -193,12 +229,15 @@
 
             return savedRecord;
         }).catch(function (error) {
+            logCustomerCacheError(error, row, normalized, table);
+
             if (!error || (error.name !== 'ConstraintError' && error.name !== 'BulkError' && error.name !== 'DuplicateError')) {
                 return Promise.reject(error);
             }
 
             return self._resolveConflictByIndexes(table, normalized).then(function (conflict) {
                 if (!conflict) {
+                    logCustomerCacheError(error, row, normalized, table);
                     return Promise.reject(error);
                 }
 
@@ -221,6 +260,9 @@
                     existingRecords.push(savedRecord);
 
                     return savedRecord;
+                }).catch(function (secondError) {
+                    logCustomerCacheError(secondError, row, normalized, table);
+                    return Promise.reject(secondError);
                 });
             });
         });

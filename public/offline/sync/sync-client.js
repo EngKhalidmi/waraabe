@@ -24,32 +24,18 @@
         return OfflineDatabase.nowIso ? OfflineDatabase.nowIso() : new Date().toISOString();
     }
 
-    function getDeploymentBaseUrl() {
-        var baseUrl = String(global.__APP_BASE_URL__ || '').trim().replace(/\/$/, '');
-        var basePath = String(global.__APP_BASE_PATH__ || '').trim();
-
-        if (!basePath) {
-            basePath = '/public';
-        } else if (basePath.charAt(0) !== '/') {
-            basePath = '/' + basePath;
-        }
-
-        if (baseUrl) {
-            return baseUrl;
-        }
-
-        return global.location.origin.replace(/\/$/, '') + basePath;
+    function getSyncEndpoint() {
+        return global.location.origin.replace(/\/$/, '') + '/public/api/sync';
     }
 
     function resolveEndpoint() {
         var configuredEndpoint = String(config.syncEndpoint || '').trim();
-        var deploymentBaseUrl = getDeploymentBaseUrl();
 
         if (configuredEndpoint) {
             try {
                 var parsed = new URL(configuredEndpoint, global.location.href);
                 if (parsed.origin === global.location.origin && parsed.pathname.indexOf('/public/') === -1) {
-                    return deploymentBaseUrl + '/api/sync';
+                    return getSyncEndpoint();
                 }
 
                 return parsed.toString();
@@ -58,7 +44,7 @@
             }
         }
 
-        return deploymentBaseUrl + '/api/sync';
+        return getSyncEndpoint();
     }
 
     function emit(detail) {

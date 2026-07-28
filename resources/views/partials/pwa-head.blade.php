@@ -35,7 +35,7 @@
     window.__APP_BASE_PATH__ = @json($appBasePath);
     window.__APP_BASE_URL__ = @json($appBaseUrl);
     window.__APP_ASSET_URL__ = @json($appBaseUrl);
-    window.__APP_API_URL__ = @json($appBaseUrl . '/api');
+    window.__APP_API_URL__ = @json($appOrigin . '/public/api');
 
     window.__OFFLINE_ENGINE_CONFIG__ = {
         appName: @json($pwaName),
@@ -43,7 +43,7 @@
         departmentId: @json(auth()->check() ? auth()->user()->depID : null),
         databaseName: 'StoreManagementOffline',
         widgetId: 'store-offline-sync-widget',
-        syncEndpoint: @json($appBaseUrl . '/api/sync'),
+        syncEndpoint: @json($appOrigin . '/public/api/sync'),
     };
 
     window.__PRODUCTS_ROUTE__ = @json(route('products'));
