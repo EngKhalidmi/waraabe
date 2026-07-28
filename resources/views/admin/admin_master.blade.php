@@ -48,21 +48,6 @@
         font-style: normal;
     }
 
-    @font-face {
-            font-family: 'JetBrains Mono';
-            src: url('{{ asset('/assets/fonts/JetBrains/JetBrainsMono-Regular.ttf') }}') format('truetype');
-            font-weight: 400;
-            font-style: normal;
-        }
-
-        /* Import JetBrains Mono Bold */
-        @font-face {
-            font-family: 'JetBrains Mono';
-            src: url('{{ asset('/assets/fonts/JetBrains/JetBrainsMono-Bold.ttf') }}') format('truetype');
-            font-weight: 700;
-            font-style: normal;
-        }
-
     * {
         font-family: 'SF UI Text', Arial, sans-serif;
         /* font-family: "Poppins", sans-serif; */

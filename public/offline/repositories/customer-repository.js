@@ -131,6 +131,101 @@
         }) || null;
     };
 
+    CustomerRepository.prototype._resolveConflictByIndexes = function (table, row) {
+        var serverId = typeof row.server_id !== 'undefined' ? row.server_id : (typeof row.id !== 'undefined' ? row.id : null);
+        var localId = typeof row.local_id !== 'undefined' ? row.local_id : null;
+        var serial = String(row.serial == null ? '' : row.serial).trim();
+        var phone = String(row.phone == null ? '' : row.phone).trim();
+
+        if (serverId !== null && typeof serverId !== 'undefined') {
+            return table.where('server_id').equals(serverId).first().then(function (record) {
+                return record || null;
+            });
+        }
+
+        if (localId !== null && typeof localId !== 'undefined') {
+            return table.where('local_id').equals(localId).first().then(function (record) {
+                return record || null;
+            });
+        }
+
+        if (serial) {
+            return table.where('serial').equalsIgnoreCase(serial).first().then(function (record) {
+                return record || null;
+            });
+        }
+
+        if (phone) {
+            return table.where('phone').equals(phone).first().then(function (record) {
+                return record || null;
+            });
+        }
+
+        return Promise.resolve(null);
+    };
+
+    CustomerRepository.prototype._upsertServerRow = function (table, row, existingRecords) {
+        var self = this;
+        var existing = self._findMatchingServerRecord(existingRecords, row);
+        var normalized = self.normalizeServerCustomerRow(row);
+
+        if (existing) {
+            normalized.id = existing.id;
+            normalized.local_id = existing.local_id || normalized.local_id;
+            normalized.server_id = typeof normalized.server_id !== 'undefined' && normalized.server_id !== null
+                ? normalized.server_id
+                : existing.server_id;
+            normalized.created_at = existing.created_at || normalized.created_at;
+            normalized.updated_at = normalized.updated_at || existing.updated_at || existing.created_at;
+        } else if (typeof normalized.id !== 'undefined') {
+            delete normalized.id;
+        }
+
+        return table.put(normalized).then(function (savedKey) {
+            var savedRecord = Object.assign({}, normalized, {
+                id: typeof normalized.id !== 'undefined' ? normalized.id : savedKey
+            });
+
+            existingRecords = existingRecords.filter(function (candidate) {
+                return !candidate || String(candidate.id) !== String(savedRecord.id);
+            });
+            existingRecords.push(savedRecord);
+
+            return savedRecord;
+        }).catch(function (error) {
+            if (!error || (error.name !== 'ConstraintError' && error.name !== 'BulkError' && error.name !== 'DuplicateError')) {
+                return Promise.reject(error);
+            }
+
+            return self._resolveConflictByIndexes(table, normalized).then(function (conflict) {
+                if (!conflict) {
+                    return Promise.reject(error);
+                }
+
+                normalized.id = conflict.id;
+                normalized.local_id = conflict.local_id || normalized.local_id;
+                normalized.server_id = typeof normalized.server_id !== 'undefined' && normalized.server_id !== null
+                    ? normalized.server_id
+                    : conflict.server_id;
+                normalized.created_at = conflict.created_at || normalized.created_at;
+                normalized.updated_at = normalized.updated_at || conflict.updated_at || conflict.created_at;
+
+                return table.put(normalized).then(function (savedKey) {
+                    var savedRecord = Object.assign({}, normalized, {
+                        id: typeof normalized.id !== 'undefined' ? normalized.id : savedKey
+                    });
+
+                    existingRecords = existingRecords.filter(function (candidate) {
+                        return !candidate || String(candidate.id) !== String(savedRecord.id);
+                    });
+                    existingRecords.push(savedRecord);
+
+                    return savedRecord;
+                });
+            });
+        });
+    };
+
     CustomerRepository.prototype.cacheFromServerRows = function (rows) {
         var self = this;
         var records = Array.isArray(rows) ? rows : [];
@@ -143,31 +238,7 @@
             return self._readAll().then(function (existingRecords) {
                 return records.reduce(function (promise, record) {
                     return promise.then(function (savedRecords) {
-                        var source = Object.assign({}, record || {});
-                        var existing = self._findMatchingServerRecord(existingRecords, source);
-                        var normalized = self.normalizeServerCustomerRow(source);
-
-                        if (existing) {
-                            normalized.id = existing.id;
-                            normalized.local_id = existing.local_id || normalized.local_id;
-                            normalized.server_id = typeof normalized.server_id !== 'undefined' && normalized.server_id !== null
-                                ? normalized.server_id
-                                : existing.server_id;
-                            normalized.created_at = existing.created_at || normalized.created_at;
-                            normalized.updated_at = normalized.updated_at || existing.updated_at || existing.created_at;
-                        } else if (typeof normalized.id !== 'undefined') {
-                            delete normalized.id;
-                        }
-
-                        return table.put(normalized).then(function (savedKey) {
-                            var savedRecord = Object.assign({}, normalized, {
-                                id: typeof normalized.id !== 'undefined' ? normalized.id : savedKey
-                            });
-
-                            existingRecords = existingRecords.filter(function (candidate) {
-                                return !candidate || String(candidate.id) !== String(savedRecord.id);
-                            });
-                            existingRecords.push(savedRecord);
+                        return self._upsertServerRow(table, record, existingRecords).then(function (savedRecord) {
                             savedRecords.push(savedRecord);
                             return savedRecords;
                         });

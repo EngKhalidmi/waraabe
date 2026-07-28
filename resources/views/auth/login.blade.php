@@ -25,20 +25,6 @@
 <link rel="stylesheet" href="{{asset('uniquestyle/message.css')}}">
 </head>
 <style>
-            @font-face {
-            font-family: 'JetBrains Mono';
-            src: url('{{ asset('/assets/fonts/JetBrains/JetBrainsMono-Regular.ttf') }}') format('truetype');
-            font-weight: 400;
-            font-style: normal;
-        }
-
-        /* Import JetBrains Mono Bold */
-        @font-face {
-            font-family: 'JetBrains Mono';
-            src: url('{{ asset('/assets/fonts/JetBrains/JetBrainsMono-Bold.ttf') }}') format('truetype');
-            font-weight: 700;
-            font-style: normal;
-        }
     body {
         font-family: "Inter", sans-serif;
     }
@@ -147,7 +133,7 @@
                         <center>
                             <!--<img src="{{asset('Logo/logo.jpg')}}" alt="" width="150">-->
                             <hr>
-                            <p class="small text-muted">Powered By <a target="_blank" href="https://saacid.taamsolutions.net">Taam Solutions</a> - All Rights Reserved | {{date('Y')}} <br> <span style="font-family: 'JetBrains Mono'">Saacid V2.0 - For Waraabe Management System</span></p>
+                            <p class="small text-muted">Powered By <a target="_blank" href="https://saacid.taamsolutions.net">Taam Solutions</a> - All Rights Reserved | {{date('Y')}} <br> <span style="font-family: 'SF UI Text'">Saacid V2.0 - For Waraabe Management System</span></p>
                         </center>
                     </form>
                 </div>
