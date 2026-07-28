@@ -8,9 +8,10 @@
             repositoryClassName: 'CustomerRepository',
             offlineEnabled: true,
             requestUrl: '/offline/local/customers',
-            searchFields: ['customer_name', 'phone', 'serial', 'address', 'description'],
+            searchFields: ['customer_name', 'name', 'phone', 'serial', 'birthDate', 'sex', 'depID', 'address', 'description'],
             primaryFields: ['customer_name'],
-            referenceFields: ['depID']
+            referenceFields: ['depID'],
+            schemaFields: ['birthDate', 'sex', 'depID']
         },
         products: {
             tableName: 'products',

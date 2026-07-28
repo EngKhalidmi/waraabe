@@ -104,6 +104,7 @@
         'actual_price',
         'quantity',
         'age',
+        'birthDate',
         'sex'
     ];
 
@@ -662,6 +663,7 @@
     registerMigration(5, buildBusinessMigrationStores());
     registerMigration(6, buildBusinessMigrationStores());
     registerMigration(7, buildSyncMigrationStores());
+    registerMigration(8, buildSyncMigrationStores());
 
     global.StoreManagementOfflineDatabase = {
         name: DATABASE_NAME,
