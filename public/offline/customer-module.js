@@ -5,6 +5,7 @@
     var repositoryInstance = null;
     var offlineIndexState = {
         active: false,
+        bound: false,
         records: []
     };
 
@@ -342,6 +343,13 @@
         if (!table) {
             return;
         }
+
+        if (offlineIndexState.bound) {
+            applyOfflineFilters();
+            return;
+        }
+
+        offlineIndexState.bound = true;
 
         showOfflineBanner();
 

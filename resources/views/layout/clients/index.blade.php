@@ -136,6 +136,9 @@
             const customerOfflineModule = window.StoreManagementCustomerOfflineModule || window.StoreManagementCustomerModule || {};
 
             if (!navigator.onLine && customerOfflineModule.isCustomerIndexPage && customerOfflineModule.isCustomerIndexPage()) {
+                if (customerOfflineModule.bindOfflineIndex) {
+                    customerOfflineModule.bindOfflineIndex();
+                }
                 return;
             }
         
@@ -164,6 +167,14 @@
                     },
                     error: function(xhr, error, thrown) {
                         console.error("AJAX Error:", xhr.responseText);
+
+                        if (!navigator.onLine && customerOfflineModule.bindOfflineIndex) {
+                            if ($.fn.DataTable && $.fn.DataTable.isDataTable && $.fn.DataTable.isDataTable('#clientTable')) {
+                                $('#clientTable').DataTable().destroy();
+                            }
+
+                            customerOfflineModule.bindOfflineIndex();
+                        }
                     }
                 },
                 columns: [{
