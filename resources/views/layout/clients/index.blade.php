@@ -160,7 +160,22 @@
                         console.log("AJAX response received:", json);
                         if (customerOfflineModule.cacheServerRows) {
                             customerOfflineModule.cacheServerRows(json.data || []).catch(function(error) {
-                                console.warn('Unable to cache customer rows for offline use:', error);
+                                var customerRows = json && Array.isArray(json.data) ? json.data : [];
+                                var firstCustomer = customerRows.length ? customerRows[0] : null;
+                                var indexedDbSchema = null;
+
+                                if (window.StoreManagementOfflineDatabase && typeof window.StoreManagementOfflineDatabase.getBusinessStoreDefinition === 'function') {
+                                    indexedDbSchema = window.StoreManagementOfflineDatabase.getBusinessStoreDefinition('customers') || null;
+                                }
+
+                                console.error('Unable to cache customer rows for offline use', {
+                                    errorName: error && error.name ? error.name : 'UnknownError',
+                                    errorMessage: error && error.message ? error.message : String(error || 'Unknown error'),
+                                    errorStack: error && error.stack ? error.stack : null,
+                                    customerObjectBeingInserted: firstCustomer,
+                                    customerRowsBeingInserted: customerRows,
+                                    indexedDbTableSchema: indexedDbSchema
+                                });
                             });
                         }
                         return json.data;

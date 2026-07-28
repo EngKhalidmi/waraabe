@@ -25,7 +25,11 @@
     }
 
     function getSyncEndpoint() {
-        return global.location.origin.replace(/\/$/, '') + '/public/api/sync';
+        return global.location.origin.replace(/\/$/, '') + '/public' + '/api' + '/sync';
+    }
+
+    function getConfiguredSyncEndpoint() {
+        return (global.__OFFLINE_ENGINE_CONFIG__ && global.__OFFLINE_ENGINE_CONFIG__.syncEndpoint) || getSyncEndpoint();
     }
 
     function resolveEndpoint() {
@@ -44,7 +48,7 @@
             }
         }
 
-        return getSyncEndpoint();
+        return getConfiguredSyncEndpoint();
     }
 
     function emit(detail) {
@@ -78,7 +82,8 @@
 
         this.queueManager = options.queueManager || QueueManager;
         this.syncManager = options.syncManager || SyncManager;
-        this.endpoint = options.endpoint || resolveEndpoint();
+        this.endpoint = options.endpoint || getConfiguredSyncEndpoint();
+        console.log('Sync endpoint:', this.endpoint);
         this.batchSize = Number(options.batchSize || syncConfig.batch_size || 20);
         this.userId = typeof options.userId !== 'undefined' ? options.userId : config.userId;
         this.state = {
@@ -458,7 +463,9 @@
     };
 
     global.SyncClientClass = SyncClient;
-    global.StoreManagementSyncClient = new SyncClient();
+    global.StoreManagementSyncClient = new SyncClient({
+        endpoint: getConfiguredSyncEndpoint()
+    });
     global.SyncClient = global.StoreManagementSyncClient;
 
     function boot() {

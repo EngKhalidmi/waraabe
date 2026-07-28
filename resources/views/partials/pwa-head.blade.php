@@ -43,7 +43,7 @@
         departmentId: @json(auth()->check() ? auth()->user()->depID : null),
         databaseName: 'StoreManagementOffline',
         widgetId: 'store-offline-sync-widget',
-        syncEndpoint: @json($appOrigin . '/public/api/sync'),
+        syncEndpoint: @json($appOrigin . '/public' . '/api' . '/sync'),
     };
 
     window.__PRODUCTS_ROUTE__ = @json(route('products'));
