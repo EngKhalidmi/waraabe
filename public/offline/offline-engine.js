@@ -61,18 +61,7 @@
         widget.id = this.widgetId;
         widget.setAttribute('role', 'status');
         widget.setAttribute('aria-live', 'polite');
-        widget.innerHTML = [
-            '<div class="offline-engine__dot" aria-hidden="true"></div>',
-            '<div class="offline-engine__body">',
-            '  <div class="offline-engine__title" data-offline-title>Offline engine loading</div>',
-            '  <div class="offline-engine__meta">',
-            '    <span data-offline-state>Starting...</span>',
-            '    <span data-offline-pending>Pending (0)</span>',
-            '    <span data-offline-progress>Ready to sync</span>',
-            '  </div>',
-            '</div>',
-            '<button type="button" class="offline-engine__button" data-sync-now>Sync Now</button>'
-        ].join('');
+     
 
         document.body.appendChild(widget);
         return widget;
