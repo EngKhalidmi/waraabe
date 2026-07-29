@@ -53,18 +53,7 @@
 
     OfflineEngine.prototype.ensureWidget = function () {
         var existing = document.getElementById(this.widgetId);
-        if (existing) {
-            return existing;
-        }
-
-        var widget = document.createElement('aside');
-        widget.id = this.widgetId;
-        widget.setAttribute('role', 'status');
-        widget.setAttribute('aria-live', 'polite');
-     
-
-        document.body.appendChild(widget);
-        return widget;
+        return existing || null;
     };
 
     OfflineEngine.prototype.injectStyles = function () {
@@ -107,6 +96,10 @@
 
     OfflineEngine.prototype._setWidgetState = function (state, title, pendingText) {
         var widget = this.ensureWidget();
+        if (!widget) {
+            return;
+        }
+
         var titleNode = widget.querySelector('[data-offline-title]');
         var stateNode = widget.querySelector('[data-offline-state]');
         var pendingNode = widget.querySelector('[data-offline-pending]');
