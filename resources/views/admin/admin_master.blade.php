@@ -8,7 +8,7 @@
  
     <meta name="author" content="Taam solutions - Saacid System">
     <meta name="robots" content="noindex, nofollow">
-    <title>@yield('title', 'Saacid - Dashboard')</title>
+    <title>@yield('title', 'Waraabe System - Dashboard')</title>
     <base href="{{ rtrim(url('/'), '/') }}/">
 
     @include('partials.pwa-head')
