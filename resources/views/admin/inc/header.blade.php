@@ -1,10 +1,10 @@
 <div class="header">
-    <div class="header-left active" style="padding-bottom:50px; margin-top:25px">
+    <div class="header-left active" style="background-color: #2563eb !important; padding-bottom:20px; padding-top:30px; margin-top:0px">
         <a href="{{ route('dashboard') }}" class="logo">
-            <img style="width: 130px; " height="auto" src="{{ asset('Logo/Logo1.png') }}" alt="">
+            <img style="width: 120px; " height="auto" src="{{ asset('Logo/Logo1.png') }}" alt="">
         </a>
-        <a href="{{ route('dashboard') }}" class="logo-small">
-            <img  src="{{ asset('Logo/Logo1.png') }}" style="width: 130px; " height="auto" alt="">
+        <a href="{{ route('dashboard') }}" class="logo-small" style="margin-top: 30px">
+            <img  src="{{ asset('Logo/Logo1.png') }}" style="width: 130px; " height="auto" alt="" >
         </a>
         <a id="toggle_btn" href="javascript:void(0);">
         </a>
@@ -12,6 +12,26 @@
 
     </div>
     <style>
+        /* Header Left / Logo Area Light Blue Theme */
+        .header .header-left,
+        .header .header-left.active,
+        .header-left {
+            background-color: #2563eb !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+            box-shadow: none !important;
+        }
+
+        /* Toggle Button icon on header-left */
+        #toggle_btn,
+        #toggle_btn:before,
+        #toggle_btn:after,
+        #toggle_btn span,
+        #toggle_btn i,
+        .mobile_btn .bar-icon span {
+            color: #ffffff !important;
+            border-color: #ffffff !important;
+        }
+
         /* hide .school-info in mobile mood */
         @media (max-width: 991px) {
 
@@ -270,9 +290,6 @@
                 </div>
             </li>
         </ul>
-
-
-
         <div class="dropdown mobile-user-menu">
             <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
                 aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>

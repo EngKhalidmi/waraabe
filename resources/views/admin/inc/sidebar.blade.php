@@ -1,3 +1,101 @@
+<style>
+    /* Sidebar Base Background & Container */
+    .sidebar,
+    #sidebar,
+    .sidebar .sidebar-inner,
+    .sidebar .slimScrollDiv,
+    .sidebar-menu,
+    .sidebar-menu > ul {
+        background-color: #2563eb !important;
+    }
+
+    /* Section Headers & Dividers */
+    .sidebar-menu p {
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        opacity: 0.95;
+        margin-top: 15px !important;
+        padding-left: 15px !important;
+    }
+
+    .sidebar-menu hr {
+        border-top: 1px solid rgba(255, 255, 255, 0.25) !important;
+    }
+
+    /* Links, Icons, Arrows - White Text Default */
+    .sidebar-menu ul li a,
+    .sidebar-menu ul li a span,
+    .sidebar-menu ul li.submenu > a,
+    .sidebar-menu ul li.submenu ul li a,
+    .sidebar-menu i,
+    .sidebar-menu .menu-arrow {
+        color: #ffffff !important;
+    }
+
+    /* Convert SVG / Image icons to white for default links */
+    .sidebar-menu ul li:not(.active) > a img,
+    .sidebar-menu ul li a:not(.active) img,
+    .sidebar-menu ul li:not(.active) > a svg,
+    .sidebar-menu ul li a:not(.active) svg {
+        filter: brightness(0) invert(1) !important;
+    }
+
+    /* Submenu background container */
+    .sidebar-menu ul li.submenu ul {
+        background-color: rgba(0, 0, 0, 0.12) !important;
+        border-radius: 6px;
+    }
+
+    /* Hover Over State: White Highlight Background & White Text */
+    .sidebar-menu ul li a:hover,
+    .sidebar-menu ul li.submenu > a:hover,
+    .sidebar-menu ul li.submenu ul li a:not(.active):hover {
+        background-color: rgba(255, 255, 255, 0.25) !important;
+        color: #ffffff !important;
+        border-radius: 6px;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .sidebar-menu ul li a:hover span,
+    .sidebar-menu ul li a:hover i,
+    .sidebar-menu ul li a:hover .menu-arrow,
+    .sidebar-menu ul li.submenu > a:hover span,
+    .sidebar-menu ul li.submenu > a:hover i,
+    .sidebar-menu ul li.submenu > a:hover .menu-arrow,
+    .sidebar-menu ul li.submenu ul li a:not(.active):hover span {
+        color: #ffffff !important;
+    }
+
+    .sidebar-menu ul li a:hover img,
+    .sidebar-menu ul li.submenu > a:hover img {
+        filter: brightness(0) invert(1) !important;
+    }
+
+    /* Active Menu Item & Submenu Item State (Solid White Box with Blue Text) */
+    .sidebar-menu ul li.active > a,
+    .sidebar-menu ul li a.active,
+    .sidebar-menu ul li.submenu ul li a.active,
+    .sidebar-menu ul li.submenu ul li.active > a {
+        background-color: #ffffff !important;
+        color: #2563eb !important;
+        font-weight: 700 !important;
+        border-radius: 6px;
+    }
+
+    /* Force all child elements & text inside active items to blue */
+    .sidebar-menu ul li.active > a *,
+    .sidebar-menu ul li a.active *,
+    .sidebar-menu ul li.submenu ul li a.active *,
+    .sidebar-menu ul li.submenu ul li.active > a * {
+        color: #2563eb !important;
+    }
+
+    .sidebar-menu ul li.active > a img,
+    .sidebar-menu ul li a.active img {
+        filter: none !important;
+    }
+</style>
+
 <div class="sidebar" id="sidebar">
     <div class="sidebar-inner slimscroll">
         <div id="sidebar-menu" class="sidebar-menu">
