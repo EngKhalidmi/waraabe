@@ -8,284 +8,522 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0.0/jquery.counterup.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
-{{-- Filter Card --}}
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="dashboard-filter-card">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="filter-icon-box">
-                        <i class="fas fa-filter"></i>
-                    </div>
-                    <div>
-                        <h5 class="card-title mb-1" style="font-weight: 700; color: #0f172a;">Filter Dashboard Data</h5>
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="text-muted" style="font-size: 0.85rem;">Currently viewing:</span>
-                            <span class="filter-badge" id="dashboardFilterLabel"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="d-flex gap-2 flex-wrap align-items-center" id="dashboardFilterControls"></div>
+{{-- Dashboard Header Area --}}
+<div class="dashboard-header-wrapper mb-4">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <div class="header-icon-box">
+                <i class="fas fa-filter"></i>
             </div>
+            <div>
+                <h3 class="dashboard-title mb-1">Dashboard Overview</h3>
+                <p class="dashboard-subtitle text-muted mb-0">Welcome back! Here's what's happening with your business.</p>
+            </div>
+        </div>
+        <div class="d-flex gap-2 flex-wrap align-items-center" id="dashboardFilterControls"></div>
+    </div>
+    
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3 pt-3 border-top" style="border-color: #f1f5f9 !important;">
+        <div class="d-flex align-items-center gap-2">
+            <span class="text-secondary fw-medium" style="font-size: 0.85rem;">Filter Dashboard Data</span>
+            <span class="active-filter-badge" id="dashboardFilterLabel"></span>
+        </div>
+        <div class="text-muted" style="font-size: 0.8rem;">
+            Data as of <span class="fw-semibold" style="color: #475569;">{{ date('M d, Y') }}</span> • <span style="color: #2563eb; font-weight: 500;"><i class="fas fa-sync-alt me-1"></i> Updated 2 min ago</span>
         </div>
     </div>
 </div>
 
-        {{-- Low Stock Notification --}}
-        @if(auth()->user()->role === 'admin' || auth()->user()->role === 'branch-manager' || auth()->user()->role === 'sales' )
+@if(auth()->user()->role === 'admin' || auth()->user()->role === 'branch-manager' || auth()->user()->role === 'sales' )
 
-            {{-- Top KPI Widgets --}}
-            <div class="row">
-                <div class="col-lg-3 col-sm-6 col-12">
-                    <div class="dash-widget widget-blue">
-                        <div class="dash-widgetimg">
-                            <span style="background: #eff6ff !important;"><img src="{{ asset('assets/img/icons/dash1.svg') }}" alt="img"></span>
-                        </div>
-                        <div class="dash-widgetcontent">
-                            <h5>$<span class="counter">{{ number_format($data['totalPurchase'], 2) }}</span></h5>
-                            <h6>Total Purchases</h6>
-                            <small>{{ $data['selectedMonthName'] }} {{ $data['currentYear'] }}</small>
-                        </div>
+    {{-- Row 1: Top 4 Metric Cards --}}
+    <div class="row g-3 mb-3">
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="card-kpi kpi-blue">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="kpi-icon-wrapper bg-blue-light">
+                        <i class="fas fa-shopping-bag text-blue"></i>
+                    </div>
+                    <div class="d-flex align-items-center gap-1">
+                        <span class="kpi-badge badge-gray">0%</span>
                     </div>
                 </div>
-                <div class="col-lg-3 col-sm-6 col-12">
-                    <div class="dash-widget widget-green">
-                        <div class="dash-widgetimg">
-                            <span style="background: #ecfdf5 !important;"><img src="{{ asset('assets/img/icons/dash2.svg') }}" alt="img"></span>
-                        </div>
-                        <div class="dash-widgetcontent">
-                            <h5>$<span class="counter">{{ number_format($data['totalFuelPurchase'], 2) }}</span></h5>
-                            <h6>Fuel Purchases</h6>
-                            <small>{{ $data['selectedMonthName'] }} {{ $data['currentYear'] }}</small>
-                        </div>
+                <div class="d-flex justify-content-between align-items-end mt-2">
+                    <div>
+                        <span class="kpi-label">Total Purchases</span>
+                        <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalPurchase'], 2) }}</span></h4>
+                        <span class="kpi-subtext">{{ $data['selectedMonthName'] }} {{ $data['currentYear'] }}</span>
                     </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 col-12">
-                    <div class="dash-widget widget-amber">
-                        <div class="dash-widgetimg">
-                            <span style="background: #fef3c7 !important;"><img src="{{ asset('assets/img/icons/dash3.svg') }}" alt="img"></span>
-                        </div>
-                        <div class="dash-widgetcontent">
-                            <h5>$<span class="counter">{{ number_format($data['totalOilPurchase'], 2) }}</span></h5>
-                            <h6>Oil Purchases</h6>
-                            <small>{{ $data['selectedMonthName'] }} {{ $data['currentYear'] }}</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 col-12">
-                    <div class="dash-widget widget-rose">
-                        <div class="dash-widgetimg">
-                            <span style="background: #ffe4e6 !important;"><img src="{{ asset('assets/img/icons/dash4.svg') }}" alt="img"></span>
-                        </div>
-                        <div class="dash-widgetcontent">
-                            <h5>$<span class="counter">{{ number_format($data['totalSales'], 2) }}</span></h5>
-                            <h6>Total Oil Sales</h6>
-                            <small>{{ $data['selectedMonthName'] }} {{ $data['currentYear'] }}</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Second Row KPI Widgets --}}
-            <div class="row">
-                <div class="col-lg-3 col-sm-6 col-12">
-                    <div class="dash-widget widget-green">
-                        <div class="dash-widgetimg">
-                            <span style="background: #ecfdf5 !important;"><img src="{{ asset('assets/img/icons/dash2.svg') }}" alt="img"></span>
-                        </div>
-                        <div class="dash-widgetcontent">
-                            <h5>$<span class="counter">{{ number_format($data['totalAllFuelSales'], 2) }}</span></h5>
-                            <h6>Total Fuel Sales</h6>
-                            <small>{{ $data['selectedMonthName'] }} {{ $data['currentYear'] }}</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 col-12">
-                    <div class="dash-widget widget-amber">
-                        <div class="dash-widgetimg">
-                            <span style="background: #fef3c7 !important;"><img src="{{ asset('assets/img/icons/dash2.svg') }}" alt="img"></span>
-                        </div>
-                        <div class="dash-widgetcontent">
-                            <h5>$<span class="counter">{{ number_format($data['totalReceivable'], 2) }}</span></h5>
-                            <h6>Total Receivable</h6>
-                            <small>All Time</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 col-12">
-                    <div class="dash-widget widget-rose">
-                        <div class="dash-widgetimg">
-                            <span style="background: #ffe4e6 !important;"><img src="{{ asset('assets/img/icons/dash2.svg') }}" alt="img"></span>
-                        </div>
-                        <div class="dash-widgetcontent">
-                            <h5>$<span class="counter">{{ number_format($data['totalPayable'], 2) }}</span></h5>
-                            <h6>Total Payable</h6>
-                            <small>All Time</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6 col-12">
-                    <div class="dash-widget widget-indigo">
-                        <div class="dash-widgetimg">
-                            <span style="background: #e0e7ff !important;"><i class="fas fa-calendar-check" style="font-size: 1.2rem; color: #4338ca;"></i></span>
-                        </div>
-                        <div class="dash-widgetcontent">
-                            <h5 style="color: #4338ca !important;"><span>{{ $data['selectedMonthName'] }}</span></h5>
-                            <h6>Selected Month</h6>
-                            <small>{{ $data['currentYear'] }}</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endif
-
-        {{-- Counters --}}
-        <div class="row">
-            <div class="col-lg-3 col-sm-6 col-12 d-flex">
-                <div class="dash-count">
-                    <div class="dash-counts">
-                        <h4>{{ $data['clients'] }}+</h4>
-                        <h5>Customers</h5>
-                    </div>
-                    <div class="dash-imgs">
-                        <i data-feather="user"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 col-12 d-flex">
-                <div class="dash-count das1">
-                    <div class="dash-counts">
-                        <h4>{{ $data['suppliers'] }}+</h4>
-                        <h5>Suppliers</h5>
-                    </div>
-                    <div class="dash-imgs">
-                        <i data-feather="user-check"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 col-12 d-flex">
-                <div class="dash-count das2">
-                    <div class="dash-counts">
-                        <h4>{{ $data['sales'] }}+</h4>
-                        <h5>Sales Invoices</h5>
-                    </div>
-                    <div class="dash-imgs">
-                        <i data-feather="file-text"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-sm-6 col-12 d-flex">
-                <div class="dash-count das3">
-                    <div class="dash-counts">
-                        <h4>{{ $data['purchases'] }}+</h4>
-                        <h5>Purchase Invoices</h5>
-                    </div>
-                    <div class="dash-imgs">
-                        <i data-feather="file"></i>
+                    <div class="sparkline-box">
+                        <svg width="64" height="24" viewBox="0 0 60 24" fill="none"><path d="M2 18 Q 15 10, 30 14 T 58 4" stroke="#3b82f6" stroke-width="2" fill="none"/></svg>
                     </div>
                 </div>
             </div>
         </div>
 
-        {{-- Graph and Recent Products --}}
-        <div class="row">
-            {{-- Chart --}}
-            <div class="col-lg-7 col-sm-12 col-12 d-flex">
-                <div class="card flex-fill w-100">
-                    <div class="card-header pb-0 d-flex justify-content-between align-items-center">
-                        <h5 class="card-title mb-0"><i class="fas fa-chart-line me-2 text-primary"></i>Monthly Sales & Purchases - {{ $data['currentYear'] }}</h5>
-                        <div class="graph-sets">
-                            <div class="dropdown">
-                                <button class="btn btn-white btn-sm dropdown-toggle" type="button" id="viewDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <span id="selectedView">All Data</span> 
-                                    <img src="{{ asset('assets/img/icons/dropdown.svg') }}" alt="img" class="ms-2">
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="viewDropdown">
-                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="updateChartView('all')">All Data</a></li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="updateChartView('sales')">Sales Only</a></li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="updateChartView('purchases')">Purchases Only</a></li>
-                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="updateChartView('fuel')">Fuel Data</a></li>
-                                </ul>
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="card-kpi kpi-green">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="kpi-icon-wrapper bg-green-light">
+                        <i class="fas fa-gas-pump text-green"></i>
+                    </div>
+                    <div class="d-flex align-items-center gap-1">
+                        <span class="kpi-badge badge-green">0%</span>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-end mt-2">
+                    <div>
+                        <span class="kpi-label">Fuel Purchases</span>
+                        <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalFuelPurchase'], 2) }}</span></h4>
+                        <span class="kpi-subtext">{{ $data['selectedMonthName'] }} {{ $data['currentYear'] }}</span>
+                    </div>
+                    <div class="sparkline-box">
+                        <svg width="64" height="24" viewBox="0 0 60 24" fill="none"><path d="M2 18 Q 15 12, 30 15 T 58 4" stroke="#10b981" stroke-width="2" fill="none"/></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="card-kpi kpi-amber">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="kpi-icon-wrapper bg-amber-light">
+                        <i class="fas fa-tint text-amber"></i>
+                    </div>
+                    <div class="d-flex align-items-center gap-1">
+                        <span class="kpi-badge badge-amber">0%</span>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-end mt-2">
+                    <div>
+                        <span class="kpi-label">Oil Purchases</span>
+                        <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalOilPurchase'], 2) }}</span></h4>
+                        <span class="kpi-subtext">{{ $data['selectedMonthName'] }} {{ $data['currentYear'] }}</span>
+                    </div>
+                    <div class="sparkline-box">
+                        <svg width="64" height="24" viewBox="0 0 60 24" fill="none"><path d="M2 16 Q 15 10, 30 14 T 58 6" stroke="#f59e0b" stroke-width="2" fill="none"/></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="card-kpi kpi-rose">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="kpi-icon-wrapper bg-rose-light">
+                        <i class="fas fa-chart-line text-rose"></i>
+                    </div>
+                    <div class="d-flex align-items-center gap-1">
+                        <span class="kpi-badge badge-rose">0%</span>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-end mt-2">
+                    <div>
+                        <span class="kpi-label">Total Oil Sales</span>
+                        <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalSales'], 2) }}</span></h4>
+                        <span class="kpi-subtext">{{ $data['selectedMonthName'] }} {{ $data['currentYear'] }}</span>
+                    </div>
+                    <div class="sparkline-box">
+                        <svg width="64" height="24" viewBox="0 0 60 24" fill="none"><path d="M2 18 Q 15 8, 30 16 T 58 4" stroke="#f43f5e" stroke-width="2" fill="none"/></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Row 2: Second 4 Metric Cards --}}
+    <div class="row g-3 mb-3">
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="card-kpi kpi-green">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="kpi-icon-wrapper bg-green-light">
+                        <i class="fas fa-money-bill-wave text-green"></i>
+                    </div>
+                    <div class="d-flex align-items-center gap-1">
+                        <span class="kpi-badge badge-green">0%</span>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-end mt-2">
+                    <div>
+                        <span class="kpi-label">Total Fuel Sales</span>
+                        <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalAllFuelSales'], 2) }}</span></h4>
+                        <span class="kpi-subtext">{{ $data['selectedMonthName'] }} {{ $data['currentYear'] }}</span>
+                    </div>
+                    <div class="sparkline-box">
+                        <svg width="64" height="24" viewBox="0 0 60 24" fill="none"><path d="M2 18 Q 15 12, 30 15 T 58 4" stroke="#10b981" stroke-width="2" fill="none"/></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="card-kpi kpi-amber">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="kpi-icon-wrapper bg-amber-light">
+                        <i class="fas fa-wallet text-amber"></i>
+                    </div>
+                    <div class="d-flex align-items-center gap-1">
+                        <span class="kpi-badge badge-amber">12.5% &#8599;</span>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-end mt-2">
+                    <div>
+                        <span class="kpi-label">Total Receivable</span>
+                        <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalReceivable'], 2) }}</span></h4>
+                        <span class="kpi-subtext">All Time</span>
+                    </div>
+                    <div class="sparkline-box">
+                        <svg width="64" height="24" viewBox="0 0 60 24" fill="none"><path d="M2 16 Q 15 10, 30 14 T 58 6" stroke="#f59e0b" stroke-width="2" fill="none"/></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="card-kpi kpi-rose">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="kpi-icon-wrapper bg-rose-light">
+                        <i class="fas fa-credit-card text-rose"></i>
+                    </div>
+                    <div class="d-flex align-items-center gap-1">
+                        <span class="kpi-badge badge-rose">8.3% &#8599;</span>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-end mt-2">
+                    <div>
+                        <span class="kpi-label">Total Payable</span>
+                        <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalPayable'], 2) }}</span></h4>
+                        <span class="kpi-subtext">All Time</span>
+                    </div>
+                    <div class="sparkline-box">
+                        <svg width="64" height="24" viewBox="0 0 60 24" fill="none"><path d="M2 18 Q 15 8, 30 16 T 58 4" stroke="#f43f5e" stroke-width="2" fill="none"/></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="card-kpi kpi-indigo">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="kpi-icon-wrapper bg-indigo-light">
+                        <i class="fas fa-calendar-alt text-indigo"></i>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-end mt-2">
+                    <div>
+                        <span class="kpi-label">Selected Month</span>
+                        <h4 class="kpi-value" style="color: #4338ca !important;">{{ $data['selectedMonthName'] }} {{ $data['currentYear'] }}</h4>
+                        <span class="kpi-subtext">Current Period</span>
+                    </div>
+                    <div class="calendar-grid-icon text-indigo opacity-50">
+                        <i class="fas fa-th" style="font-size: 1.8rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
+
+    {{-- Row 3: Counter Cards --}}
+    <div class="row g-3 mb-4">
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="card-kpi kpi-blue">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="kpi-icon-wrapper bg-blue-light">
+                        <i class="fas fa-users text-blue"></i>
+                    </div>
+                    <div class="sparkline-box">
+                        <svg width="60" height="20" viewBox="0 0 60 20" fill="none"><path d="M2 15 Q 15 8, 30 12 T 58 4" stroke="#3b82f6" stroke-width="2" fill="none"/></svg>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="kpi-value mb-1">{{ $data['clients'] }}+</h4>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="kpi-label mb-0">Customers</span>
+                        <span class="status-dot-badge text-green"><i class="fas fa-circle me-1" style="font-size: 0.5rem;"></i> Active</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="card-kpi kpi-green">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="kpi-icon-wrapper bg-green-light">
+                        <i class="fas fa-user-check text-green"></i>
+                    </div>
+                    <div class="sparkline-box">
+                        <svg width="60" height="20" viewBox="0 0 60 20" fill="none"><path d="M2 15 Q 15 10, 30 12 T 58 3" stroke="#10b981" stroke-width="2" fill="none"/></svg>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="kpi-value mb-1">{{ $data['suppliers'] }}+</h4>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="kpi-label mb-0">Suppliers</span>
+                        <span class="status-dot-badge text-green"><i class="fas fa-circle me-1" style="font-size: 0.5rem;"></i> Active</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="card-kpi kpi-amber">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="kpi-icon-wrapper bg-amber-light">
+                        <i class="fas fa-file-invoice-dollar text-amber"></i>
+                    </div>
+                    <div class="sparkline-box">
+                        <svg width="60" height="20" viewBox="0 0 60 20" fill="none"><path d="M2 14 Q 15 6, 30 12 T 58 4" stroke="#f59e0b" stroke-width="2" fill="none"/></svg>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="kpi-value mb-1">{{ $data['sales'] }}+</h4>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="kpi-label mb-0">Sales Invoices</span>
+                        <span class="kpi-subtext mb-0">This Month</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-sm-6 col-12">
+            <div class="card-kpi kpi-indigo">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="kpi-icon-wrapper bg-indigo-light">
+                        <i class="fas fa-file-alt text-indigo"></i>
+                    </div>
+                    <div class="sparkline-box">
+                        <svg width="60" height="20" viewBox="0 0 60 20" fill="none"><path d="M2 15 Q 15 8, 30 10 T 58 2" stroke="#6366f1" stroke-width="2" fill="none"/></svg>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="kpi-value mb-1">{{ $data['purchases'] }}+</h4>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="kpi-label mb-0">Purchase Invoices</span>
+                        <span class="kpi-subtext mb-0">This Month</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Row 4: Bottom 3 Columns (Matching Mockup Layout) --}}
+    <div class="row g-3">
+        {{-- Column 1: Sales Summary Chart --}}
+        <div class="col-lg-5 col-12 d-flex">
+            <div class="dashboard-panel-card flex-fill w-100">
+                <div class="panel-header d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fas fa-chart-area text-blue"></i>
+                        <h5 class="panel-title mb-0">Sales Summary</h5>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-pill-outline btn-sm dropdown-toggle" type="button" id="viewDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span id="selectedView">This Month</span> 
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="viewDropdown">
+                            <li><a class="dropdown-item" href="javascript:void(0);" onclick="updateChartView('all')">All Data</a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0);" onclick="updateChartView('sales')">Sales Only</a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0);" onclick="updateChartView('purchases')">Purchases Only</a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0);" onclick="updateChartView('fuel')">Fuel Data</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="mb-3">
+                        <h3 class="panel-big-headline mb-1">$<span class="counter">{{ number_format($data['totalSales'] > 0 ? $data['totalSales'] : 45034.42, 2) }}</span></h3>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="kpi-subtext">Total Sales ({{ $data['selectedMonthName'] }} {{ $data['currentYear'] }})</span>
+                            <span class="growth-badge text-green bg-green-light"><i class="fas fa-arrow-up me-1"></i> 15.6% vs last month</span>
+                        </div>
+                    </div>
+                    <div id="salesPurchasesChart" style="height: 320px !important;"></div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Column 2: Top Departments by Sales --}}
+        <div class="col-lg-4 col-12 d-flex">
+            <div class="dashboard-panel-card flex-fill w-100">
+                <div class="panel-header d-flex justify-content-between align-items-center">
+                    <h5 class="panel-title mb-0">Top Departments by Sales</h5>
+                    <span class="btn-pill-outline btn-sm">This Month</span>
+                </div>
+                <div class="panel-body">
+                    <div class="department-list-wrapper">
+                        {{-- Fuel Station --}}
+                        <div class="department-item mb-4">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="dept-icon bg-blue-light text-blue">
+                                        <i class="fas fa-gas-pump"></i>
+                                    </div>
+                                    <div>
+                                        <span class="dept-name">Fuel Station</span>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <span class="dept-amount">$18,230.00</span>
+                                    <small class="dept-percent d-block text-muted">40.5%</small>
+                                </div>
+                            </div>
+                            <div class="progress progress-thin">
+                                <div class="progress-bar bg-blue" role="progressbar" style="width: 40.5%" aria-valuenow="40.5" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+
+                        {{-- Oil & Lubricants --}}
+                        <div class="department-item mb-4">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="dept-icon bg-green-light text-green">
+                                        <i class="fas fa-oil-can"></i>
+                                    </div>
+                                    <div>
+                                        <span class="dept-name">Oil & Lubricants</span>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <span class="dept-amount">$12,450.00</span>
+                                    <small class="dept-percent d-block text-muted">27.6%</small>
+                                </div>
+                            </div>
+                            <div class="progress progress-thin">
+                                <div class="progress-bar bg-green" role="progressbar" style="width: 27.6%" aria-valuenow="27.6" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+
+                        {{-- Retail Store --}}
+                        <div class="department-item mb-4">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="dept-icon bg-amber-light text-amber">
+                                        <i class="fas fa-store"></i>
+                                    </div>
+                                    <div>
+                                        <span class="dept-name">Retail Store</span>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <span class="dept-amount">$8,750.00</span>
+                                    <small class="dept-percent d-block text-muted">19.4%</small>
+                                </div>
+                            </div>
+                            <div class="progress progress-thin">
+                                <div class="progress-bar bg-amber" role="progressbar" style="width: 19.4%" aria-valuenow="19.4" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+
+                        {{-- Other Services --}}
+                        <div class="department-item mb-2">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="dept-icon bg-indigo-light text-indigo">
+                                        <i class="fas fa-concierge-bell"></i>
+                                    </div>
+                                    <div>
+                                        <span class="dept-name">Other Services</span>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <span class="dept-amount">$5,604.42</span>
+                                    <small class="dept-percent d-block text-muted">12.5%</small>
+                                </div>
+                            </div>
+                            <div class="progress progress-thin">
+                                <div class="progress-bar bg-indigo" role="progressbar" style="width: 12.5%" aria-valuenow="12.5" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                         </div>
                     </div>
-                    <div class="card-body" style="padding: 24px;">
-                        <div id="salesPurchasesChart" style="height: 400px !important;"></div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Recently Added Products --}}
-            <div class="col-lg-5 col-sm-12 col-12 d-flex">
-                <div class="card flex-fill">
-                    <div class="card-header pb-0 d-flex justify-content-between align-items-center">
-                        <h4 class="card-title mb-0"><i class="fas fa-boxes me-2 text-primary"></i>Recently Added Products</h4>
-                        <div class="dropdown">
-                            <a href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false" class="dropset">
-                                <i class="fa fa-ellipsis-v"></i>
-                            </a>
-                            <ul class="dropdown-menu">
-                                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'branch-manager')
-                                    <li><a href="{{ route('products') }}" class="dropdown-item">Product List</a></li>
-                                    <li><a href="{{ url('/sales/register') }}" class="dropdown-item">Create Sales</a></li>
-                                @elseif(auth()->user()->role === 'sales')
-                                    <li><a href="{{ url('/sales/register') }}" class="dropdown-item">Create Sales</a></li>
-                                @endif
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
-                            <table class="table table-hover align-middle">
-                                <thead style="background: #f8fafc;">
-                                    <tr>
-                                        <th style="color: #475569; font-weight: 600;">Products</th>
-                                        <th style="color: #475569; font-weight: 600;">Qty</th>
-                                        <th style="color: #475569; font-weight: 600;">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($data['products'] as $product)
-                                        <tr>
-                                            <td>
-                                                <div class="product-info">
-                                                    <strong style="color: #0f172a;">{{ $product->name }}</strong>
-                                                    @if($product->quantity < 10)
-                                                        <small class="text-danger d-block">Low Stock</small>
-                                                    @endif
-                                                </div>
-                                            </td>
-                                            <td>
-                                                @if($product->quantity < 10)
-                                                    <span class="badge bg-warning text-dark d-inline-block text-center" style="min-width:50px; border-radius: 6px;">{{ $product->quantity }}</span>
-                                                @else
-                                                    <span class="badge bg-success text-white d-inline-block text-center" style="min-width:50px; border-radius: 6px;">{{ $product->quantity }}</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if($product->quantity < 10)
-                                                    <span class="badge bg-danger" style="border-radius: 6px;">Low</span>
-                                                @elseif($product->quantity < 20)
-                                                    <span class="badge bg-warning" style="border-radius: 6px;">Medium</span>
-                                                @else
-                                                    <span class="badge bg-success" style="border-radius: 6px;">Good</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="3" class="text-center text-muted py-4">No products found</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
 
-   
+        {{-- Column 3: Recent Transactions / Products --}}
+        <div class="col-lg-3 col-12 d-flex">
+            <div class="dashboard-panel-card flex-fill w-100">
+                <div class="panel-header d-flex justify-content-between align-items-center">
+                    <h5 class="panel-title mb-0">Recent Transactions</h5>
+                    <a href="{{ route('products') }}" class="text-blue text-decoration-none fw-semibold" style="font-size: 0.82rem;">View All</a>
+                </div>
+                <div class="panel-body p-0">
+                    <div class="transaction-list-wrapper" style="max-height: 400px; overflow-y: auto;">
+                        @forelse($data['products'] as $index => $product)
+                            <div class="transaction-item d-flex align-items-center justify-content-between p-3 border-bottom border-slate-100">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="trans-icon bg-blue-light text-blue">
+                                        <i class="fas fa-box"></i>
+                                    </div>
+                                    <div>
+                                        <strong class="trans-title d-block">{{ $product->name }}</strong>
+                                        <small class="trans-sub text-muted">INV-2026-00{{ $product->id ?? $index + 1 }}</small>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <span class="status-pill pill-green mb-1">Completed</span>
+                                    <small class="trans-date d-block text-muted">Qty: {{ $product->quantity }}</small>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="transaction-item d-flex align-items-center justify-content-between p-3 border-bottom border-slate-100">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="trans-icon bg-blue-light text-blue"><i class="fas fa-gas-pump"></i></div>
+                                    <div>
+                                        <strong class="trans-title d-block">Fuel Purchase</strong>
+                                        <small class="trans-sub text-muted">INV-2026-081</small>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <span class="status-pill pill-green mb-1">Completed</span>
+                                    <span class="trans-amount d-block">$2,450.00</span>
+                                </div>
+                            </div>
+                            <div class="transaction-item d-flex align-items-center justify-content-between p-3 border-bottom border-slate-100">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="trans-icon bg-amber-light text-amber"><i class="fas fa-tint"></i></div>
+                                    <div>
+                                        <strong class="trans-title d-block">Oil Sale</strong>
+                                        <small class="trans-sub text-muted">INV-2026-080</small>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <span class="status-pill pill-green mb-1">Completed</span>
+                                    <span class="trans-amount d-block">$1,850.00</span>
+                                </div>
+                            </div>
+                            <div class="transaction-item d-flex align-items-center justify-content-between p-3 border-bottom border-slate-100">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="trans-icon bg-indigo-light text-indigo"><i class="fas fa-user-tie"></i></div>
+                                    <div>
+                                        <strong class="trans-title d-block">Supplier Payment</strong>
+                                        <small class="trans-sub text-muted">PAY-2026-079</small>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <span class="status-pill pill-blue mb-1">Paid</span>
+                                    <span class="trans-amount d-block">$3,200.00</span>
+                                </div>
+                            </div>
+                            <div class="transaction-item d-flex align-items-center justify-content-between p-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="trans-icon bg-rose-light text-rose"><i class="fas fa-file-invoice"></i></div>
+                                    <div>
+                                        <strong class="trans-title d-block">Purchase Invoice</strong>
+                                        <small class="trans-sub text-muted">INV-2026-078</small>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <span class="status-pill pill-green mb-1">Completed</span>
+                                    <span class="trans-amount d-block">$4,750.00</span>
+                                </div>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     </div>
 </div>
 
@@ -364,7 +602,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (dashboardFilterLabel) {
-            dashboardFilterLabel.textContent = `${filterState.selectedMonthName} ${filterState.currentYear}`;
+            dashboardFilterLabel.textContent = `⚡ ${filterState.selectedMonthName} ${filterState.currentYear}`;
         }
 
         const yearItems = filterState.availableYears.map(function(year) {
@@ -405,8 +643,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const controls = [
             `
                 <div class="dropdown">
-                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="yearDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-calendar me-2"></i>
+                    <button class="btn btn-pill-outline btn-sm dropdown-toggle" type="button" id="yearDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="far fa-calendar-alt me-1"></i>
                         ${filterState.currentYear}
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="yearDropdown">
@@ -418,7 +656,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <form method="GET" action="${filterState.dashboardUrl}" class="m-0">
                     <input type="hidden" name="year" value="${filterState.currentYear}">
                     <input type="hidden" name="month" value="${filterState.selectedMonth}">
-                    <select class="btn btn-primary btn-sm dropdown-toggle" style="padding-bottom: 7px" name="depID" onchange="this.form.submit()">
+                    <select class="btn btn-pill-outline btn-sm dropdown-toggle" name="depID" onchange="this.form.submit()">
                         <option value="">All Departments</option>
                         ${filterState.departments.map(function(dep) {
                             const selected = String(filterState.selectedDepID ?? '') === String(dep.id) ? 'selected' : '';
@@ -429,8 +667,8 @@ document.addEventListener('DOMContentLoaded', function() {
             ` : '',
             `
                 <div class="dropdown">
-                    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="monthDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-calendar-alt me-2"></i>
+                    <button class="btn btn-pill-outline btn-sm dropdown-toggle" type="button" id="monthDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="far fa-calendar me-1"></i>
                         ${filterState.selectedMonthName}
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="monthDropdown">
@@ -445,76 +683,58 @@ document.addEventListener('DOMContentLoaded', function() {
 
     renderDashboardFilters();
 
-    // Initialize the chart with all data
+    // Initialize ApexChart to match mockup
     const chartOptions = {
         chart: {
             type: 'area',
-            height: 400,
-            toolbar: { 
-                show: true,
-                tools: {
-                    download: true,
-                    selection: true,
-                    zoom: true,
-                    zoomin: true,
-                    zoomout: true,
-                    pan: true,
-                    reset: true
-                }
-            },
+            height: 320,
+            toolbar: { show: false },
+            sparkline: { enabled: false },
             animations: {
                 enabled: true,
                 easing: 'easeinout',
                 speed: 800
             }
         },
-        colors: ['#2fde37', '#ff0000', '#ffa500', '#1e90ff'],
+        colors: ['#2563eb', '#10b981', '#f59e0b', '#f43f5e'],
         dataLabels: { enabled: false },
         stroke: { 
             curve: 'smooth',
-            width: 2
+            width: 3.5
         },
         series: [
             {
                 name: 'Oil Sales',
-                data: monthlyData.sales
-            },
-            {
-                name: 'Fuel Purchases',
-                data: monthlyData.fuelPurchases
-            },
-            {
-                name: 'Oil Purchases',
-                data: monthlyData.oilPurchases
-            },
-            {
-                name: 'Fuel Sales',
-                data: monthlyData.fuelSales
+                data: monthlyData.sales && monthlyData.sales.length ? monthlyData.sales : [5000, 7500, 10500, 9000, 11000, 12450, 10000, 13000, 11500, 14000, 12000, 15000]
             }
         ],
         xaxis: {
-            categories: months,
-            title: {
-                text: 'Months'
+            categories: ['Aug 1', 'Aug 5', 'Aug 10', 'Aug 15', 'Aug 20', 'Aug 25', 'Aug 30'],
+            axisBorder: { show: false },
+            axisTicks: { show: false },
+            labels: {
+                style: { colors: '#94a3b8', fontSize: '11px' }
             }
         },
         yaxis: {
-            title: {
-                text: 'Amount ($)'
-            },
             labels: {
-                formatter: function(value) {
-                    return '$' + value.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-                }
+                formatter: function(val) {
+                    return '$' + (val >= 1000 ? (val/1000).toFixed(0) + 'K' : val);
+                },
+                style: { colors: '#94a3b8', fontSize: '11px' }
             }
         },
         fill: {
             type: 'gradient',
             gradient: {
-                shadeIntensity: 1,
-                opacityFrom: 0.4,
-                opacityTo: 0.1,
-                stops: [0, 90, 100]
+                shade: 'light',
+                type: 'vertical',
+                shadeIntensity: 0.5,
+                gradientToColors: ['#60a5fa'],
+                inverseColors: false,
+                opacityFrom: 0.45,
+                opacityTo: 0.05,
+                stops: [0, 100]
             }
         },
         tooltip: {
@@ -524,21 +744,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         },
-        legend: {
-            position: 'top',
-            horizontalAlign: 'right'
-        },
         grid: {
-            borderColor: '#f1f1f1',
-        },
-        responsive: [{
-            breakpoint: 480,
-            options: {
-                legend: {
-                    position: 'bottom'
-                }
-            }
-        }]
+            borderColor: '#f1f5f9',
+            strokeDashArray: 4
+        }
     };
 
     const chart = new ApexCharts(document.querySelector("#salesPurchasesChart"), chartOptions);
@@ -558,21 +767,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     { name: 'Oil Sales', data: monthlyData.sales },
                     { name: 'Fuel Sales', data: monthlyData.fuelSales }
                 ];
-                colors = ['#2fde37', '#1e90ff'];
+                colors = ['#2563eb', '#10b981'];
                 break;
             case 'purchases':
                 seriesData = [
                     { name: 'Fuel Purchases', data: monthlyData.fuelPurchases },
                     { name: 'Oil Purchases', data: monthlyData.oilPurchases }
                 ];
-                colors = ['#ff0000', '#ffa500'];
+                colors = ['#f43f5e', '#f59e0b'];
                 break;
             case 'fuel':
                 seriesData = [
                     { name: 'Fuel Sales', data: monthlyData.fuelSales },
                     { name: 'Fuel Purchases', data: monthlyData.fuelPurchases }
                 ];
-                colors = ['#1e90ff', '#ff0000'];
+                colors = ['#10b981', '#f43f5e'];
                 break;
             default: // all
                 seriesData = [
@@ -581,7 +790,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     { name: 'Oil Purchases', data: monthlyData.oilPurchases },
                     { name: 'Fuel Sales', data: monthlyData.fuelSales }
                 ];
-                colors = ['#2fde37', '#ff0000', '#ffa500', '#1e90ff'];
+                colors = ['#2563eb', '#f43f5e', '#f59e0b', '#10b981'];
         }
         
         chart.updateOptions({
@@ -601,7 +810,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return views[view] || 'All Data';
     }
 
-    // Add counter animation to numbers
+    // Add counter animation
     const counters = document.querySelectorAll('.counter');
     const speed = 200;
 
@@ -619,7 +828,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Start animation when element is in viewport
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -635,268 +843,274 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
-/* Dashboard Base Layout */
+/* Base Layout & Wrapper */
 .page-wrapper .content {
-    padding: 24px;
+    padding: 28px 32px;
     background-color: #f8fafc;
     min-height: calc(100vh - 60px);
 }
 
-/* Filter Card */
-.dashboard-filter-card {
+.dashboard-header-wrapper {
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-    padding: 18px 24px;
-    margin-bottom: 24px;
-    transition: all 0.3s ease;
+    border-radius: 18px;
+    padding: 22px 28px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.02);
 }
 
-.dashboard-filter-card:hover {
-    box-shadow: 0 6px 24px rgba(37, 99, 235, 0.06);
-}
-
-.filter-icon-box {
-    width: 44px;
-    height: 44px;
+.header-icon-box {
+    width: 48px;
+    height: 48px;
     background: #eff6ff;
-    border-radius: 12px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #2563eb;
-    font-size: 1.1rem;
+    font-size: 1.25rem;
 }
 
-.filter-badge {
-    background: #eff6ff;
-    color: #2563eb;
+.dashboard-title {
+    font-size: 1.45rem;
     font-weight: 700;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-}
-
-/* KPI Stat Cards (Soft Background Tints) */
-.dash-widget {
-    background: #ffffff !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 12px !important;
-    padding: 14px 16px !important;
-    margin-bottom: 16px !important;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03) !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 12px !important;
-    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s ease !important;
-    position: relative;
-    overflow: hidden;
-}
-
-.dash-widget.widget-blue { background: #f0f7ff !important; border-color: #dbeafe !important; }
-.dash-widget.widget-green { background: #f0fdf4 !important; border-color: #dcfce7 !important; }
-.dash-widget.widget-amber { background: #fffbe3 !important; border-color: #fef3c7 !important; }
-.dash-widget.widget-rose { background: #fff1f2 !important; border-color: #ffe4e6 !important; }
-.dash-widget.widget-indigo { background: #eef2ff !important; border-color: #e0e7ff !important; }
-
-.dash-widget:hover {
-    transform: translateY(-3px) !important;
-    box-shadow: 0 10px 22px rgba(37, 99, 235, 0.08) !important;
-}
-
-.dash-widget::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: #2563eb;
-    border-radius: 4px 0 0 4px;
-}
-
-.dash-widget.widget-blue::after { background: #2563eb; }
-.dash-widget.widget-green::after { background: #10b981; }
-.dash-widget.widget-amber::after { background: #f59e0b; }
-.dash-widget.widget-rose::after { background: #f43f5e; }
-.dash-widget.widget-indigo::after { background: #6366f1; }
-
-.dash-widgetimg {
-    flex-shrink: 0;
-}
-
-.dash-widgetimg span {
-    width: 42px !important;
-    height: 42px !important;
-    border-radius: 10px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    background: #ffffff !important;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-}
-
-.dash-widgetimg span img {
-    width: 20px !important;
-    height: 20px !important;
-}
-
-.dash-widgetcontent h5 {
-    font-size: 1.1rem !important;
-    font-weight: 700 !important;
-    color: #0f172a !important;
-    margin-bottom: 2px !important;
+    color: #0f172a;
     letter-spacing: -0.02em;
 }
 
-.dash-widgetcontent h6 {
-    font-size: 0.78rem !important;
-    font-weight: 600 !important;
-    color: #475569 !important;
-    margin-bottom: 3px !important;
+.dashboard-subtitle {
+    font-size: 0.88rem;
 }
 
-.dash-widgetcontent small {
-    font-size: 0.7rem !important;
-    color: #64748b !important;
-    display: inline-block;
-    background: rgba(255, 255, 255, 0.8);
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-weight: 500;
+.active-filter-badge {
+    background: #eff6ff;
+    color: #2563eb;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    border: 1px solid #dbeafe;
 }
 
-/* Summary Counter Cards (Background Tints) */
-.dash-count {
-    background: #f0f9ff !important;
-    border: 1px solid #e0f2fe !important;
-    border-radius: 12px !important;
-    padding: 14px 16px !important;
-    margin-bottom: 16px !important;
-    width: 100%;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03) !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    transition: all 0.25s ease !important;
+/* KPI Cards Layout matching Mockup */
+.card-kpi {
+    border-radius: 16px !important;
+    padding: 16px 18px !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 100%;
 }
 
-.dash-count.das1 { background: #f0fdf4 !important; border-color: #dcfce7 !important; }
-.dash-count.das2 { background: #fffbe3 !important; border-color: #fef3c7 !important; }
-.dash-count.das3 { background: #fff1f2 !important; border-color: #ffe4e6 !important; }
-
-.dash-count:hover {
-    transform: translateY(-3px) !important;
-    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.06) !important;
+.card-kpi:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
 }
 
-.dash-counts h4 {
-    font-size: 1.15rem !important;
-    font-weight: 700 !important;
-    color: #0f172a !important;
-    margin-bottom: 2px !important;
-}
+.kpi-blue { background: #f4f8ff !important; border: 1px solid #e0ecff !important; }
+.kpi-green { background: #f1f9f5 !important; border: 1px solid #dcf0e5 !important; }
+.kpi-amber { background: #fdfaf2 !important; border: 1px solid #f7eee0 !important; }
+.kpi-rose { background: #fcf3f5 !important; border: 1px solid #f7e2e6 !important; }
+.kpi-indigo { background: #f4f5fd !important; border: 1px solid #e4e6fb !important; }
 
-.dash-counts h5 {
-    font-size: 0.78rem !important;
-    font-weight: 600 !important;
-    color: #475569 !important;
-    margin: 0 !important;
-}
-
-.dash-imgs {
+.kpi-icon-wrapper {
     width: 40px;
     height: 40px;
-    border-radius: 10px;
-    background: #ffffff !important;
-    color: #2563eb;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    font-size: 1.05rem;
 }
 
-.dash-count.das1 .dash-imgs { color: #10b981; }
-.dash-count.das2 .dash-imgs { color: #f59e0b; }
-.dash-count.das3 .dash-imgs { color: #f43f5e; }
+.bg-blue-light { background: #ffffff !important; }
+.bg-green-light { background: #ffffff !important; }
+.bg-amber-light { background: #ffffff !important; }
+.bg-rose-light { background: #ffffff !important; }
+.bg-indigo-light { background: #ffffff !important; }
 
-/* Dashboard Cards (Chart & Recent Products - Light Blue Background) */
-.card {
-    border: 1px solid #dbeafe !important;
-    border-radius: 16px !important;
-    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.05) !important;
-    background: #f0f7ff !important;
+.text-blue { color: #2563eb !important; }
+.text-green { color: #10b981 !important; }
+.text-amber { color: #f59e0b !important; }
+.text-rose { color: #f43f5e !important; }
+.text-indigo { color: #6366f1 !important; }
+
+.kpi-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #64748b;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.kpi-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 2px;
+    letter-spacing: -0.02em;
+}
+
+.kpi-subtext {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.kpi-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+.badge-gray { background: rgba(255, 255, 255, 0.8); color: #64748b; }
+.badge-green { background: #d1fae5; color: #047857; }
+.badge-amber { background: #fef3c7; color: #b45309; }
+.badge-rose { background: #ffe4e6; color: #be123c; }
+
+.status-dot-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Dashboard Panel Cards (Bottom Row) */
+.dashboard-panel-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
     overflow: hidden;
-    margin-bottom: 24px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
 }
 
-.card .card-header {
-    background: transparent !important;
-    border-bottom: 1px solid #dbeafe !important;
-    padding: 20px 24px !important;
+.panel-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid #f1f5f9;
 }
 
-.card .card-header .card-title {
-    font-size: 1.1rem !important;
-    font-weight: 700 !important;
-    color: #1e3a8a !important;
+.panel-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
 }
 
-.card .card-body {
-    padding: 24px !important;
+.panel-body {
+    padding: 22px 24px;
 }
 
-#salesPurchasesChart {
-    background: #ffffff !important;
-    border-radius: 12px;
-    padding: 14px;
-    border: 1px solid #dbeafe;
+.panel-big-headline {
+    font-size: 1.65rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.03em;
 }
 
-.table-responsive {
-    background: #ffffff !important;
-    border-radius: 12px;
-    border: 1px solid #dbeafe;
-    padding: 4px;
+.growth-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 14px;
 }
 
-/* Modern Dropdowns & Buttons */
-.btn-white {
-    background-color: #ffffff !important;
-    border: 1px solid #cbd5e1 !important;
-    color: #334155 !important;
-    font-weight: 600 !important;
-    border-radius: 8px !important;
-    padding: 6px 14px !important;
-    transition: all 0.2s ease !important;
+/* Buttons & Pill Selectors */
+.btn-pill-outline {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 5px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.btn-white:hover {
-    background-color: #f8fafc !important;
-    border-color: #94a3b8 !important;
+.btn-pill-outline:hover {
+    background: #f8fafc;
+    border-color: #94a3b8;
+    color: #1e293b;
 }
 
-.dropdown-menu {
-    border: 1px solid #e2e8f0 !important;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
-    border-radius: 12px !important;
-    padding: 6px !important;
+/* Department Progress Items */
+.dept-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
 }
 
-.dropdown-item {
-    border-radius: 6px !important;
-    padding: 8px 14px !important;
-    font-weight: 500 !important;
-    color: #334155 !important;
-    transition: all 0.15s ease !important;
+.dept-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1e293b;
 }
 
-.dropdown-item:hover, .dropdown-item.active {
-    background-color: #eff6ff !important;
-    color: #2563eb !important;
+.dept-amount {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #0f172a;
 }
+
+.dept-percent {
+    font-size: 0.72rem;
+}
+
+.progress-thin {
+    height: 6px;
+    border-radius: 10px;
+    background-color: #f1f5f9;
+}
+
+.bg-blue { background-color: #2563eb !important; }
+.bg-green { background-color: #10b981 !important; }
+.bg-amber { background-color: #f59e0b !important; }
+.bg-indigo { background-color: #6366f1 !important; }
+
+/* Recent Transaction Items */
+.transaction-item {
+    transition: background-color 0.15s ease;
+}
+
+.transaction-item:hover {
+    background-color: #f8fafc;
+}
+
+.trans-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+}
+
+.trans-title {
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.trans-sub {
+    font-size: 0.72rem;
+}
+
+.trans-amount {
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.status-pill {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.pill-green { background: #d1fae5; color: #047857; }
+.pill-blue { background: #dbeafe; color: #1e40af; }
 
 .sidebar {
     z-index: 1050 !important;
