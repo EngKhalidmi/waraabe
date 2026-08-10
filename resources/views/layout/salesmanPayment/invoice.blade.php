@@ -167,16 +167,15 @@
 <body>
     <div class="invoice-box">
         <div class="header">
-            <img src="{{ asset('/Logo/maal.png') }}" alt="Company Logo">
+            <img src="{{ asset('/Logo/Report-logo.png') }}" alt="Company Logo">
             <div class="company-name">
 
 
-                <h1>TABANTAABO FUEL STATION BURAO</h1>
-                <p>Kaalinta Shiidaalka Tabantaabo
-                    <br>Burco Somaliland
+                <h1>{{ $settings->company_name ?? 'WARAABE FUEL STATIONS' }}</h1>
+                <p>{{ $settings->company_address ?? 'Kaalinta Shiidaalka Waraabe, Berbera Somaliland' }}
                     <br>
-                    +252 634042473 | 634357338 | 713013 <br>
-                    ZAAD: 400723 | Edahab: 731684
+                    Tel: {{ $settings->phone1 ?? '' }}{{ !empty($settings->phone2) ? ' | ' . $settings->phone2 : '' }} <br>
+                    ZAAD: {{ $settings->zaad ?? '' }} | EDAHAB: {{ $settings->edahab ?? '' }}
                 </p>
                 <hr>
 

@@ -156,13 +156,12 @@
 
                     <div class="table-responsive mt-4">
                         <center>
-                             <img src="{{ asset('/Logo/Logo1.png') }}" width="150" alt="Company Logo">
-                <h1>WARAABE FUEL STATIONS</h1>
-                <p>Kaalinta Shiidaalka Waraabe
-                    <br>Berbera Somaliland
+                             <img src="{{ asset('/Logo/Report-logo.png') }}" width="150" alt="Company Logo">
+                <h1>{{ $settings->company_name ?? 'WARAABE FUEL STATIONS' }}</h1>
+                <p>{{ $settings->company_address ?? 'Kaalinta Shiidaalka Waraabe, Berbera Somaliland' }}
                     <br>
-                    +252 63XXXXX | 63XXXXXX | 5XXXXX <br>
-                    ZAAD: XXXXX | Edahab: XXXXX
+                    Tel: {{ $settings->phone1 ?? '' }}{{ !empty($settings->phone2) ? ' | ' . $settings->phone2 : '' }} <br>
+                    ZAAD: {{ $settings->zaad ?? '' }} | EDAHAB: {{ $settings->edahab ?? '' }}
                 </p>
                             <hr>
                             <h4 class="card-title">Purchase Payment Report</h4>

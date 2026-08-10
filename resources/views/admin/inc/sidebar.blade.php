@@ -862,6 +862,11 @@
             <li><a href="{{ route('report.sales') }}"
                     class="{{ Route::is('report.sales') ? 'active' : '' }}">Sales Report</a></li>
 
+            <li>
+                <a href="{{ route('settings.index') }}" class="{{ Route::is('settings.index') ? 'active' : '' }}">
+                    <i class="fas fa-cog"></i> <span>Header Settings</span>
+                </a>
+            </li>
             </ul>
             </li>
             @endif

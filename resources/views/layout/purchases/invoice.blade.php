@@ -142,16 +142,15 @@
 <body>
     <div class="invoice-box">
         <div class="header">
-                <img src="{{ asset('/Logo/Logo1.png') }}" alt="Company Logo">
+                <img src="{{ asset('/Logo/Report-logo.png') }}" alt="Company Logo">
             <div class="company-name">
 
 
-                <h1>WARAABE FUEL STATIONS</h1>
-                <p>Kaalinta Shiidaalka Waraabe
-                    <br>Berbera Somaliland
+                <h1>{{ $settings->company_name ?? 'WARAABE FUEL STATIONS' }}</h1>
+                <p>{{ $settings->company_address ?? 'Kaalinta Shiidaalka Waraabe, Berbera Somaliland' }}
                     <br>
-                    +252 63XXXXX | 63XXXXXX | 5XXXXX <br>
-                    ZAAD: XXXXX | Edahab: XXXXX
+                    Tel: {{ $settings->phone1 ?? '' }}{{ !empty($settings->phone2) ? ' | ' . $settings->phone2 : '' }} <br>
+                    ZAAD: {{ $settings->zaad ?? '' }} | EDAHAB: {{ $settings->edahab ?? '' }}
                 </p>
                 <center>
                     <p>Purchases Receipt</p>
@@ -166,9 +165,9 @@
 
         <div class="customer-info">
             <strong>Invoice To :</strong>
-            {{ $transaction->customer ? $transaction->customer->name : 'N/A' }} <br>
+            {{ optional($transaction->supplier)->name ?? 'N/A' }} <br>
             <strong>Phone No :</strong>
-            {{ $transaction->customer ? $transaction->customer->phone : 'N/A' }}
+            {{ optional($transaction->supplier)->phone ?? 'N/A' }}
         </div>
 
 
@@ -188,14 +187,18 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($transaction->purchase as $buy)
+        @forelse($transaction->purchases ?? [] as $buy)
             <tr>
                 <td>{{ optional($buy->pro)->name ?? 'N/A' }}</td>
                 <td>{{ $buy->quantity }}</td>
                 <td>${{ number_format($buy->unit_cost, 2) }}</td>
                 <td>${{ number_format($buy->total_cost, 2) }}</td>
             </tr>
-        @endforeach
+        @empty
+            <tr>
+                <td colspan="4" style="text-align: center;">No items found</td>
+            </tr>
+        @endforelse
     </tbody>
 </table>
 

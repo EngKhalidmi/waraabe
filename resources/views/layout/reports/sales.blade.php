@@ -164,15 +164,14 @@
                     <!-- Print Area (Hidden) -->
                     <div class="table-responsive" id="printArea" style="display:none;">
                         <center>
-                             <img src="{{ asset('/Logo/Logo1.png') }}" width="150" alt="Company Logo">
+                             <img src="{{ asset('/Logo/Report-logo.png') }}" width="150" alt="Company Logo">
 
 
-                <h1>WARAABE FUEL STATIONS</h1>
-                <p>Kaalinta Shiidaalka Waraabe
-                    <br>Berbera Somaliland
+                <h1>{{ $settings->company_name ?? 'WARAABE FUEL STATIONS' }}</h1>
+                <p>{{ $settings->company_address ?? 'Kaalinta Shiidaalka Waraabe, Berbera Somaliland' }}
                     <br>
-                    +252 63XXXXX | 63XXXXXX | 5XXXXX <br>
-                    ZAAD: XXXXX | Edahab: XXXXX
+                    Tel: {{ $settings->phone1 ?? '' }}{{ !empty($settings->phone2) ? ' | ' . $settings->phone2 : '' }} <br>
+                    ZAAD: {{ $settings->zaad ?? '' }} | EDAHAB: {{ $settings->edahab ?? '' }}
                 </p>
                             <hr>
                             <h4 class="card-title">Sales Summary Report</h4>

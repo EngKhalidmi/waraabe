@@ -175,23 +175,22 @@
                 <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
                     <!-- Logo -->
                     <div style="width: 120px; height: 120px; background: #2c5aa0; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; overflow: hidden;">
-                        <img src="{{ asset('/Logo/Logo1.png') }}" alt="Company Logo" width="110" height="110" style="object-fit: contain;">
+                        <img src="{{ asset('/Logo/Report-logo.png') }}" alt="Company Logo" width="110" height="110" style="object-fit: contain;">
                     </div>
                     <div>
-                        <h1 style="font-size: 28px; font-weight: bold; margin: 0; color: #2c5aa0;">WARAABE FUEL STATION</h1>
+                        <h1 style="font-size: 28px; font-weight: bold; margin: 0; color: #2c5aa0;">{{ $settings->company_name ?? 'WARAABE FUEL STATIONS' }}</h1>
                         <p style="margin: 5px 0; font-size: 14px;">
-                            Kaalinta Shiidaalka Waraabe<br>
-                            Berbera Somaliland
+                            {{ $settings->company_address ?? 'Kaalinta Shiidaalka Waraabe, Berbera Somaliland' }}
                         </p>
                         
                         <p style="margin: 3px 0;">
                             <i class="fas fa-phone-alt" style="color: #2c5aa0; margin-right: 5px;"></i>
-                            <strong>Tell:</strong> 7XXXXX | 063-XXXXXX | 063-XXXXXX
+                            <strong>Tell:</strong> {{ $settings->phone1 ?? '' }}{{ !empty($settings->phone2) ? ' | ' . $settings->phone2 : '' }}
                         </p>
                         
                         <p style="margin: 5px 0; font-size: 14px;">
                             <i class="fas fa-wallet" style="color: #2c5aa0; margin-right: 5px;"></i>
-                            <strong>Merchant Accounts: Zaad : XXXX &nbsp; | &nbsp; E-dahab : XXXXX</strong>
+                            <strong>Merchant Accounts: Zaad : {{ $settings->zaad ?? '' }} &nbsp; | &nbsp; E-dahab : {{ $settings->edahab ?? '' }}</strong>
                         </p>
                     </div>
                 </div>

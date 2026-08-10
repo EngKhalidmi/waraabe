@@ -279,6 +279,8 @@
                         <a class="dropdown-item" href="{{ route('profile.users') }}"> <img
                                 src="{{ asset('/assets/img/icons/users1.svg') }}" class="me-2" alt="img"> My
                             Profile</a>
+                        <a class="dropdown-item" href="{{ route('settings.index') }}"> <img
+                                src="{{ asset('/assets/img/icons/settings.svg') }}" class="me-2" alt="img"> Settings</a>
                         <hr class="m-0">
                         <form action="{{ route('logout') }}" Method="POST">
                             @csrf
@@ -295,6 +297,7 @@
                 aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
             <div class="dropdown-menu dropdown-menu-right">
                 <a class="dropdown-item" href="{{ route('profile.users') }}"> My Profile</a>
+                <a class="dropdown-item" href="{{ route('settings.index') }}"> Settings</a>
                 <form action="{{ route('logout') }}" Method="POST">
                     @csrf
                     <button class="dropdown-item" type="submit"> Logout</button>

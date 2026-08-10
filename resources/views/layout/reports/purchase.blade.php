@@ -80,16 +80,7 @@
                                             <input type="text" id="salesID" name="salesID" placeholder="Transaction ID">
                                         </div>
                                     </div>
-                                    <div class="col-lg-3 col-sm-6 col-13">
-                                        <div class="form-group">
-                                            <select name="depID" id="depID" class="select">
-                                                <option value="">Select Department</option>
-                                                @foreach ($departments as $dep)
-                                                    <option value="{{ $dep->id }}">{{ $dep->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
+
                                     <div class="col-lg-3 col-sm-6 col-12">
                                         <div class="form-group">
                                             <select name="payMethod" id="payMethod" class="select">
@@ -136,45 +127,87 @@
                     </div>
 
                     <!-- Print Area (Hidden) -->
-                    <div class="table-responsive" id="printArea" style="display:none;">
-                        <table class="table mt-4" id="PurchaseReportPrint">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Transaction ID</th>
-                                    <th>Supplier</th>
-                                    <th>Department</th>
-                                    <th>User</th>
-                                    <th>Product</th>
-                                    <th>Quantity</th>
-                                    <th>Unit Cost</th>
-                                    <th>Total Cost</th>
-                                    <th>Payment Method</th>
-                                    <th>Paid Amount</th>
-                                    <th>Balance</th>
-                                </tr>
-                            </thead>
-                            <tbody id="printTableBody">
-                                <!-- Data will be appended here by JS -->
-                            </tbody>
-                        </table>
+                    <div id="printArea" style="display:none;">
+                        <div class="print-container" style="width: 100%; margin: 0 auto; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #1e293b;">
+                            <!-- Printable Header Section -->
+                            <div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #2c5aa0;">
+                                <table style="width: 100%; border-collapse: collapse; border: none;">
+                                    <tr>
+                                        <td style="width: 100px; vertical-align: middle; border: none; padding: 0;">
+                                            <img src="{{ asset('/Logo/Report-logo.png') }}" width="90" alt="Company Logo" style="object-fit: contain;">
+                                        </td>
+                                        <td style="vertical-align: middle; border: none; padding-left: 15px;">
+                                            <h2 style="font-size: 22px; font-weight: 700; margin: 0; color: #2c5aa0; text-transform: uppercase; letter-spacing: 0.5px;">{{ $settings->company_name ?? 'WARAABE FUEL STATIONS' }}</h2>
+                                            <p style="margin: 3px 0 0 0; font-size: 13px; color: #475569; font-weight: 500;">
+                                                {{ $settings->company_address ?? 'Kaalinta Shiidaalka Waraabe • Berbera Somaliland' }}
+                                            </p>
+                                            <p style="margin: 2px 0 0 0; font-size: 12px; color: #64748b;">
+                                                Tel: {{ $settings->phone1 ?? '' }}{{ !empty($settings->phone2) ? ' | ' . $settings->phone2 : '' }} &nbsp;|&nbsp; ZAAD: {{ $settings->zaad ?? '' }} &bull; EDAHAB: {{ $settings->edahab ?? '' }}
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- Printable Title Bar -->
+                            <div style="margin-bottom: 20px; padding: 10px 15px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0;">
+                                <table style="width: 100%; border-collapse: collapse; border: none;">
+                                    <tr>
+                                        <td style="border: none; padding: 0;">
+                                            <h4 style="margin: 0; font-size: 16px; font-weight: 700; color: #1e293b; text-transform: uppercase;">PURCHASES REPORT</h4>
+                                        </td>
+                                        <td style="text-align: right; border: none; padding: 0;">
+                                            <span style="font-size: 11px; color: #64748b; font-weight: 500;">Printed: {{ date('d M Y, h:i A') }}</span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <!-- Printable Table -->
+                            <table class="print-table" id="PurchaseReportPrint" style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                                <thead>
+                                    <tr style="background-color: #2c5aa0; color: #ffffff;">
+                                        <th style="padding: 9px 8px; text-align: left; font-size: 12px; font-weight: 700; border: 1px solid #2c5aa0;">Date</th>
+                                        <th style="padding: 9px 8px; text-align: left; font-size: 12px; font-weight: 700; border: 1px solid #2c5aa0;">Trans ID</th>
+                                        <th style="padding: 9px 8px; text-align: left; font-size: 12px; font-weight: 700; border: 1px solid #2c5aa0;">Supplier</th>
+                                        <th style="padding: 9px 8px; text-align: left; font-size: 12px; font-weight: 700; border: 1px solid #2c5aa0;">User</th>
+                                        <th style="padding: 9px 8px; text-align: left; font-size: 12px; font-weight: 700; border: 1px solid #2c5aa0;">Product</th>
+                                        <th style="padding: 9px 8px; text-align: right; font-size: 12px; font-weight: 700; border: 1px solid #2c5aa0;">QTY</th>
+                                        <th style="padding: 9px 8px; text-align: right; font-size: 12px; font-weight: 700; border: 1px solid #2c5aa0;">Unit Cost</th>
+                                        <th style="padding: 9px 8px; text-align: right; font-size: 12px; font-weight: 700; border: 1px solid #2c5aa0;">Total Cost</th>
+                                        <th style="padding: 9px 8px; text-align: right; font-size: 12px; font-weight: 700; border: 1px solid #2c5aa0;">Paid Amount</th>
+                                        <th style="padding: 9px 8px; text-align: right; font-size: 12px; font-weight: 700; border: 1px solid #2c5aa0;">Balance</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="printTableBody">
+                                    <!-- Data will be appended here by JS -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                     <!-- Visible Report Area -->
                     <div class="table-responsive mt-4">
-                        <center>
-                             <img src="{{ asset('/Logo/Logo1.png') }}" width="150 "alt="Company Logo">
-
-                <h1>WARAABE FUEL STATIONS</h1>
-                <p>Kaalinta Shiidaalka Waraabe
-                    <br>Berbera Somaliland
-                    <br>
-                    +252 63XXXXX | 63XXXXXX | 5XXXXX <br>
-                    ZAAD: XXXXX | Edahab: XXXXX
-                </p>
-                            <hr>
-                            <h4 class="card-title">Purchases Report</h4>
-                        </center>
+                        <div class="report-header-box" style="margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid #2c5aa0;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;">
+                                <div style="display: flex; align-items: center; gap: 15px;">
+                                    <img src="{{ asset('/Logo/Report-logo.png') }}" width="100" alt="Company Logo" style="object-fit: contain;">
+                                    <div>
+                                        <h2 style="font-size: 22px; font-weight: 700; margin: 0; color: #2c5aa0; text-transform: uppercase; letter-spacing: 0.5px;">{{ $settings->company_name ?? 'WARAABE FUEL STATIONS' }}</h2>
+                                        <p style="margin: 3px 0 0 0; font-size: 13px; color: #475569; font-weight: 500;">
+                                            {{ $settings->company_address ?? 'Kaalinta Shiidaalka Waraabe • Berbera Somaliland' }}
+                                        </p>
+                                        <p style="margin: 2px 0 0 0; font-size: 12px; color: #64748b;">
+                                            Tel: {{ $settings->phone1 ?? '' }}{{ !empty($settings->phone2) ? ' | ' . $settings->phone2 : '' }} &nbsp;|&nbsp; ZAAD: {{ $settings->zaad ?? '' }} &bull; EDAHAB: {{ $settings->edahab ?? '' }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div style="text-align: right; background: #f8fafc; padding: 10px 18px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                    <h4 style="margin: 0; font-size: 16px; font-weight: 700; color: #1e293b; text-transform: uppercase;">PURCHASES REPORT</h4>
+                                    <span style="font-size: 11px; color: #64748b; font-weight: 500;">Generated: {{ date('d M Y, h:i A') }}</span>
+                                </div>
+                            </div>
+                        </div>
                         
                         <div id="reportResults">
                             <!-- Transaction cards will be appended here by JS -->
@@ -192,7 +225,7 @@
         function getPurchaseReport() {
             let proID = document.getElementById('proID').value;
             let salesID = document.getElementById('salesID').value;
-            let depID = document.getElementById('depID').value;
+            let depID = document.getElementById('depID') ? document.getElementById('depID').value : '';
             let payMethod = document.getElementById('payMethod').value;
             let startDate = document.getElementById('startDate').value;
             let endDate = document.getElementById('endDate').value;
@@ -237,7 +270,7 @@
                             });
                         } else {
                             reportResults.innerHTML = '<div class="alert alert-warning text-center">No purchase records found</div>';
-                            printTableBody.innerHTML = '<tr><td colspan="12" class="text-center">No purchase records found</td></tr>';
+                            printTableBody.innerHTML = '<tr><td colspan="10" class="text-center">No purchase records found</td></tr>';
                         }
                     } else {
                         Swal.fire({
@@ -251,7 +284,7 @@
                 .catch(error => {
                     console.error(error);
                     reportResults.innerHTML = '<div class="alert alert-danger text-center">Error fetching purchase data</div>';
-                    printTableBody.innerHTML = '<tr><td colspan="12" class="text-center">Error fetching purchase data</td></tr>';
+                    printTableBody.innerHTML = '<tr><td colspan="10" class="text-center">Error fetching purchase data</td></tr>';
                 });
         }
 
@@ -270,31 +303,31 @@
                     </div>
                     <div class="card-body">
                         <div class="row mb-3">
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <strong>Supplier:</strong> ${transaction.supplier}
                             </div>
-                            <div class="col-md-3">
-                                <strong>Department:</strong> ${transaction.dep}
-                            </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <strong>User:</strong> ${transaction.user}
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <strong>Payment:</strong> ${transaction.payMethod}
                             </div>
                         </div>
-                        <div class="row mb-3">
-                            <div class="col-md-3">
-                                <strong>Subtotal:</strong> ${transaction.subtotal}
+                        <div class="row mb-3 p-3 bg-light rounded border">
+                            <div class="col-md-2 col-6">
+                                <strong>Subtotal:</strong><br><span class="text-dark font-weight-bold">$${transaction.subtotal}</span>
                             </div>
-                            <div class="col-md-3">
-                                <strong>Discount:</strong> ${transaction.discount}
+                            <div class="col-md-2 col-6">
+                                <strong>Discount:</strong><br><span class="text-dark font-weight-bold">$${transaction.discount}</span>
                             </div>
-                            <div class="col-md-3">
-                                <strong>Net Price:</strong> ${transaction.net_price}
+                            <div class="col-md-2 col-6">
+                                <strong>Net Price:</strong><br><span class="text-dark font-weight-bold">$${transaction.net_price}</span>
                             </div>
-                            <div class="col-md-3">
-                                <strong>Balance:</strong> ${transaction.balance}
+                            <div class="col-md-3 col-6">
+                                <strong>Paid Amount:</strong><br><span class="text-success font-weight-bold">$${transaction.paidAmount}</span>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <strong>Balance:</strong><br><span class="badge bg-danger text-white fs-6 p-2">$${transaction.balance}</span>
                             </div>
                         </div>
                         
@@ -320,9 +353,9 @@
                             <td>${item.item}</td>
                             <td>${item.unit}</td>
                             <td>${item.quantity}</td>
-                            <td>${item.unit_cost}</td>
-                            <td>${item.add_cost}</td>
-                            <td>${item.total_cost}</td>
+                            <td>$${item.unit_cost}</td>
+                            <td>$${item.add_cost}</td>
+                            <td>$${item.total_cost}</td>
                             <td>${item.remaining}</td>
                         </tr>`;
                 });
@@ -344,30 +377,27 @@
             if (transaction.items && transaction.items.length > 0) {
                 transaction.items.forEach(item => {
                     let tableRow = '<tr>' +
-                        '<td>' + (transaction.date || 'N/A') + '</td>' +
-                        '<td>' + (transaction.transaction_id || 'N/A') + '</td>' +
-                        '<td>' + (transaction.supplier || 'N/A') + '</td>' +
-                        '<td>' + (transaction.dep || 'N/A') + '</td>' +
-                        '<td>' + (transaction.user || 'N/A') + '</td>' +
-                        '<td>' + (item.item || 'N/A') + '</td>' +
-                        '<td>' + (item.quantity || '0') + '</td>' +
-                        '<td>' + (item.unit_cost || '0.00') + '</td>' +
-                        '<td>' + (item.total_cost || '0.00') + '</td>' +
-                        '<td>' + (transaction.payMethod || 'N/A') + '</td>' +
-                        '<td>' + (transaction.paidAmount || '0.00') + '</td>' +
-                        '<td>' + (transaction.balance || '0.00') + '</td>' +
+                        '<td style="padding: 6px 8px;">' + (transaction.date || 'N/A') + '</td>' +
+                        '<td style="padding: 6px 8px;">#' + (transaction.transaction_id || 'N/A') + '</td>' +
+                        '<td style="padding: 6px 8px;">' + (transaction.supplier || 'N/A') + '</td>' +
+                        '<td style="padding: 6px 8px;">' + (transaction.user || 'N/A') + '</td>' +
+                        '<td style="padding: 6px 8px;">' + (item.item || 'N/A') + '</td>' +
+                        '<td style="padding: 6px 8px; text-align: right;">' + (item.quantity || '0') + '</td>' +
+                        '<td style="padding: 6px 8px; text-align: right;">$' + (item.unit_cost || '0.00') + '</td>' +
+                        '<td style="padding: 6px 8px; text-align: right;">$' + (item.total_cost || '0.00') + '</td>' +
+                        '<td style="padding: 6px 8px; text-align: right;">$' + (transaction.paidAmount || '0.00') + '</td>' +
+                        '<td style="padding: 6px 8px; text-align: right;">$' + (transaction.balance || '0.00') + '</td>' +
                         '</tr>';
                     
                     tableBody.innerHTML += tableRow;
                 });
             } else {
                 let tableRow = '<tr>' +
-                    '<td>' + (transaction.date || 'N/A') + '</td>' +
-                    '<td>' + (transaction.transaction_id || 'N/A') + '</td>' +
-                    '<td>' + (transaction.supplier || 'N/A') + '</td>' +
-                    '<td>' + (transaction.dep || 'N/A') + '</td>' +
-                    '<td>' + (transaction.user || 'N/A') + '</td>' +
-                    '<td colspan="7" class="text-center">No items</td>' +
+                    '<td style="padding: 6px 8px;">' + (transaction.date || 'N/A') + '</td>' +
+                    '<td style="padding: 6px 8px;">#' + (transaction.transaction_id || 'N/A') + '</td>' +
+                    '<td style="padding: 6px 8px;">' + (transaction.supplier || 'N/A') + '</td>' +
+                    '<td style="padding: 6px 8px;">' + (transaction.user || 'N/A') + '</td>' +
+                    '<td colspan="6" style="padding: 6px 8px; text-align: center;">No items</td>' +
                     '</tr>';
                 
                 tableBody.innerHTML += tableRow;
@@ -375,13 +405,68 @@
         }
 
         function printReport() {
-            var printContents = document.getElementById('printArea').innerHTML;
-            var originalContents = document.body.innerHTML;
-
-            document.body.innerHTML = printContents;
-            window.print();
-            document.body.innerHTML = originalContents;
-            location.reload();
+            var printContent = document.getElementById('printArea').innerHTML;
+            var printWindow = window.open('', '_blank', 'height=800,width=1100');
+            
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Purchases Report</title>
+                    <style>
+                        @page {
+                            size: A4 portrait;
+                            margin: 10mm;
+                        }
+                        body {
+                            font-family: 'Segoe UI', Arial, sans-serif;
+                            color: #1e293b;
+                            margin: 0;
+                            padding: 10px;
+                            background: #ffffff;
+                        }
+                        table {
+                            width: 100% !important;
+                            border-collapse: collapse !important;
+                        }
+                        .print-table th {
+                            background-color: #2c5aa0 !important;
+                            color: #ffffff !important;
+                            padding: 8px 6px !important;
+                            font-size: 11px !important;
+                            font-weight: 700 !important;
+                            border: 1px solid #2c5aa0 !important;
+                            -webkit-print-color-adjust: exact !important;
+                            print-color-adjust: exact !important;
+                        }
+                        .print-table td {
+                            padding: 6px 6px !important;
+                            font-size: 11px !important;
+                            border: 1px solid #cbd5e1 !important;
+                        }
+                        @media print {
+                            body { padding: 0; margin: 0; }
+                            .print-table th {
+                                background-color: #2c5aa0 !important;
+                                color: #ffffff !important;
+                                -webkit-print-color-adjust: exact !important;
+                                print-color-adjust: exact !important;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${printContent}
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(function() {
+                printWindow.print();
+                printWindow.close();
+            }, 400);
         }
 
         // JavaScript code for exporting to Excel

@@ -27,6 +27,7 @@ use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\FuelSalesReport;
 use App\Http\Controllers\FuelSalesController;
 use App\Http\Controllers\OpeningInventoryController;
+use App\Http\Controllers\SettingsController;
 
 // MODELS
 use App\Models\Sales;
@@ -314,11 +315,11 @@ Route::prefix('reports')->middleware(['role:branch-manager,manager,branch-branch
     Route::get('/inventory/report/get', [ReportsController::class, 'InventoryReport'])->name('report.inventory');
     Route::get('/inventory/report', [ReportsController::class, 'getInventoryReport'])->name('inventory.report');
 
-
     Route::get('/fuel/credits/report', [ReportsController::class, 'FuelCreditReport'])->name('report.fuel_credit');
     Route::get('/fuel/credit/report/get', [ReportsController::class, 'getFuelCreditsReport'])->name('fuel_credit.report');
-    
-    
+
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::post('/settings', [SettingsController::class, 'update'])->name('settings.update');
 });
 
 Route::prefix('admin')->middleware(['role:branch-manager,manager,admin,sales,acc'])->group(function () {

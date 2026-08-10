@@ -114,22 +114,33 @@ class DashboardController extends Controller
 
         $recentProducts = Products::when($selectedDepID, fn($q) => $q->where('depID', $selectedDepID))
             ->latest()
+            ->take(10)
             ->get();
 
         /**
-         * ===================== FUEL SALES =====================
+         * ===================== FUEL SALES (CASH + CREDIT) =====================
          */
-        $fuelSales = DB::table('fuel_sale_transactions')
+        $cashFuelSalesTrans = DB::table('fuel_sale_transactions')
             ->whereYear('dphase', $selectedYear)
             ->whereMonth('dphase', $selectedMonth)
             ->when($selectedDepID, fn($q) => $q->where('depID', $selectedDepID))
             ->sum('total');
+
+        $cashFuelSalesHeader = DB::table('fuel_sales')
+            ->whereYear('date', $selectedYear)
+            ->whereMonth('date', $selectedMonth)
+            ->when($selectedDepID, fn($q) => $q->where('depID', $selectedDepID))
+            ->sum('net_total');
+
+        $fuelCashSales = max((float)$cashFuelSalesTrans, (float)$cashFuelSalesHeader);
 
         $fuelCreditSales = DB::table('fuel_credit_sales')
             ->whereYear('date', $selectedYear)
             ->whereMonth('date', $selectedMonth)
             ->when($selectedDepID, fn($q) => $q->where('depID', $selectedDepID))
             ->sum('total');
+
+        $totalAllFuelSales = $fuelCashSales + (float)$fuelCreditSales;
 
         /**
          * ===================== MONTHLY CHART =====================
@@ -165,8 +176,8 @@ class DashboardController extends Controller
                 'totalFuelPurchase' => $totalFuelPurchase,
                 'totalOilPurchase' => $totalOilPurchase,
                 'products' => $recentProducts,
-                'fuel_sale' => $fuelSales,
-                'totalAllFuelSales' => $fuelSales + $fuelCreditSales,
+                'fuel_sale' => $fuelCashSales,
+                'totalAllFuelSales' => $totalAllFuelSales,
                 'selectedMonth' => $selectedMonth,
                 'selectedMonthName' => $selectedMonthName,
                 'currentYear' => $selectedYear,

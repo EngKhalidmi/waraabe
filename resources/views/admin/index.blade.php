@@ -16,8 +16,7 @@
                 <i class="fas fa-filter"></i>
             </div>
             <div>
-                <h3 class="dashboard-title mb-1">Dashboard Overview</h3>
-                <p class="dashboard-subtitle text-muted mb-0">Welcome back! Here's what's happening with your business.</p>
+                <h3 class="dashboard-title mb-1">Dashboard</h3>
             </div>
         </div>
         <div class="d-flex gap-2 flex-wrap align-items-center" id="dashboardFilterControls"></div>
@@ -25,12 +24,8 @@
     
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3 pt-3 border-top" style="border-color: #f1f5f9 !important;">
         <div class="d-flex align-items-center gap-2">
-            <span class="text-secondary fw-medium" style="font-size: 0.85rem;">Filter Dashboard Data</span>
-            <span class="active-filter-badge" id="dashboardFilterLabel"></span>
         </div>
-        <div class="text-muted" style="font-size: 0.8rem;">
-            Data as of <span class="fw-semibold" style="color: #475569;">{{ date('M d, Y') }}</span> • <span style="color: #2563eb; font-weight: 500;"><i class="fas fa-sync-alt me-1"></i> Updated 2 min ago</span>
-        </div>
+      
     </div>
 </div>
 
@@ -45,14 +40,12 @@
                         <i class="fas fa-shopping-bag text-blue"></i>
                     </div>
                     <div class="d-flex align-items-center gap-1">
-                        <span class="kpi-badge badge-gray">0%</span>
+                        <h4 class="kpi-value mb-0">$<span class="counter">{{ number_format($data['totalPurchase'], 2) }}</span></h4>
                     </div>
                 </div>
-                <div class="d-flex justify-content-between align-items-end mt-2">
+                <div class="d-flex justify-content-between align-items-end mt-3">
                     <div>
-                        <span class="kpi-label">Total Purchases</span>
-                        <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalPurchase'], 2) }}</span></h4>
-                        <span class="kpi-subtext">{{ $data['selectedMonthName'] }} {{ $data['currentYear'] }}</span>
+                        <span class="kpi-label mb-0">Total Purchases</span>
                     </div>
                     <div class="sparkline-box">
                         <svg width="64" height="24" viewBox="0 0 60 24" fill="none"><path d="M2 18 Q 15 10, 30 14 T 58 4" stroke="#3b82f6" stroke-width="2" fill="none"/></svg>
@@ -68,14 +61,12 @@
                         <i class="fas fa-gas-pump text-green"></i>
                     </div>
                     <div class="d-flex align-items-center gap-1">
-                        <span class="kpi-badge badge-green">0%</span>
+                        <h4 class="kpi-value mb-0">$<span class="counter">{{ number_format($data['totalFuelPurchase'], 2) }}</span></h4>
                     </div>
                 </div>
-                <div class="d-flex justify-content-between align-items-end mt-2">
+                <div class="d-flex justify-content-between align-items-end mt-3">
                     <div>
-                        <span class="kpi-label">Fuel Purchases</span>
-                        <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalFuelPurchase'], 2) }}</span></h4>
-                        <span class="kpi-subtext">{{ $data['selectedMonthName'] }} {{ $data['currentYear'] }}</span>
+                        <span class="kpi-label mb-0">Fuel Purchases</span>
                     </div>
                     <div class="sparkline-box">
                         <svg width="64" height="24" viewBox="0 0 60 24" fill="none"><path d="M2 18 Q 15 12, 30 15 T 58 4" stroke="#10b981" stroke-width="2" fill="none"/></svg>
@@ -91,14 +82,12 @@
                         <i class="fas fa-tint text-amber"></i>
                     </div>
                     <div class="d-flex align-items-center gap-1">
-                        <span class="kpi-badge badge-amber">0%</span>
+                        <h4 class="kpi-value mb-0">$<span class="counter">{{ number_format($data['totalOilPurchase'], 2) }}</span></h4>
                     </div>
                 </div>
-                <div class="d-flex justify-content-between align-items-end mt-2">
+                <div class="d-flex justify-content-between align-items-end mt-3">
                     <div>
-                        <span class="kpi-label">Oil Purchases</span>
-                        <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalOilPurchase'], 2) }}</span></h4>
-                        <span class="kpi-subtext">{{ $data['selectedMonthName'] }} {{ $data['currentYear'] }}</span>
+                        <span class="kpi-label mb-0">Oil Purchases</span>
                     </div>
                     <div class="sparkline-box">
                         <svg width="64" height="24" viewBox="0 0 60 24" fill="none"><path d="M2 16 Q 15 10, 30 14 T 58 6" stroke="#f59e0b" stroke-width="2" fill="none"/></svg>
@@ -114,14 +103,12 @@
                         <i class="fas fa-chart-line text-rose"></i>
                     </div>
                     <div class="d-flex align-items-center gap-1">
-                        <span class="kpi-badge badge-rose">0%</span>
+                        <h4 class="kpi-value mb-0">$<span class="counter">{{ number_format($data['totalSales'], 2) }}</span></h4>
                     </div>
                 </div>
-                <div class="d-flex justify-content-between align-items-end mt-2">
+                <div class="d-flex justify-content-between align-items-end mt-3">
                     <div>
-                        <span class="kpi-label">Total Oil Sales</span>
-                        <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalSales'], 2) }}</span></h4>
-                        <span class="kpi-subtext">{{ $data['selectedMonthName'] }} {{ $data['currentYear'] }}</span>
+                        <span class="kpi-label mb-0">Total Oil Sales</span>
                     </div>
                     <div class="sparkline-box">
                         <svg width="64" height="24" viewBox="0 0 60 24" fill="none"><path d="M2 18 Q 15 8, 30 16 T 58 4" stroke="#f43f5e" stroke-width="2" fill="none"/></svg>
@@ -132,7 +119,7 @@
     </div>
 
     {{-- Row 2: Second 4 Metric Cards --}}
-    <div class="row g-3 mb-3">
+    <div class="row g-3 mb-4">
         <div class="col-lg-3 col-sm-6 col-12">
             <div class="card-kpi kpi-green">
                 <div class="d-flex justify-content-between align-items-start">
@@ -140,14 +127,12 @@
                         <i class="fas fa-money-bill-wave text-green"></i>
                     </div>
                     <div class="d-flex align-items-center gap-1">
-                        <span class="kpi-badge badge-green">0%</span>
+                        <h4 class="kpi-value mb-0">$<span class="counter">{{ number_format($data['totalAllFuelSales'], 2) }}</span></h4>
                     </div>
                 </div>
-                <div class="d-flex justify-content-between align-items-end mt-2">
+                <div class="d-flex justify-content-between align-items-end mt-3">
                     <div>
-                        <span class="kpi-label">Total Fuel Sales</span>
-                        <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalAllFuelSales'], 2) }}</span></h4>
-                        <span class="kpi-subtext">{{ $data['selectedMonthName'] }} {{ $data['currentYear'] }}</span>
+                        <span class="kpi-label mb-0">Total Fuel Sales</span>
                     </div>
                     <div class="sparkline-box">
                         <svg width="64" height="24" viewBox="0 0 60 24" fill="none"><path d="M2 18 Q 15 12, 30 15 T 58 4" stroke="#10b981" stroke-width="2" fill="none"/></svg>
@@ -163,14 +148,12 @@
                         <i class="fas fa-wallet text-amber"></i>
                     </div>
                     <div class="d-flex align-items-center gap-1">
-                        <span class="kpi-badge badge-amber">12.5% &#8599;</span>
+                        <h4 class="kpi-value mb-0">$<span class="counter">{{ number_format($data['totalReceivable'], 2) }}</span></h4>
                     </div>
                 </div>
-                <div class="d-flex justify-content-between align-items-end mt-2">
+                <div class="d-flex justify-content-between align-items-end mt-3">
                     <div>
-                        <span class="kpi-label">Total Receivable</span>
-                        <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalReceivable'], 2) }}</span></h4>
-                        <span class="kpi-subtext">All Time</span>
+                        <span class="kpi-label mb-0">Total Receivable</span>
                     </div>
                     <div class="sparkline-box">
                         <svg width="64" height="24" viewBox="0 0 60 24" fill="none"><path d="M2 16 Q 15 10, 30 14 T 58 6" stroke="#f59e0b" stroke-width="2" fill="none"/></svg>
@@ -186,14 +169,12 @@
                         <i class="fas fa-credit-card text-rose"></i>
                     </div>
                     <div class="d-flex align-items-center gap-1">
-                        <span class="kpi-badge badge-rose">8.3% &#8599;</span>
+                        <h4 class="kpi-value mb-0">$<span class="counter">{{ number_format($data['totalPayable'], 2) }}</span></h4>
                     </div>
                 </div>
-                <div class="d-flex justify-content-between align-items-end mt-2">
+                <div class="d-flex justify-content-between align-items-end mt-3">
                     <div>
-                        <span class="kpi-label">Total Payable</span>
-                        <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalPayable'], 2) }}</span></h4>
-                        <span class="kpi-subtext">All Time</span>
+                        <span class="kpi-label mb-0">Total Payable</span>
                     </div>
                     <div class="sparkline-box">
                         <svg width="64" height="24" viewBox="0 0 60 24" fill="none"><path d="M2 18 Q 15 8, 30 16 T 58 4" stroke="#f43f5e" stroke-width="2" fill="none"/></svg>
@@ -203,20 +184,21 @@
         </div>
 
         <div class="col-lg-3 col-sm-6 col-12">
-            <div class="card-kpi kpi-indigo">
+            <div class="card-kpi kpi-blue">
                 <div class="d-flex justify-content-between align-items-start">
-                    <div class="kpi-icon-wrapper bg-indigo-light">
-                        <i class="fas fa-calendar-alt text-indigo"></i>
+                    <div class="kpi-icon-wrapper bg-blue-light">
+                        <i class="fas fa-users text-blue"></i>
+                    </div>
+                    <div class="d-flex align-items-center gap-1">
+                        <h4 class="kpi-value mb-0">{{ $data['clients'] }}+</h4>
                     </div>
                 </div>
-                <div class="d-flex justify-content-between align-items-end mt-2">
+                <div class="d-flex justify-content-between align-items-end mt-3">
                     <div>
-                        <span class="kpi-label">Selected Month</span>
-                        <h4 class="kpi-value" style="color: #4338ca !important;">{{ $data['selectedMonthName'] }} {{ $data['currentYear'] }}</h4>
-                        <span class="kpi-subtext">Current Period</span>
+                        <span class="kpi-label mb-0">Customers</span>
                     </div>
-                    <div class="calendar-grid-icon text-indigo opacity-50">
-                        <i class="fas fa-th" style="font-size: 1.8rem;"></i>
+                    <div class="sparkline-box">
+                        <svg width="64" height="24" viewBox="0 0 60 24" fill="none"><path d="M2 15 Q 15 8, 30 12 T 58 4" stroke="#3b82f6" stroke-width="2" fill="none"/></svg>
                     </div>
                 </div>
             </div>
@@ -224,93 +206,10 @@
     </div>
 @endif
 
-    {{-- Row 3: Counter Cards --}}
+    {{-- Bottom Section Row 1: Sales Summary & Top Departments --}}
     <div class="row g-3 mb-4">
-        <div class="col-lg-3 col-sm-6 col-12">
-            <div class="card-kpi kpi-blue">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <div class="kpi-icon-wrapper bg-blue-light">
-                        <i class="fas fa-users text-blue"></i>
-                    </div>
-                    <div class="sparkline-box">
-                        <svg width="60" height="20" viewBox="0 0 60 20" fill="none"><path d="M2 15 Q 15 8, 30 12 T 58 4" stroke="#3b82f6" stroke-width="2" fill="none"/></svg>
-                    </div>
-                </div>
-                <div>
-                    <h4 class="kpi-value mb-1">{{ $data['clients'] }}+</h4>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="kpi-label mb-0">Customers</span>
-                        <span class="status-dot-badge text-green"><i class="fas fa-circle me-1" style="font-size: 0.5rem;"></i> Active</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-sm-6 col-12">
-            <div class="card-kpi kpi-green">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <div class="kpi-icon-wrapper bg-green-light">
-                        <i class="fas fa-user-check text-green"></i>
-                    </div>
-                    <div class="sparkline-box">
-                        <svg width="60" height="20" viewBox="0 0 60 20" fill="none"><path d="M2 15 Q 15 10, 30 12 T 58 3" stroke="#10b981" stroke-width="2" fill="none"/></svg>
-                    </div>
-                </div>
-                <div>
-                    <h4 class="kpi-value mb-1">{{ $data['suppliers'] }}+</h4>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="kpi-label mb-0">Suppliers</span>
-                        <span class="status-dot-badge text-green"><i class="fas fa-circle me-1" style="font-size: 0.5rem;"></i> Active</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-sm-6 col-12">
-            <div class="card-kpi kpi-amber">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <div class="kpi-icon-wrapper bg-amber-light">
-                        <i class="fas fa-file-invoice-dollar text-amber"></i>
-                    </div>
-                    <div class="sparkline-box">
-                        <svg width="60" height="20" viewBox="0 0 60 20" fill="none"><path d="M2 14 Q 15 6, 30 12 T 58 4" stroke="#f59e0b" stroke-width="2" fill="none"/></svg>
-                    </div>
-                </div>
-                <div>
-                    <h4 class="kpi-value mb-1">{{ $data['sales'] }}+</h4>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="kpi-label mb-0">Sales Invoices</span>
-                        <span class="kpi-subtext mb-0">This Month</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-sm-6 col-12">
-            <div class="card-kpi kpi-indigo">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <div class="kpi-icon-wrapper bg-indigo-light">
-                        <i class="fas fa-file-alt text-indigo"></i>
-                    </div>
-                    <div class="sparkline-box">
-                        <svg width="60" height="20" viewBox="0 0 60 20" fill="none"><path d="M2 15 Q 15 8, 30 10 T 58 2" stroke="#6366f1" stroke-width="2" fill="none"/></svg>
-                    </div>
-                </div>
-                <div>
-                    <h4 class="kpi-value mb-1">{{ $data['purchases'] }}+</h4>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="kpi-label mb-0">Purchase Invoices</span>
-                        <span class="kpi-subtext mb-0">This Month</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- Row 4: Bottom 3 Columns (Matching Mockup Layout) --}}
-    <div class="row g-3">
         {{-- Column 1: Sales Summary Chart --}}
-        <div class="col-lg-5 col-12 d-flex">
+        <div class="col-lg-7 col-12 d-flex">
             <div class="dashboard-panel-card flex-fill w-100">
                 <div class="panel-header d-flex justify-content-between align-items-center">
                     <div class="d-flex align-items-center gap-2">
@@ -343,10 +242,10 @@
         </div>
 
         {{-- Column 2: Top Departments by Sales --}}
-        <div class="col-lg-4 col-12 d-flex">
+        <div class="col-lg-5 col-12 d-flex">
             <div class="dashboard-panel-card flex-fill w-100">
                 <div class="panel-header d-flex justify-content-between align-items-center">
-                    <h5 class="panel-title mb-0">Top Departments by Sales</h5>
+                    <h5 class="panel-title mb-0">Top Products</h5>
                     <span class="btn-pill-outline btn-sm">This Month</span>
                 </div>
                 <div class="panel-body">
@@ -438,86 +337,93 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        {{-- Column 3: Recent Transactions / Products --}}
-        <div class="col-lg-3 col-12 d-flex">
-            <div class="dashboard-panel-card flex-fill w-100">
+    {{-- Bottom Section Row 2: Recent Transactions (Full Width Under Summary & Departments) --}}
+    <div class="row g-3">
+        <div class="col-12">
+            <div class="dashboard-panel-card w-100">
                 <div class="panel-header d-flex justify-content-between align-items-center">
-                    <h5 class="panel-title mb-0">Recent Transactions</h5>
-                    <a href="{{ route('products') }}" class="text-blue text-decoration-none fw-semibold" style="font-size: 0.82rem;">View All</a>
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fas fa-history text-blue"></i>
+                        <h5 class="panel-title mb-0">Recent Transactions</h5>
+                    </div>
+                    <a href="{{ route('products') }}" class="text-blue text-decoration-none fw-semibold" style="font-size: 0.82rem;">View All Products</a>
                 </div>
                 <div class="panel-body p-0">
-                    <div class="transaction-list-wrapper" style="max-height: 400px; overflow-y: auto;">
-                        @forelse($data['products'] as $index => $product)
-                            <div class="transaction-item d-flex align-items-center justify-content-between p-3 border-bottom border-slate-100">
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="trans-icon bg-blue-light text-blue">
-                                        <i class="fas fa-box"></i>
-                                    </div>
-                                    <div>
-                                        <strong class="trans-title d-block">{{ $product->name }}</strong>
-                                        <small class="trans-sub text-muted">INV-2026-00{{ $product->id ?? $index + 1 }}</small>
-                                    </div>
-                                </div>
-                                <div class="text-end">
-                                    <span class="status-pill pill-green mb-1">Completed</span>
-                                    <small class="trans-date d-block text-muted">Qty: {{ $product->quantity }}</small>
-                                </div>
-                            </div>
-                        @empty
-                            <div class="transaction-item d-flex align-items-center justify-content-between p-3 border-bottom border-slate-100">
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="trans-icon bg-blue-light text-blue"><i class="fas fa-gas-pump"></i></div>
-                                    <div>
-                                        <strong class="trans-title d-block">Fuel Purchase</strong>
-                                        <small class="trans-sub text-muted">INV-2026-081</small>
-                                    </div>
-                                </div>
-                                <div class="text-end">
-                                    <span class="status-pill pill-green mb-1">Completed</span>
-                                    <span class="trans-amount d-block">$2,450.00</span>
-                                </div>
-                            </div>
-                            <div class="transaction-item d-flex align-items-center justify-content-between p-3 border-bottom border-slate-100">
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="trans-icon bg-amber-light text-amber"><i class="fas fa-tint"></i></div>
-                                    <div>
-                                        <strong class="trans-title d-block">Oil Sale</strong>
-                                        <small class="trans-sub text-muted">INV-2026-080</small>
-                                    </div>
-                                </div>
-                                <div class="text-end">
-                                    <span class="status-pill pill-green mb-1">Completed</span>
-                                    <span class="trans-amount d-block">$1,850.00</span>
-                                </div>
-                            </div>
-                            <div class="transaction-item d-flex align-items-center justify-content-between p-3 border-bottom border-slate-100">
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="trans-icon bg-indigo-light text-indigo"><i class="fas fa-user-tie"></i></div>
-                                    <div>
-                                        <strong class="trans-title d-block">Supplier Payment</strong>
-                                        <small class="trans-sub text-muted">PAY-2026-079</small>
-                                    </div>
-                                </div>
-                                <div class="text-end">
-                                    <span class="status-pill pill-blue mb-1">Paid</span>
-                                    <span class="trans-amount d-block">$3,200.00</span>
-                                </div>
-                            </div>
-                            <div class="transaction-item d-flex align-items-center justify-content-between p-3">
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="trans-icon bg-rose-light text-rose"><i class="fas fa-file-invoice"></i></div>
-                                    <div>
-                                        <strong class="trans-title d-block">Purchase Invoice</strong>
-                                        <small class="trans-sub text-muted">INV-2026-078</small>
-                                    </div>
-                                </div>
-                                <div class="text-end">
-                                    <span class="status-pill pill-green mb-1">Completed</span>
-                                    <span class="trans-amount d-block">$4,750.00</span>
-                                </div>
-                            </div>
-                        @endforelse
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Item / Description</th>
+                                    <th>Reference ID</th>
+                                    <th>Quantity</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse(collect($data['products'])->take(10) as $index => $product)
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div class="trans-icon bg-blue-light text-blue">
+                                                    <i class="fas fa-box"></i>
+                                                </div>
+                                                <strong class="trans-title">{{ $product->name }}</strong>
+                                            </div>
+                                        </td>
+                                        <td><span class="text-muted">INV-2026-00{{ $product->id ?? $index + 1 }}</span></td>
+                                        <td><strong>{{ $product->quantity }}</strong></td>
+                                        <td><span class="status-pill pill-green">Completed</span></td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div class="trans-icon bg-blue-light text-blue"><i class="fas fa-gas-pump"></i></div>
+                                                <strong class="trans-title">Fuel Purchase</strong>
+                                            </div>
+                                        </td>
+                                        <td><span class="text-muted">INV-2026-081</span></td>
+                                        <td><strong>$2,450.00</strong></td>
+                                        <td><span class="status-pill pill-green">Completed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div class="trans-icon bg-amber-light text-amber"><i class="fas fa-tint"></i></div>
+                                                <strong class="trans-title">Oil Sale</strong>
+                                            </div>
+                                        </td>
+                                        <td><span class="text-muted">INV-2026-080</span></td>
+                                        <td><strong>$1,850.00</strong></td>
+                                        <td><span class="status-pill pill-green">Completed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div class="trans-icon bg-indigo-light text-indigo"><i class="fas fa-user-tie"></i></div>
+                                                <strong class="trans-title">Supplier Payment</strong>
+                                            </div>
+                                        </td>
+                                        <td><span class="text-muted">PAY-2026-079</span></td>
+                                        <td><strong>$3,200.00</strong></td>
+                                        <td><span class="status-pill pill-blue">Paid</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div class="trans-icon bg-rose-light text-rose"><i class="fas fa-file-invoice"></i></div>
+                                                <strong class="trans-title">Purchase Invoice</strong>
+                                            </div>
+                                        </td>
+                                        <td><span class="text-muted">INV-2026-078</span></td>
+                                        <td><strong>$4,750.00</strong></td>
+                                        <td><span class="status-pill pill-green">Completed</span></td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

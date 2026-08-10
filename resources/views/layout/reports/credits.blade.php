@@ -128,7 +128,7 @@
                         <!-- Display results -->
                         <div  class="table-responsive" id="printArea" style="display:none;">
                             <center>
-                                     <img src="{{asset('/Logo/maal.png')}}" alt="Company Logo" width="200">
+                                     <img src="{{asset('/Logo/Report-logo.png')}}" alt="Company Logo" width="200">
                                         <h4 class="card-title">Customer Transaction History</h4>
                                         </center>
                             <table  class="table mt-4" id="FinanceReport">

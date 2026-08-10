@@ -19,6 +19,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasTable('settings')) {
+                \Illuminate\Support\Facades\View::share('settings', \App\Models\Setting::getSettings());
+            }
+        } catch (\Throwable $e) {
+            // Ignore if DB not ready
+        }
     }
 }

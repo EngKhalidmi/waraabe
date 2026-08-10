@@ -236,9 +236,9 @@ class PurchaseTransactionController extends Controller
 
     public function invoice(string $id) {
         if(auth()->user()->role == 'admin' || auth()->user()->role =='manager')  {
-        $transaction = PurchaseTransactions::find($id);
+            $transaction = PurchaseTransactions::with(['purchases.pro', 'supplier'])->find($id);
         } else {
-            $transaction = PurchaseTransactions::where('depID', auth()->user()->depID)->find($id);
+            $transaction = PurchaseTransactions::with(['purchases.pro', 'supplier'])->where('depID', auth()->user()->depID)->find($id);
         }
         return view('layout.purchases.invoice', compact('transaction'));
     }

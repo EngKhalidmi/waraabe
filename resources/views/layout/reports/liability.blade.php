@@ -158,7 +158,7 @@
 
                     <div class="table-responsive mt-4">
                         <center>
-                            <img src="{{ asset('/Logo/maal.png') }}" alt="Company Logo" width="200">
+                            <img src="{{ asset('/Logo/Report-logo.png') }}" alt="Company Logo" width="200">
                             <h1>Maal Spareparts</h1>
                             <p>Xarunta Iibinta Sparepart-ga Gaadiidka
                                 <br>Sisibta ,Borama,Somaliland
