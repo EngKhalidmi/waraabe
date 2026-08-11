@@ -124,5 +124,5 @@
 <script defer src="{{ asset('offline/fuel-sales-module.js') }}"></script>
 <script defer src="{{ asset('offline/inventory-module.js') }}"></script>
 <script defer src="{{ asset('offline/purchase-module.js') }}"></script>
-<script defer src="{{ asset('offline/sales-quotation-module.js') }}"></script>
+<script defer src="{{ asset('offline/sales-quotation-module.js') }}?v=16"></script>
 <script defer src="{{ asset('offline/finance-module.js') }}"></script>

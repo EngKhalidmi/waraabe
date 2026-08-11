@@ -279,4 +279,13 @@
         </div>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var paidInput = document.getElementById('paid_amount');
+            if (paidInput) {
+                paidInput.removeAttribute('readonly');
+                paidInput.removeAttribute('disabled');
+            }
+        });
+    </script>
 @endsection

@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-const CACHE_NAME = 'waraabe-pwa-v15';
+const CACHE_NAME = 'waraabe-pwa-v16';
 const SCOPE_URL = new URL(self.registration.scope);
 const toScopeUrl = (path) => new URL(String(path || '').replace(/^\//, ''), SCOPE_URL).toString();
 const OFFLINE_URL = toScopeUrl('offline');
