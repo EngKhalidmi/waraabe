@@ -7,7 +7,7 @@
             <div class="page-header">
                 <div class="page-title">
                     <h4>Purchases Management</h4>
-                    <h6>Add Purchase</h6>
+                    <h6>Add Purchase1</h6>
                 </div>
             </div>
             @if (session('status'))

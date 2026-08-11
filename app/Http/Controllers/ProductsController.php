@@ -200,11 +200,11 @@ class ProductsController extends Controller
         $request->validate([
             'customerID' => 'required',
             'due_date' => 'required|date',
-            'products' => 'required|array',
+            'products' => 'required|array|min:1',
             'products.*.quantity' => 'required|numeric|min:0.01',
             'net_price' => 'required|numeric',
-            'add_cost' => 'required|numeric',
-            'paid_amount' => 'required|numeric',
+            'add_cost' => 'nullable|numeric',
+            'paid_amount' => 'nullable|numeric',
             'balance' => 'required|numeric',
             'depID' => 'required',
         ]);
@@ -219,12 +219,12 @@ class ProductsController extends Controller
             $customerID     = $request->customerID;
             $dueDate        = $request->due_date;
             $referenceNo    = $request->reference;
-            $subTotal       = $request->subtotal;
-            $add_cost       = $request->add_cost;
-            $discount       = $request->discount;
-            $netPrice       = $request->net_price;
-            $paidAmount     = $request->paid_amount;
-            $balance        = $request->balance;
+            $subTotal       = $request->subtotal ?? 0;
+            $add_cost       = $request->add_cost ?? 0;
+            $discount       = $request->discount ?? 0;
+            $netPrice       = $request->net_price ?? 0;
+            $paidAmount     = $request->paid_amount ?? 0;
+            $balance        = $request->balance ?? 0;
             $paymentMethod  = $request->payment_method;
             $products       = $request->products;
             $depID          = $request->depID;
@@ -433,7 +433,7 @@ class ProductsController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
             Log::error('Error occurred while creating purchase transaction: ' . $e->getMessage());
-            return redirect()->route('products.add')->withError('An error occurred while creating the purchase transaction. Please try again.');
+            return redirect()->back()->withInput()->withErrors(['error' => 'An error occurred while creating the purchase transaction: ' . $e->getMessage()]);
         }
     }
 

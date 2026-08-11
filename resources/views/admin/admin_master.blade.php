@@ -9,28 +9,89 @@
     <meta name="author" content="Taam solutions - Saacid System">
     <meta name="robots" content="noindex, nofollow">
     <title>@yield('title', 'Waraabe System - Dashboard')</title>
-    <base href="{{ rtrim(url('/'), '/') }}/">
+
+    <style>
+        /* Prevent Flash of Unstyled Content (FOUC) */
+        html {
+            visibility: hidden;
+            opacity: 0;
+        }
+        html.dom-ready {
+            visibility: visible;
+            opacity: 1;
+            transition: opacity 0.15s ease-in;
+        }
+        #global-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            z-index: 999999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        #global-loader.loader-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .whirly-loader {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #3d5ee1;
+            border-radius: 50%;
+            animation: global-loader-spin 0.8s linear infinite;
+        }
+        @keyframes global-loader-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <script>
+        (function() {
+            function showPage() {
+                document.documentElement.classList.add('dom-ready');
+                var l = document.getElementById('global-loader');
+                if (l && !l.classList.contains('loader-hidden')) {
+                    l.classList.add('loader-hidden');
+                    setTimeout(function() { l.style.display = 'none'; }, 300);
+                }
+            }
+            if (document.readyState === 'interactive' || document.readyState === 'complete') {
+                showPage();
+            } else {
+                document.addEventListener('DOMContentLoaded', showPage);
+                window.addEventListener('load', showPage);
+            }
+            setTimeout(showPage, 400); // Safety fallback
+        })();
+    </script>
 
     @include('partials.pwa-head')
 
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('/Logo/icon.png') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('Logo/icon.png') }}">
 
-    <link rel="stylesheet" href="{{ asset('/assets/css/bootstrap.min.css') }}">
-
-    <link rel="stylesheet" href="{{ asset('/assets/css/animate.css') }}">
-
-    <link rel="stylesheet" href="{{ asset('/assets/plugins/select2/css/select2.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('/assets/plugins/twitter-bootstrap-wizard/form-wizard.css') }}">
-
-    <link rel="stylesheet" href="{{ asset('/assets/css/bootstrap-datetimepicker.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/animate.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/plugins/twitter-bootstrap-wizard/form-wizard.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap-datetimepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/dataTables.bootstrap4.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('/assets/plugins/fontawesome/css/fontawesome.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('/assets/plugins/fontawesome/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/plugins/fontawesome/css/fontawesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/plugins/fontawesome/css/all.min.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 
-    <link rel="stylesheet" href="{{ asset('/assets/css/style.css') }}">
-    <script src="{{ asset('/assets/js/jquery-3.6.0.min.js') }}"></script>
-    <script src="{{ asset('/assets/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('/assets/js/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('assets/js/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 </head>
 <style>
     @font-face {
@@ -217,29 +278,20 @@
 
 
     <!-- <script src="{{ asset('/assets/js/jquery-3.6.0.min.js') }}"></script> -->
-    <script src="{{ asset('/assets/js/feather.min.js') }}"></script>
-
-    <script src="{{ asset('/assets/js/jquery.slimscroll.min.js') }}"></script>
-
-    <script src="{{ asset('/assets/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('/assets/plugins/select2/js/select2.min.js') }}"></script>
-
-    <script src="{{ asset('/assets/js/moment.min.js') }}"></script>
-    <script src="{{ asset('/assets/js/bootstrap-datetimepicker.min.js') }}"></script>
-
-    <script src="{{ asset('/assets/plugins/twitter-bootstrap-wizard/jquery.bootstrap.wizard.min.js') }}"></script>
-    <script src="{{ asset('/assets/plugins/twitter-bootstrap-wizard/prettify.js') }}"></script>
-    <script src="{{ asset('/assets/plugins/twitter-bootstrap-wizard/form-wizard.js') }}"></script>
-
-    <script src="{{ asset('/assets/plugins/sweetalert/sweetalert2.all.min.js') }}"></script>
-    <script src="{{ asset('/assets/plugins/sweetalert/sweetalerts.min.js') }}"></script>
-
-    <script src="{{ asset('/assets/plugins/apexchart/apexcharts.min.js') }}"></script>
-    <script src="{{ asset('/assets/plugins/apexchart/chart-data.js') }}"></script>
-
-
-
-    <script src="{{ asset('/assets/js/script.js') }}"></script>
+    <script src="{{ asset('assets/js/feather.min.js') }}"></script>
+    <script src="{{ asset('assets/js/jquery.slimscroll.min.js') }}"></script>
+    <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/select2/js/select2.min.js') }}"></script>
+    <script src="{{ asset('assets/js/moment.min.js') }}"></script>
+    <script src="{{ asset('assets/js/bootstrap-datetimepicker.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/twitter-bootstrap-wizard/jquery.bootstrap.wizard.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/twitter-bootstrap-wizard/prettify.js') }}"></script>
+    <script src="{{ asset('assets/plugins/twitter-bootstrap-wizard/form-wizard.js') }}"></script>
+    <script src="{{ asset('assets/plugins/sweetalert/sweetalert2.all.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/sweetalert/sweetalerts.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/apexchart/apexcharts.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/apexchart/chart-data.js') }}"></script>
+    <script src="{{ asset('assets/js/script.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Get all toast messages

@@ -1169,7 +1169,6 @@
         setValue('subtotal', formatMoney(subtotal));
         setValue('net_price', formatMoney(netPrice));
         setValue('balance', formatMoney(balance));
-        setValue('paid_amount', formatMoney(paidAmount));
 
         var summarySubtotal = document.getElementById('summary_subtotal');
         var summaryDiscount = document.getElementById('summary_discount');
@@ -2314,20 +2313,7 @@
 
         if (paidAmount && paidAmount.dataset.salesQuotationBound !== 'true') {
             paidAmount.dataset.salesQuotationBound = 'true';
-            paidAmount.addEventListener('blur', function () {
-                updateSalesTotals();
-
-                if (pageState.selectedSalesCustomer && isCashCustomer(pageState.selectedSalesCustomer)) {
-                    var netPrice = normalizeNumber(getValue('net_price'));
-                    var paidValue = normalizeNumber(getValue('paid_amount'));
-
-                    if (paidValue < netPrice) {
-                        setValue('paid_amount', '');
-                        setValue('balance', '');
-                        notify('error', 'Sorry', 'Cash sales must be paid in full.');
-                    }
-                }
-            });
+            paidAmount.addEventListener('input', updateSalesTotals);
         }
 
         var discount = document.getElementById('discount');
