@@ -1150,6 +1150,10 @@
     }
 
     function updateSalesTotals() {
+        if (currentMode() !== 'sales-create') {
+            return;
+        }
+
         var subtotal = 0;
 
         document.querySelectorAll('#productTableBody tr[data-product-id]').forEach(function (row) {
@@ -1191,6 +1195,10 @@
     }
 
     function updateQuotationTotal() {
+        if (currentMode() !== 'quotation-create') {
+            return;
+        }
+
         var subtotal = 0;
 
         document.querySelectorAll('#productTable tbody tr[data-product-id]').forEach(function (row) {
@@ -1901,6 +1909,14 @@
     }
 
     function handleTableDelete(event) {
+        var mode = currentMode();
+
+        // Only handle sales/quotation create tables. Purchase and other forms also use
+        // .delete-set and must keep their own handlers.
+        if (mode !== 'sales-create' && mode !== 'quotation-create') {
+            return;
+        }
+
         var target = event.target.closest('.delete-set');
 
         if (!target) {
@@ -1912,11 +1928,11 @@
         var row = target.closest('tr');
         removeRow(row);
 
-        if (document.querySelector('form[data-sales-form="create"]')) {
+        if (mode === 'sales-create') {
             reindexSalesRows();
         }
 
-        if (document.querySelector('form[data-quotation-form="create"]')) {
+        if (mode === 'quotation-create') {
             reindexQuotationRows();
         }
     }
@@ -2287,6 +2303,13 @@
     }
 
     function bindSalesCreateExtras() {
+        // Purchase and other forms reuse #discount / #paid_amount IDs. Do not bind
+        // sales total recalculation outside the sales create page or those forms
+        // get forced to 0.00 (purchase rows lack data-product-id / .total-price-input).
+        if (currentMode() !== 'sales-create') {
+            return;
+        }
+
         var paidAmount = document.getElementById('paid_amount');
 
         if (paidAmount && paidAmount.dataset.salesQuotationBound !== 'true') {
@@ -2315,6 +2338,10 @@
     }
 
     function bindQuotationCreateExtras() {
+        if (currentMode() !== 'quotation-create') {
+            return;
+        }
+
         var discount = document.getElementById('discount');
         if (discount && discount.dataset.salesQuotationBound !== 'true') {
             discount.dataset.salesQuotationBound = 'true';
