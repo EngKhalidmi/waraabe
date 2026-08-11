@@ -35,9 +35,9 @@
                     <i class="fas fa-shopping-bag text-blue"></i>
                 </div>
                 <span class="kpi-label">Total Purchases</span>
-                <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalPurchase'] > 0 ? $data['totalPurchase'] : 18250.00, 2) }}</span></h4>
+                <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalPurchase'] ?? 0, 2) }}</span></h4>
                 <div class="d-flex justify-content-between align-items-center mt-2 pt-1">
-                    <span class="kpi-growth text-green"><i class="fas fa-arrow-up me-1"></i>+12.5% <span class="text-muted fw-normal">from last month</span></span>
+                    <span class="kpi-growth text-green"><i class="fas fa-arrow-up me-1"></i>+12.5% <span class="text-muted fw-normal">in {{ $data['selectedMonthName'] }}</span></span>
                     <div class="sparkline-box">
                         <svg width="60" height="22" viewBox="0 0 60 22" fill="none"><path d="M2 18 Q 15 10, 30 14 T 58 4" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
                     </div>
@@ -52,9 +52,9 @@
                     <i class="fas fa-gas-pump text-green"></i>
                 </div>
                 <span class="kpi-label">Fuel Purchases</span>
-                <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalFuelPurchase'] > 0 ? $data['totalFuelPurchase'] : 12450.00, 2) }}</span></h4>
+                <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalFuelPurchase'] ?? 0, 2) }}</span></h4>
                 <div class="d-flex justify-content-between align-items-center mt-2 pt-1">
-                    <span class="kpi-growth text-green"><i class="fas fa-arrow-up me-1"></i>+15.8% <span class="text-muted fw-normal">from last month</span></span>
+                    <span class="kpi-growth text-green"><i class="fas fa-arrow-up me-1"></i>+15.8% <span class="text-muted fw-normal">in {{ $data['selectedMonthName'] }}</span></span>
                     <div class="sparkline-box">
                         <svg width="60" height="22" viewBox="0 0 60 22" fill="none"><path d="M2 18 Q 15 12, 30 15 T 58 4" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
                     </div>
@@ -69,9 +69,9 @@
                     <i class="fas fa-tint text-amber"></i>
                 </div>
                 <span class="kpi-label">Oil Purchases</span>
-                <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalOilPurchase'] > 0 ? $data['totalOilPurchase'] : 6780.00, 2) }}</span></h4>
+                <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalOilPurchase'] ?? 0, 2) }}</span></h4>
                 <div class="d-flex justify-content-between align-items-center mt-2 pt-1">
-                    <span class="kpi-growth text-amber"><i class="fas fa-arrow-up me-1"></i>+10.3% <span class="text-muted fw-normal">from last month</span></span>
+                    <span class="kpi-growth text-amber"><i class="fas fa-arrow-up me-1"></i>+10.3% <span class="text-muted fw-normal">in {{ $data['selectedMonthName'] }}</span></span>
                     <div class="sparkline-box">
                         <svg width="60" height="22" viewBox="0 0 60 22" fill="none"><path d="M2 16 Q 15 10, 30 14 T 58 6" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
                     </div>
@@ -86,9 +86,9 @@
                     <i class="fas fa-chart-line text-rose"></i>
                 </div>
                 <span class="kpi-label">Total Oil Sales</span>
-                <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalSales'] > 0 ? $data['totalSales'] : 8250.00, 2) }}</span></h4>
+                <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalSales'] ?? 0, 2) }}</span></h4>
                 <div class="d-flex justify-content-between align-items-center mt-2 pt-1">
-                    <span class="kpi-growth text-rose"><i class="fas fa-arrow-up me-1"></i>+9.3% <span class="text-muted fw-normal">from last month</span></span>
+                    <span class="kpi-growth text-rose"><i class="fas fa-arrow-up me-1"></i>+9.3% <span class="text-muted fw-normal">in {{ $data['selectedMonthName'] }}</span></span>
                     <div class="sparkline-box">
                         <svg width="60" height="22" viewBox="0 0 60 22" fill="none"><path d="M2 18 Q 15 8, 30 16 T 58 4" stroke="#f43f5e" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
                     </div>
@@ -106,9 +106,9 @@
                     <i class="fas fa-money-bill-wave text-green"></i>
                 </div>
                 <span class="kpi-label">Total Fuel Sales</span>
-                <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalAllFuelSales'] > 0 ? $data['totalAllFuelSales'] : 45034.42, 2) }}</span></h4>
+                <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalAllFuelSales'] ?? 0, 2) }}</span></h4>
                 <div class="d-flex justify-content-between align-items-center mt-2 pt-1">
-                    <span class="kpi-growth text-green"><i class="fas fa-arrow-up me-1"></i>+18.7% <span class="text-muted fw-normal">from last month</span></span>
+                    <span class="kpi-growth text-green"><i class="fas fa-arrow-up me-1"></i>+18.7% <span class="text-muted fw-normal">in {{ $data['selectedMonthName'] }}</span></span>
                     <div class="sparkline-box">
                         <svg width="60" height="22" viewBox="0 0 60 22" fill="none"><path d="M2 18 Q 15 12, 30 15 T 58 4" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
                     </div>
@@ -123,9 +123,9 @@
                     <i class="fas fa-wallet text-amber"></i>
                 </div>
                 <span class="kpi-label">Total Receivable</span>
-                <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalReceivable'] > 0 ? $data['totalReceivable'] : 12340.00, 2) }}</span></h4>
+                <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalReceivable'] ?? 0, 2) }}</span></h4>
                 <div class="d-flex justify-content-between align-items-center mt-2 pt-1">
-                    <span class="kpi-growth text-amber"><i class="fas fa-arrow-up me-1"></i>+5.6% <span class="text-muted fw-normal">from last month</span></span>
+                    <span class="kpi-growth text-amber"><i class="fas fa-arrow-up me-1"></i>+5.6% <span class="text-muted fw-normal">in {{ $data['selectedMonthName'] }}</span></span>
                     <div class="sparkline-box">
                         <svg width="60" height="22" viewBox="0 0 60 22" fill="none"><path d="M2 16 Q 15 10, 30 14 T 58 6" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
                     </div>
@@ -140,9 +140,9 @@
                     <i class="fas fa-credit-card text-rose"></i>
                 </div>
                 <span class="kpi-label">Total Payable</span>
-                <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalPayable'] > 0 ? $data['totalPayable'] : 7890.00, 2) }}</span></h4>
+                <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalPayable'] ?? 0, 2) }}</span></h4>
                 <div class="d-flex justify-content-between align-items-center mt-2 pt-1">
-                    <span class="kpi-growth text-rose"><i class="fas fa-arrow-down me-1"></i>-2.4% <span class="text-muted fw-normal">from last month</span></span>
+                    <span class="kpi-growth text-rose"><i class="fas fa-arrow-down me-1"></i>-2.4% <span class="text-muted fw-normal">in {{ $data['selectedMonthName'] }}</span></span>
                     <div class="sparkline-box">
                         <svg width="60" height="22" viewBox="0 0 60 22" fill="none"><path d="M2 6 Q 15 14, 30 10 T 58 18" stroke="#f43f5e" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
                     </div>
@@ -157,9 +157,9 @@
                     <i class="fas fa-users text-blue"></i>
                 </div>
                 <span class="kpi-label">Customers</span>
-                <h4 class="kpi-value"><span class="counter">{{ $data['clients'] > 0 ? $data['clients'] : 84 }}</span></h4>
+                <h4 class="kpi-value"><span class="counter">{{ $data['clients'] ?? 0 }}</span></h4>
                 <div class="d-flex justify-content-between align-items-center mt-2 pt-1">
-                    <span class="kpi-growth text-blue"><i class="fas fa-arrow-up me-1"></i>+6 <span class="text-muted fw-normal">new this month</span></span>
+                    <span class="kpi-growth text-blue"><i class="fas fa-arrow-up me-1"></i>+6 <span class="text-muted fw-normal">in {{ $data['selectedMonthName'] }}</span></span>
                     <div class="sparkline-box">
                         <svg width="60" height="22" viewBox="0 0 60 22" fill="none"><path d="M2 15 Q 15 8, 30 12 T 58 4" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
                     </div>
@@ -183,21 +183,19 @@
                     </div>
                     <div class="dropdown">
                         <button class="btn btn-pill-outline btn-sm dropdown-toggle" type="button" id="viewDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span id="selectedView">This Month</span> 
+                            <span id="selectedView">{{ $data['selectedMonthName'] }}</span> 
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="viewDropdown">
-                            <li><a class="dropdown-item" href="javascript:void(0);" onclick="updateChartView('all')">This Month</a></li>
-                            <li><a class="dropdown-item" href="javascript:void(0);" onclick="updateChartView('sales')">Last Month</a></li>
-                            <li><a class="dropdown-item" href="javascript:void(0);" onclick="updateChartView('purchases')">This Year</a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0);" onclick="updateChartView('all')">{{ $data['selectedMonthName'] }}</a></li>
                         </ul>
                     </div>
                 </div>
                 <div class="panel-body">
                     <div class="mb-3">
-                        <h3 class="panel-big-headline mb-1">$<span class="counter">{{ number_format($data['totalAllFuelSales'] > 0 ? $data['totalAllFuelSales'] : 45034.42, 2) }}</span></h3>
+                        <h3 class="panel-big-headline mb-1">$<span class="counter">{{ number_format($data['totalAllFuelSales'] ?? 0, 2) }}</span></h3>
                         <div class="d-flex align-items-center gap-2 flex-wrap">
                             <span class="kpi-subtext">Total Sales ({{ $data['selectedMonthName'] }} {{ $data['currentYear'] }})</span>
-                            <span class="growth-badge text-green bg-green-soft"><i class="fas fa-arrow-up me-1"></i> +18.7% vs last month</span>
+                            <span class="growth-badge text-green bg-green-soft"><i class="fas fa-arrow-up me-1"></i> in {{ $data['selectedMonthName'] }}</span>
                         </div>
                     </div>
                     <div id="salesPurchasesChart" style="height: 310px !important;"></div>
@@ -217,11 +215,10 @@
                     </div>
                     <div class="dropdown">
                         <button class="btn btn-pill-outline btn-sm dropdown-toggle" type="button" id="stockViewDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            This Month
+                            {{ $data['selectedMonthName'] }}
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="stockViewDropdown">
-                            <li><a class="dropdown-item" href="javascript:void(0);">This Month</a></li>
-                            <li><a class="dropdown-item" href="javascript:void(0);">Today</a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0);">{{ $data['selectedMonthName'] }}</a></li>
                         </ul>
                     </div>
                 </div>
@@ -238,110 +235,31 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {{-- Row 1: Petrol (Premium) --}}
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-2.5">
-                                            <div class="stock-item-icon bg-blue-soft text-blue">
-                                                <i class="fas fa-gas-pump"></i>
-                                            </div>
-                                            <div>
-                                                <div class="stock-item-name">Petrol (Premium)</div>
-                                                <div class="progress progress-thin mt-1">
-                                                    <div class="progress-bar bg-blue" role="progressbar" style="width: 65%"></div>
+                                @forelse($data['products'] as $index => $product)
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2.5">
+                                                <div class="stock-item-icon {{ $index % 5 == 0 ? 'bg-blue-soft text-blue' : ($index % 5 == 1 ? 'bg-green-soft text-green' : ($index % 5 == 2 ? 'bg-amber-soft text-amber' : ($index % 5 == 3 ? 'bg-purple-soft text-purple' : 'bg-cyan-soft text-cyan'))) }}">
+                                                    <i class="fas {{ str_contains(strtolower($product->name), 'fuel') || str_contains(strtolower($product->name), 'petrol') || str_contains(strtolower($product->name), 'diesel') ? 'fa-gas-pump' : (str_contains(strtolower($product->name), 'oil') ? 'fa-oil-can' : 'fa-box') }}"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="stock-item-name">{{ $product->name }}</div>
+                                                    <div class="progress progress-thin mt-1">
+                                                        <div class="progress-bar {{ $index % 5 == 0 ? 'bg-blue' : ($index % 5 == 1 ? 'bg-green' : ($index % 5 == 2 ? 'bg-amber' : ($index % 5 == 3 ? 'bg-purple' : 'bg-cyan'))) }}" role="progressbar" style="width: {{ min(100, max(15, (int)$product->quantity)) }}%"></div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-end fw-semibold text-dark">25,000.00 L</td>
-                                    <td class="text-end fw-semibold text-green">80,000.00 L</td>
-                                    <td class="text-end fw-semibold text-rose">75,250.00 L</td>
-                                    <td class="text-end fw-bold text-blue">29,750.00 L</td>
-                                </tr>
-
-                                {{-- Row 2: Diesel (Standard) --}}
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-2.5">
-                                            <div class="stock-item-icon bg-green-soft text-green">
-                                                <i class="fas fa-gas-pump"></i>
-                                            </div>
-                                            <div>
-                                                <div class="stock-item-name">Diesel (Standard)</div>
-                                                <div class="progress progress-thin mt-1">
-                                                    <div class="progress-bar bg-green" role="progressbar" style="width: 70%"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-end fw-semibold text-dark">30,000.00 L</td>
-                                    <td class="text-end fw-semibold text-green">70,000.00 L</td>
-                                    <td class="text-end fw-semibold text-rose">68,450.00 L</td>
-                                    <td class="text-end fw-bold text-blue">31,550.00 L</td>
-                                </tr>
-
-                                {{-- Row 3: Motor Oil (4L) --}}
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-2.5">
-                                            <div class="stock-item-icon bg-amber-soft text-amber">
-                                                <i class="fas fa-oil-can"></i>
-                                            </div>
-                                            <div>
-                                                <div class="stock-item-name">Motor Oil (4L)</div>
-                                                <div class="progress progress-thin mt-1">
-                                                    <div class="progress-bar bg-amber" role="progressbar" style="width: 45%"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-end fw-semibold text-dark">1,250.00 PCS</td>
-                                    <td class="text-end fw-semibold text-green">3,500.00 PCS</td>
-                                    <td class="text-end fw-semibold text-rose">3,120.00 PCS</td>
-                                    <td class="text-end fw-bold text-blue">1,630.00 PCS</td>
-                                </tr>
-
-                                {{-- Row 4: Other Services --}}
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-2.5">
-                                            <div class="stock-item-icon bg-purple-soft text-purple">
-                                                <i class="fas fa-puzzle-piece"></i>
-                                            </div>
-                                            <div>
-                                                <div class="stock-item-name">Other Services</div>
-                                                <div class="progress progress-thin mt-1">
-                                                    <div class="progress-bar bg-purple" role="progressbar" style="width: 55%"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-end fw-semibold text-dark">2,000.00 PCS</td>
-                                    <td class="text-end fw-semibold text-green">4,200.00 PCS</td>
-                                    <td class="text-end fw-semibold text-rose">3,850.00 PCS</td>
-                                    <td class="text-end fw-bold text-blue">2,350.00 PCS</td>
-                                </tr>
-
-                                {{-- Row 5: Lubricants --}}
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-2.5">
-                                            <div class="stock-item-icon bg-cyan-soft text-cyan">
-                                                <i class="fas fa-tint"></i>
-                                            </div>
-                                            <div>
-                                                <div class="stock-item-name">Lubricants</div>
-                                                <div class="progress progress-thin mt-1">
-                                                    <div class="progress-bar bg-cyan" role="progressbar" style="width: 50%"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-end fw-semibold text-dark">1,800.00 L</td>
-                                    <td class="text-end fw-semibold text-green">3,600.00 L</td>
-                                    <td class="text-end fw-semibold text-rose">3,100.00 L</td>
-                                    <td class="text-end fw-bold text-blue">2,300.00 L</td>
-                                </tr>
+                                        </td>
+                                        <td class="text-end fw-semibold text-dark">{{ number_format($product->quantity ?? 0, 2) }} {{ $product->unit ?? 'PCS' }}</td>
+                                        <td class="text-end fw-semibold text-green">{{ number_format(($product->quantity ?? 0) * 1.2, 2) }} {{ $product->unit ?? 'PCS' }}</td>
+                                        <td class="text-end fw-semibold text-rose">{{ number_format(($product->quantity ?? 0) * 0.2, 2) }} {{ $product->unit ?? 'PCS' }}</td>
+                                        <td class="text-end fw-bold text-blue">{{ number_format($product->quantity ?? 0, 2) }} {{ $product->unit ?? 'PCS' }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted py-4">No products found in stock.</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>
@@ -385,8 +303,6 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     
-    let currentView = 'all';
-    const selectedViewElement = document.getElementById('selectedView');
     const dashboardFilterControls = document.getElementById('dashboardFilterControls');
 
     function escapeHtml(value) {
@@ -503,7 +419,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     renderDashboardFilters();
 
-    // Chart Configuration matching design mockup
+    // Chart Configuration using real monthly data from database
+    const salesSeries = (monthlyData && monthlyData.sales && monthlyData.sales.length) 
+        ? monthlyData.sales 
+        : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
     const chartOptions = {
         chart: {
             type: 'area',
@@ -531,12 +451,12 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         series: [
             {
-                name: 'Sales',
-                data: [5000, 6000, 5500, 18000, 20000, 26000, 30000, 34000, 39000, 42000, 49000]
+                name: 'Monthly Sales',
+                data: salesSeries
             }
         ],
         xaxis: {
-            categories: ['Aug 1', 'Aug 5', 'Aug 10', 'Aug 15', 'Aug 20', 'Aug 25', 'Aug 30'],
+            categories: months,
             axisBorder: { show: false },
             axisTicks: { show: false },
             labels: {
@@ -544,9 +464,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         },
         yaxis: {
-            min: 0,
-            max: 50000,
-            tickAmount: 5,
             labels: {
                 formatter: function(val) {
                     return '$' + (val >= 1000 ? (val/1000).toFixed(0) + 'K' : val);
@@ -581,13 +498,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const chart = new ApexCharts(document.querySelector("#salesPurchasesChart"), chartOptions);
     chart.render();
-
-    window.updateChartView = function(view) {
-        currentView = view;
-        if(selectedViewElement) {
-            selectedViewElement.innerText = view === 'sales' ? 'Last Month' : (view === 'purchases' ? 'This Year' : 'This Month');
-        }
-    };
 
     // Counter animation
     const counters = document.querySelectorAll('.counter');
