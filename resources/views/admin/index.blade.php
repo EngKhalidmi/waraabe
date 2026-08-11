@@ -274,6 +274,16 @@
     </div>
 </div>
 
+{{-- Embedded JSON Data Payload --}}
+<script id="dashboard-json" type="application/json">
+{!! json_encode([
+    'data' => $data,
+    'lowStockItems' => $lowStockItems,
+    'departments' => $departments,
+    'selectedDepID' => $selectedDepID
+]) !!}
+</script>
+
 {{-- ApexCharts & Scripts --}}
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
@@ -283,30 +293,40 @@ window.addEventListener('pageshow', function (event) {
     const isHistoryNavigation = event.persisted || (navigationEntry && navigationEntry.type === 'back_forward');
 
     if (isHistoryNavigation) {
-        window.location.replace(@json(route('login', ['history' => 1])));
+        window.location.replace("{!! route('login', ['history' => 1]) !!}");
     }
 });
 
 document.addEventListener('DOMContentLoaded', function() {
     feather.replace();
-    
-    const monthlyData = @json($data['monthlyData']);
-    const filterState = {
-        availableYears: @json($data['availableYears']),
-        currentYear: @json($data['currentYear']),
-        selectedMonth: @json($data['selectedMonth']),
-        selectedMonthName: @json($data['selectedMonthName']),
-        departments: @json($departments),
-        selectedDepID: @json($selectedDepID),
-        isAdmin: @json(auth()->user()->role === 'admin'),
-        dashboardUrl: @json(route('dashboard'))
-    };
+
+    let dashboardPayload = {};
+    try {
+        const jsonText = document.getElementById('dashboard-json')?.textContent;
+        if (jsonText) {
+            dashboardPayload = JSON.parse(jsonText);
+        }
+    } catch (e) {
+        console.error('Failed to parse dashboard JSON:', e);
+    }
+
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    
     const dashboardFilterControls = document.getElementById('dashboardFilterControls');
 
+    let chart = null;
+
+    function formatCurrency(num) {
+        const val = parseFloat(num) || 0;
+        return val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function formatNumber(num) {
+        const val = parseInt(num, 10) || 0;
+        return val.toLocaleString();
+    }
+
     function escapeHtml(value) {
-        return String(value)
+        return String(value || '')
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
@@ -314,66 +334,71 @@ document.addEventListener('DOMContentLoaded', function() {
             .replace(/'/g, '&#39;');
     }
 
-    function buildDashboardUrl(params) {
-        const url = new URL(filterState.dashboardUrl, window.location.origin);
+    function renderDashboardFromJSON(payload) {
+        if (!payload || !payload.data) return;
+        const d = payload.data;
 
-        if (params.year !== undefined && params.year !== null && params.year !== '') {
-            url.searchParams.set('year', params.year);
-        } else {
-            url.searchParams.delete('year');
+        // Update card values via JSON
+        const totalPurchasesEl = document.querySelector('.card-kpi.kpi-blue .counter');
+        if (totalPurchasesEl) totalPurchasesEl.textContent = formatCurrency(d.totalPurchase);
+
+        const fuelPurchasesEl = document.querySelectorAll('.card-kpi.kpi-green .counter')[0];
+        if (fuelPurchasesEl) fuelPurchasesEl.textContent = formatCurrency(d.totalFuelPurchase);
+
+        const oilPurchasesEl = document.querySelectorAll('.card-kpi.kpi-amber .counter')[0];
+        if (oilPurchasesEl) oilPurchasesEl.textContent = formatCurrency(d.totalOilPurchase);
+
+        const totalOilSalesEl = document.querySelectorAll('.card-kpi.kpi-rose .counter')[0];
+        if (totalOilSalesEl) totalOilSalesEl.textContent = formatCurrency(d.totalSales);
+
+        const totalFuelSalesEl = document.querySelectorAll('.card-kpi.kpi-green .counter')[1];
+        if (totalFuelSalesEl) totalFuelSalesEl.textContent = formatCurrency(d.totalAllFuelSales);
+
+        const totalReceivableEl = document.querySelectorAll('.card-kpi.kpi-amber .counter')[1];
+        if (totalReceivableEl) totalReceivableEl.textContent = formatCurrency(d.totalReceivable);
+
+        const totalPayableEl = document.querySelectorAll('.card-kpi.kpi-rose .counter')[1];
+        if (totalPayableEl) totalPayableEl.textContent = formatCurrency(d.totalPayable);
+
+        const customersEl = document.querySelectorAll('.card-kpi.kpi-blue .counter')[1];
+        if (customersEl) customersEl.textContent = formatNumber(d.clients);
+
+        // Update chart headline
+        const panelBigHeadline = document.querySelector('.panel-big-headline .counter');
+        if (panelBigHeadline) panelBigHeadline.textContent = formatCurrency(d.totalAllFuelSales);
+
+        // Update chart series
+        const salesSeries = (d.monthlyData && d.monthlyData.sales && d.monthlyData.sales.length)
+            ? d.monthlyData.sales
+            : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+        if (chart) {
+            chart.updateSeries([{ name: 'Monthly Sales', data: salesSeries }]);
         }
 
-        if (params.month !== undefined && params.month !== null && params.month !== '') {
-            url.searchParams.set('month', params.month);
-        } else {
-            url.searchParams.delete('month');
-        }
-
-        if (params.depID !== undefined && params.depID !== null && params.depID !== '') {
-            url.searchParams.set('depID', params.depID);
-        } else {
-            url.searchParams.delete('depID');
-        }
-
-        return url.pathname + url.search + url.hash;
+        renderDashboardFilters(payload);
     }
 
-    function renderDashboardFilters() {
-        if (!dashboardFilterControls) return;
+    function renderDashboardFilters(payload) {
+        if (!dashboardFilterControls || !payload || !payload.data) return;
+        const d = payload.data;
+        const isAdmin = {!! json_encode(in_array(auth()->user()->role, ['admin', 'manager', 'acc'])) !!};
+        const availableYears = d.availableYears || [];
+        const currentYear = d.currentYear;
+        const selectedMonth = d.selectedMonth;
+        const selectedMonthName = d.selectedMonthName;
+        const departments = payload.departments || [];
+        const selectedDepID = payload.selectedDepID;
 
-        const yearItems = filterState.availableYears.map(function(year) {
-            const activeClass = String(filterState.currentYear) === String(year) ? 'active' : '';
-            const href = buildDashboardUrl({
-                year: year,
-                month: filterState.selectedMonth,
-                depID: filterState.selectedDepID
-            });
-
-            return `
-                <li>
-                    <a class="dropdown-item ${activeClass}" href="${href}">
-                        ${year}
-                    </a>
-                </li>
-            `;
+        const yearItems = availableYears.map(function(year) {
+            const activeClass = String(currentYear) === String(year) ? 'active' : '';
+            return `<li><a class="dropdown-item ${activeClass}" href="javascript:void(0);" onclick="window.fetchDashboardJSON({year: ${year}, month: ${selectedMonth}, depID: '${selectedDepID || ''}'})">${year}</a></li>`;
         }).join('');
 
         const monthItems = months.map(function(monthName, index) {
             const monthNumber = index + 1;
-            const activeClass = Number(filterState.selectedMonth) === monthNumber ? 'active' : '';
-            const href = buildDashboardUrl({
-                month: monthNumber,
-                year: filterState.currentYear,
-                depID: filterState.selectedDepID
-            });
-
-            return `
-                <li>
-                    <a class="dropdown-item ${activeClass}" href="${href}">
-                        ${monthName}
-                    </a>
-                </li>
-            `;
+            const activeClass = Number(selectedMonth) === monthNumber ? 'active' : '';
+            return `<li><a class="dropdown-item ${activeClass}" href="javascript:void(0);" onclick="window.fetchDashboardJSON({year: ${currentYear}, month: ${monthNumber}, depID: '${selectedDepID || ''}'})">${monthName}</a></li>`;
         }).join('');
 
         const controls = [
@@ -381,31 +406,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="dropdown">
                     <button class="btn btn-pill-outline btn-sm dropdown-toggle d-flex align-items-center gap-1.5" type="button" id="yearDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="far fa-calendar-alt text-muted me-1"></i>
-                        ${filterState.currentYear}
+                        ${currentYear}
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="yearDropdown">
                         ${yearItems}
                     </ul>
                 </div>
             `,
-            filterState.isAdmin ? `
-                <form method="GET" action="${filterState.dashboardUrl}" class="m-0">
-                    <input type="hidden" name="year" value="${filterState.currentYear}">
-                    <input type="hidden" name="month" value="${filterState.selectedMonth}">
-                    <select class="btn btn-pill-outline btn-sm dropdown-toggle" name="depID" onchange="this.form.submit()">
+            isAdmin ? `
+                <div class="m-0">
+                    <select class="btn btn-pill-outline btn-sm dropdown-toggle" id="depIDSelect" onchange="window.fetchDashboardJSON({year: ${currentYear}, month: ${selectedMonth}, depID: this.value})">
                         <option value="">All Branches</option>
-                        ${filterState.departments.map(function(dep) {
-                            const selected = String(filterState.selectedDepID ?? '') === String(dep.id) ? 'selected' : '';
+                        ${departments.map(function(dep) {
+                            const selected = String(selectedDepID ?? '') === String(dep.id) ? 'selected' : '';
                             return `<option value="${dep.id}" ${selected}>${escapeHtml(dep.name)}</option>`;
                         }).join('')}
                     </select>
-                </form>
+                </div>
             ` : '',
             `
                 <div class="dropdown">
                     <button class="btn btn-pill-outline btn-sm dropdown-toggle d-flex align-items-center gap-1.5" type="button" id="monthDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="far fa-calendar text-muted me-1"></i>
-                        ${filterState.selectedMonthName}
+                        ${selectedMonthName}
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="monthDropdown">
                         ${monthItems}
@@ -417,11 +440,33 @@ document.addEventListener('DOMContentLoaded', function() {
         dashboardFilterControls.innerHTML = controls;
     }
 
-    renderDashboardFilters();
+    // Public method to fetch dashboard data via JSON API
+    window.fetchDashboardJSON = function(params) {
+        const query = new URLSearchParams();
+        query.set('json', '1');
+        if (params.year) query.set('year', params.year);
+        if (params.month) query.set('month', params.month);
+        if (params.depID) query.set('depID', params.depID);
 
-    // Chart Configuration using real monthly data from database
-    const salesSeries = (monthlyData && monthlyData.sales && monthlyData.sales.length) 
-        ? monthlyData.sales 
+        fetch("{!! route('dashboard') !!}?" + query.toString(), {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(json => {
+            if (json && json.data) {
+                dashboardPayload = json;
+                renderDashboardFromJSON(json);
+            }
+        })
+        .catch(err => console.error('Error fetching dashboard JSON:', err));
+    };
+
+    // Initialize ApexChart
+    const initialSales = (dashboardPayload.data && dashboardPayload.data.monthlyData && dashboardPayload.data.monthlyData.sales)
+        ? dashboardPayload.data.monthlyData.sales
         : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
     const chartOptions = {
@@ -430,38 +475,18 @@ document.addEventListener('DOMContentLoaded', function() {
             height: 310,
             toolbar: { show: false },
             sparkline: { enabled: false },
-            animations: {
-                enabled: true,
-                easing: 'easeinout',
-                speed: 800
-            }
+            animations: { enabled: true, easing: 'easeinout', speed: 800 }
         },
         colors: ['#2563eb'],
         dataLabels: { enabled: false },
-        stroke: { 
-            curve: 'smooth',
-            width: 3
-        },
-        markers: {
-            size: 4,
-            colors: ['#2563eb'],
-            strokeColors: '#ffffff',
-            strokeWidth: 2,
-            hover: { size: 6 }
-        },
-        series: [
-            {
-                name: 'Monthly Sales',
-                data: salesSeries
-            }
-        ],
+        stroke: { curve: 'smooth', width: 3 },
+        markers: { size: 4, colors: ['#2563eb'], strokeColors: '#ffffff', strokeWidth: 2, hover: { size: 6 } },
+        series: [{ name: 'Monthly Sales', data: initialSales }],
         xaxis: {
             categories: months,
             axisBorder: { show: false },
             axisTicks: { show: false },
-            labels: {
-                style: { colors: '#94a3b8', fontSize: '11px', fontWeight: '500' }
-            }
+            labels: { style: { colors: '#94a3b8', fontSize: '11px', fontWeight: '500' } }
         },
         yaxis: {
             labels: {
@@ -473,61 +498,23 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         fill: {
             type: 'gradient',
-            gradient: {
-                shade: 'light',
-                type: 'vertical',
-                shadeIntensity: 0.5,
-                gradientToColors: ['#93c5fd'],
-                opacityFrom: 0.35,
-                opacityTo: 0.02,
-                stops: [0, 100]
-            }
+            gradient: { shade: 'light', type: 'vertical', shadeIntensity: 0.5, gradientToColors: ['#93c5fd'], opacityFrom: 0.35, opacityTo: 0.02, stops: [0, 100] }
         },
         tooltip: {
             y: {
                 formatter: function(value) {
-                    return '$' + value.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    return '$' + (parseFloat(value) || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
                 }
             }
         },
-        grid: {
-            borderColor: '#f1f5f9',
-            strokeDashArray: 4
-        }
+        grid: { borderColor: '#f1f5f9', strokeDashArray: 4 }
     };
 
-    const chart = new ApexCharts(document.querySelector("#salesPurchasesChart"), chartOptions);
+    chart = new ApexCharts(document.querySelector("#salesPurchasesChart"), chartOptions);
     chart.render();
 
-    // Counter animation
-    const counters = document.querySelectorAll('.counter');
-    const speed = 200;
-
-    counters.forEach(counter => {
-        const animate = () => {
-            const value = +counter.getAttribute('data-target') || parseFloat(counter.innerText.replace(/,/g, ''));
-            const data = +counter.innerText.replace(/,/g, '');
-            const time = value / speed;
-            
-            if(data < value) {
-                counter.innerText = Math.ceil(data + time).toLocaleString();
-                setTimeout(animate, 1);
-            } else {
-                counter.innerText = value.toLocaleString(undefined, {minimumFractionDigits: value % 1 !== 0 ? 2 : 0, maximumFractionDigits: 2});
-            }
-        }
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animate();
-                    observer.unobserve(entry.target);
-                }
-            });
-        });
-        
-        observer.observe(counter);
-    });
+    // Initial render from embedded JSON payload
+    renderDashboardFromJSON(dashboardPayload);
 });
 </script>
 

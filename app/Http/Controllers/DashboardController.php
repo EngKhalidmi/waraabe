@@ -163,36 +163,46 @@ class DashboardController extends Controller
         /**
          * ===================== RETURN VIEW =====================
          */
-        return response()->view('admin.index', [
+        $responseData = [
             'data' => [
-                'clients' => $customers,
-                'suppliers' => $suppliers,
-                'purchases' => $purchaseCount,
-                'sales' => $salesCount,
-                'totalReceivable' => $receivable,
-                'totalPayable' => $payable,
-                'totalSales' => $total_sales,
-                'totalPurchase' => $total_purchase,
-                'totalFuelPurchase' => $totalFuelPurchase,
-                'totalOilPurchase' => $totalOilPurchase,
+                'clients' => (int)$customers,
+                'suppliers' => (int)$suppliers,
+                'purchases' => (int)$purchaseCount,
+                'sales' => (int)$salesCount,
+                'totalReceivable' => (float)$receivable,
+                'totalPayable' => (float)$payable,
+                'totalSales' => (float)$total_sales,
+                'totalPurchase' => (float)$total_purchase,
+                'totalFuelPurchase' => (float)$totalFuelPurchase,
+                'totalOilPurchase' => (float)$totalOilPurchase,
                 'products' => $recentProducts,
-                'fuel_sale' => $fuelCashSales,
-                'totalAllFuelSales' => $totalAllFuelSales,
-                'selectedMonth' => $selectedMonth,
+                'fuel_sale' => (float)$fuelCashSales,
+                'totalAllFuelSales' => (float)$totalAllFuelSales,
+                'selectedMonth' => (int)$selectedMonth,
                 'selectedMonthName' => $selectedMonthName,
-                'currentYear' => $selectedYear,
+                'currentYear' => (int)$selectedYear,
                 'availableYears' => $availableYears,
                 'monthlyData' => [
-                    'sales' => $sales,
+                    'sales' => array_map('floatval', $sales),
                     'months' => $months
                 ]
             ],
             'lowStockItems' => $lowStockItems,
             'departments' => $departments,
             'selectedDepID' => $selectedDepID
-        ])->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, private')
-          ->header('Pragma', 'no-cache')
-          ->header('Expires', '0');
+        ];
+
+        if ($request->wantsJson() || $request->ajax() || $request->has('json') || $request->query('format') === 'json') {
+            return response()->json($responseData)
+                ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, private')
+                ->header('Pragma', 'no-cache')
+                ->header('Expires', '0');
+        }
+
+        return response()->view('admin.index', $responseData)
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, private')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
 
     /**
