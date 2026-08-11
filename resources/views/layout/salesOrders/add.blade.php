@@ -75,7 +75,7 @@
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
-                    <h4>Create Sales POS</h4>
+                    <h4>Create Sales</h4>
                     <h6>Sales & Payment Transaction </h6>
                 </div>
             </div>
