@@ -5,7 +5,7 @@
     <div class="content">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0.0/jquery.counterup.min.js"></script>
+<script src="{{ asset('assets/plugins/countup/jquery.counterup.min.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 {{-- Dashboard Header Area --}}
