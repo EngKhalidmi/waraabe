@@ -118,29 +118,15 @@ class DashboardController extends Controller
             ->get();
 
         /**
-         * ===================== FUEL SALES (CASH + CREDIT) =====================
+         * ===================== FUEL SALES =====================
          */
-        $cashFuelSalesTrans = DB::table('fuel_sale_transactions')
-            ->whereYear('dphase', $selectedYear)
-            ->whereMonth('dphase', $selectedMonth)
-            ->when($selectedDepID, fn($q) => $q->where('depID', $selectedDepID))
-            ->sum('total');
-
-        $cashFuelSalesHeader = DB::table('fuel_sales')
+        $totalAllFuelSales = DB::table('fuel_sales')
             ->whereYear('date', $selectedYear)
             ->whereMonth('date', $selectedMonth)
             ->when($selectedDepID, fn($q) => $q->where('depID', $selectedDepID))
             ->sum('net_total');
 
-        $fuelCashSales = max((float)$cashFuelSalesTrans, (float)$cashFuelSalesHeader);
-
-        $fuelCreditSales = DB::table('fuel_credit_sales')
-            ->whereYear('date', $selectedYear)
-            ->whereMonth('date', $selectedMonth)
-            ->when($selectedDepID, fn($q) => $q->where('depID', $selectedDepID))
-            ->sum('total');
-
-        $totalAllFuelSales = $fuelCashSales + (float)$fuelCreditSales;
+        $fuelCashSales = (float)$totalAllFuelSales;
 
         /**
          * ===================== MONTHLY CHART =====================
@@ -212,7 +198,7 @@ class DashboardController extends Controller
     {
         $salesYears = DB::table('sales_transactions')->selectRaw('YEAR(paid_date) as year')->pluck('year');
         $purchaseYears = DB::table('returned_credits')->selectRaw('YEAR(date) as year')->pluck('year');
-        $fuelSalesYears = DB::table('fuel_sale_transactions')->selectRaw('YEAR(dphase) as year')->pluck('year');
+        $fuelSalesYears = DB::table('fuel_sales')->selectRaw('YEAR(date) as year')->pluck('year');
         $fuelCreditYears = DB::table('fuel_credit_sales')->selectRaw('YEAR(date) as year')->pluck('year');
 
         return $salesYears
