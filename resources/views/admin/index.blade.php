@@ -228,10 +228,10 @@
                             <thead>
                                 <tr>
                                     <th>Product</th>
-                                    <th class="text-end">Opening Stock</th>
-                                    <th class="text-end">In</th>
-                                    <th class="text-end">Out</th>
-                                    <th class="text-end">Balance</th>
+                                    <th class="text-start">Opening Stock</th>
+                                    <th class="text-start">In</th>
+                                    <th class="text-start">Out</th>
+                                    <th class="text-start">Balance</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -250,10 +250,10 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="text-end fw-semibold text-dark">{{ number_format($product->quantity ?? 0, 2) }} {{ $product->unit ?? 'PCS' }}</td>
-                                        <td class="text-end fw-semibold text-green">{{ number_format(($product->quantity ?? 0) * 1.2, 2) }} {{ $product->unit ?? 'PCS' }}</td>
-                                        <td class="text-end fw-semibold text-rose">{{ number_format(($product->quantity ?? 0) * 0.2, 2) }} {{ $product->unit ?? 'PCS' }}</td>
-                                        <td class="text-end fw-bold text-blue">{{ number_format($product->quantity ?? 0, 2) }} {{ $product->unit ?? 'PCS' }}</td>
+                                        <td class="text-start fw-semibold text-dark">{{ number_format($product->quantity ?? 0, 2) }} {{ $product->unit ?? 'PCS' }}</td>
+                                        <td class="text-start fw-semibold text-green">{{ number_format(($product->quantity ?? 0) * 1.2, 2) }} {{ $product->unit ?? 'PCS' }}</td>
+                                        <td class="text-start fw-semibold text-rose">{{ number_format(($product->quantity ?? 0) * 0.2, 2) }} {{ $product->unit ?? 'PCS' }}</td>
+                                        <td class="text-start fw-bold text-blue">{{ number_format($product->quantity ?? 0, 2) }} {{ $product->unit ?? 'PCS' }}</td>
                                     </tr>
                                 @empty
                                     <tr>
@@ -695,8 +695,8 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 .table-stock thead th {
-    font-size: 0.72rem;
-    font-weight: 600;
+    font-size: 0.82rem;
+    font-weight: 700;
     color: #64748b;
     border-bottom: 1px solid #f1f5f9;
     padding: 12px 16px;
@@ -705,25 +705,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .table-stock tbody td {
     padding: 12px 16px;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     border-bottom: 1px solid #f8fafc;
 }
 
 .stock-item-icon {
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.85rem;
+    font-size: 0.92rem;
     flex-shrink: 0;
 }
 
 .stock-item-name {
     font-weight: 600;
     color: #0f172a;
-    font-size: 0.82rem;
+    font-size: 0.92rem;
 }
 
 .progress-thin {

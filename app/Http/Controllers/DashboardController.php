@@ -112,10 +112,17 @@ class DashboardController extends Controller
             ->where('quantity', '<', 10)
             ->get();
 
-        $recentProducts = Products::when($selectedDepID, fn($q) => $q->where('depID', $selectedDepID))
-            ->latest()
-            ->take(10)
+        $staticProducts = Products::whereIn('id', [4, 5])
+            ->when($selectedDepID, fn($q) => $q->where('depID', $selectedDepID))
             ->get();
+
+        $otherProducts = Products::whereNotIn('id', [4, 5])
+            ->when($selectedDepID, fn($q) => $q->where('depID', $selectedDepID))
+            ->latest()
+            ->take(8)
+            ->get();
+
+        $recentProducts = $staticProducts->merge($otherProducts);
 
         /**
          * ===================== FUEL SALES =====================
