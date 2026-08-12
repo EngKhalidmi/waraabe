@@ -6,7 +6,7 @@
 <div class="content">
 <div class="page-header">
 <div class="page-title">
-<h4>Purchases Payment Transaction List1</h4>
+<h4>Purchases Payment Transaction List</h4>
 <h6>Manage your Purchases Payment Transactions</h6>
 </div>
 <div class="page-btn">
