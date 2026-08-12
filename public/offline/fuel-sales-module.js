@@ -1193,11 +1193,17 @@
             return;
         }
 
+        var csrfMeta = document.querySelector('meta[name="csrf-token"]');
+        var csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
+
         global.jQuery.ajax({
             url: config.destroyBaseUrl + '/' + saleId,
             type: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
             data: {
-                _token: document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : ''
+                _token: csrfToken
             },
             success: function (response) {
                 if (response && response.success) {

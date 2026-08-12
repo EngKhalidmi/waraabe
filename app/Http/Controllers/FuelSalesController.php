@@ -715,7 +715,10 @@ class FuelSalesController extends Controller
         public function destroy($id)
         {
             if (Auth::user()->role === 'acc') {
-                return redirect()->back()->withErrors(['unauthorized' => 'You are not authorized to register a new user.']);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You are not authorized to delete fuel sales.'
+                ], 403);
             }
             
             DB::beginTransaction();

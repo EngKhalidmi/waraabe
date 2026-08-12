@@ -10,6 +10,7 @@
     $appBaseUrl = $appOrigin . $appBasePath;
 @endphp
 
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <meta name="theme-color" content="{{ $pwaThemeColor }}">
 <meta name="application-name" content="{{ $pwaName }}">
 <meta name="apple-mobile-web-app-capable" content="yes">
