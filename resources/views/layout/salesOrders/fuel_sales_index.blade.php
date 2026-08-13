@@ -102,7 +102,7 @@ table.dataTable tbody td {
                 <div class="toast-container">
                     <div class="toast-message success">
                         <div class="toast-icon">
-                            <i class="icon-checkmark fas fa-check-circle"></i>
+                            <i data-lucide="circle-check" class="icon-checkmark"></i>
                         </div>
                         <div class="toast-content">
                             <strong>Success!</strong>
@@ -116,7 +116,7 @@ table.dataTable tbody td {
                 <div class="toast-container">
                     <div class="toast-message error">
                         <div class="toast-icon">
-                            <i class="icon-error fa fa-exclamation-circle"></i>
+                            <i data-lucide="circle-alert" class="icon-error"></i>
                         </div>
                         <div class="toast-content">
                             <strong>Error!</strong>

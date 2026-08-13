@@ -110,7 +110,7 @@
                     <p style=" font-family:'JetBrains Mono';margin-bottom:0;text-transform:uppercase;">Sales</p>
                     <hr class="mt-0">
                     <li class="submenu">
-                        <a href="javascript:void(0);"><i class="fas fa-dollar-sign"></i><span> Sales Transactions</span>
+                        <a href="javascript:void(0);"><i data-lucide="dollar-sign"></i><span> Sales Transactions</span>
                             <span class="menu-arrow"></span></a>
                         <ul>
 
@@ -150,7 +150,7 @@
                         </ul>
                     </li>
                     <li class="submenu">
-                        <a href="javascript:void(0);"><i class="fas fa-building"></i><span> Suppliers</span> <span
+                        <a href="javascript:void(0);"><i data-lucide="building-2"></i><span> Suppliers</span> <span
                                 class="menu-arrow"></span></a>
                         <ul>
                             <li><a class="{{ Route::is('suppliers') ? 'active' : '' }}"
@@ -228,7 +228,7 @@
                     
                     
                     <li class="submenu ">
-                        <a href="javascript:void(0);"><i class="fas fa-user-tie"></i><span> Customers</span> <span
+                        <a href="javascript:void(0);"><i data-lucide="user-round"></i><span> Customers</span> <span
                                 class="menu-arrow"></span></a>
                         <ul>
                             <li><a class="{{ Route::is('customers') ? 'active' : '' }}"
@@ -239,7 +239,7 @@
                     </li>
 
                     <li class="submenu ">
-                        <a href="javascript:void(0);"><i class="fas fa-user-tie"></i><span> Employees</span> <span
+                        <a href="javascript:void(0);"><i data-lucide="user-round"></i><span> Employees</span> <span
                                 class="menu-arrow"></span></a>
                         <ul>
                             <li><a class="{{ Route::is('salesman') ? 'active' : '' }}"
@@ -251,7 +251,7 @@
                     </li>
                     
                      <li class="submenu ">
-                        <a href="javascript:void(0);"><i class="fas fa-user-tie"></i><span> Salesman Payments</span> <span
+                        <a href="javascript:void(0);"><i data-lucide="user-round"></i><span> Salesman Payments</span> <span
                                 class="menu-arrow"></span></a>
                         <ul>
                            
@@ -285,7 +285,7 @@
                     <hr class="mt-0">
 
                     <li class="submenu">
-                        <a href="javascript:void(0);"><i class="fas fa-file-invoice-dollar"></i><span> Expense</span>
+                        <a href="javascript:void(0);"><i data-lucide="receipt-text"></i><span> Expense</span>
                             <span class="menu-arrow"></span></a>
                         <ul>
                             <li><a class="{{ Route::is('expenses') ? 'active' : '' }}"
@@ -297,7 +297,7 @@
 
                     </li>
                     <li class="submenu">
-                        <a href="javascript:void(0);"><i class="fas fa-hand-holding-usd"></i><span> Liability</span>
+                        <a href="javascript:void(0);"><i data-lucide="hand-coins"></i><span> Liability</span>
                             <span class="menu-arrow"></span></a>
                         <ul>
                             <li><a class="{{ Route::is('account_payables') ? 'active' : '' }}"
@@ -308,7 +308,7 @@
                         </ul>
                     </li>
                     <li class="submenu">
-                        <a href="javascript:void(0);"><i class="fa fa-university"></i><span> Bank Statement</span>
+                        <a href="javascript:void(0);"><i data-lucide="landmark"></i><span> Bank Statement</span>
                             <span class="menu-arrow"></span></a>
                         <ul>
                             <li><a class="{{ Route::is('bankStatement') ? 'active' : '' }}"
@@ -323,7 +323,7 @@
                     <p style=" font-family:'JetBrains Mono'; margin-bottom:0;text-transform:uppercase;">Activities</p>
                     <hr class="mt-0">
                     <li class="submenu">
-                        <a href="javascript:void(0);"><i class="fas fa-users"></i><span> Users</span> <span
+                        <a href="javascript:void(0);"><i data-lucide="users"></i><span> Users</span> <span
                                 class="menu-arrow"></span></a>
                         <ul>
                             <li><a class="{{ Route::is('users') ? 'active' : '' }}"
@@ -337,7 +337,7 @@
                     <p style=" font-family:'JetBrains Mono'; margin-bottom:0;text-transform:uppercase;">Reports</p>
                     <hr class="mt-0">
                     <li class="submenu">
-                        <a href="javascript:void(0);"><i class="fas fa-file-pdf"></i><span> System Reports</span>
+                        <a href="javascript:void(0);"><i data-lucide="file-text"></i><span> System Reports</span>
                             <span class="menu-arrow"></span></a>
                         <ul>
 
@@ -399,7 +399,7 @@
                     <p style=" font-family:'JetBrains Mono';margin-bottom:0;text-transform:uppercase;">Sales</p>
                     <hr class="mt-0">
                     <li class="submenu">
-                        <a href="javascript:void(0);"><i class="fas fa-dollar-sign"></i><span> Sales Transactions</span>
+                        <a href="javascript:void(0);"><i data-lucide="dollar-sign"></i><span> Sales Transactions</span>
                             <span class="menu-arrow"></span></a>
                         <ul>
 
@@ -439,7 +439,7 @@
                         </ul>
                     </li>
                     <li class="submenu">
-                        <a href="javascript:void(0);"><i class="fas fa-building"></i><span> Suppliers</span> <span
+                        <a href="javascript:void(0);"><i data-lucide="building-2"></i><span> Suppliers</span> <span
                                 class="menu-arrow"></span></a>
                         <ul>
                             <li><a class="{{ Route::is('suppliers') ? 'active' : '' }}"
@@ -517,7 +517,7 @@
                     
                     
                     <li class="submenu ">
-                        <a href="javascript:void(0);"><i class="fas fa-user-tie"></i><span> Customers</span> <span
+                        <a href="javascript:void(0);"><i data-lucide="user-round"></i><span> Customers</span> <span
                                 class="menu-arrow"></span></a>
                         <ul>
                             <li><a class="{{ Route::is('customers') ? 'active' : '' }}"
@@ -528,7 +528,7 @@
                     </li>
 
                     <li class="submenu ">
-                        <a href="javascript:void(0);"><i class="fas fa-user-tie"></i><span> Employees</span> <span
+                        <a href="javascript:void(0);"><i data-lucide="user-round"></i><span> Employees</span> <span
                                 class="menu-arrow"></span></a>
                         <ul>
                             <li><a class="{{ Route::is('salesman') ? 'active' : '' }}"
@@ -540,7 +540,7 @@
                     </li>
                     
                      <li class="submenu ">
-                        <a href="javascript:void(0);"><i class="fas fa-user-tie"></i><span> Salesman Payments</span> <span
+                        <a href="javascript:void(0);"><i data-lucide="user-round"></i><span> Salesman Payments</span> <span
                                 class="menu-arrow"></span></a>
                         <ul>
                            
@@ -574,7 +574,7 @@
                     <hr class="mt-0">
 
                     <li class="submenu">
-                        <a href="javascript:void(0);"><i class="fas fa-file-invoice-dollar"></i><span> Expense</span>
+                        <a href="javascript:void(0);"><i data-lucide="receipt-text"></i><span> Expense</span>
                             <span class="menu-arrow"></span></a>
                         <ul>
                             <li><a class="{{ Route::is('expenses') ? 'active' : '' }}"
@@ -586,7 +586,7 @@
 
                     </li>
                     <li class="submenu">
-                        <a href="javascript:void(0);"><i class="fas fa-hand-holding-usd"></i><span> Liability</span>
+                        <a href="javascript:void(0);"><i data-lucide="hand-coins"></i><span> Liability</span>
                             <span class="menu-arrow"></span></a>
                         <ul>
                             <li><a class="{{ Route::is('account_payables') ? 'active' : '' }}"
@@ -597,7 +597,7 @@
                         </ul>
                     </li>
                     <li class="submenu">
-                        <a href="javascript:void(0);"><i class="fa fa-university"></i><span> Bank Statement</span>
+                        <a href="javascript:void(0);"><i data-lucide="landmark"></i><span> Bank Statement</span>
                             <span class="menu-arrow"></span></a>
                         <ul>
                             <li><a class="{{ Route::is('bankStatement') ? 'active' : '' }}"
@@ -615,7 +615,7 @@
                     <p style=" font-family:'JetBrains Mono'; margin-bottom:0;text-transform:uppercase;">Reports</p>
                     <hr class="mt-0">
                     <li class="submenu">
-                        <a href="javascript:void(0);"><i class="fas fa-file-pdf"></i><span> System Reports</span>
+                        <a href="javascript:void(0);"><i data-lucide="file-text"></i><span> System Reports</span>
                             <span class="menu-arrow"></span></a>
                         <ul>
 
@@ -710,7 +710,7 @@
 
 
             <li class="submenu ">
-                <a href="javascript:void(0);"><i class="fas fa-user-tie"></i><span> Customers</span> <span
+                <a href="javascript:void(0);"><i data-lucide="user-round"></i><span> Customers</span> <span
                         class="menu-arrow"></span></a>
                 <ul>
                     <li><a class="{{ Route::is('customers') ? 'active' : '' }}"
@@ -720,7 +720,7 @@
                 </ul>
             </li>
             <li class="submenu">
-                <a href="javascript:void(0);"><i class="fas fa-building"></i><span> Suppliers</span> <span
+                <a href="javascript:void(0);"><i data-lucide="building-2"></i><span> Suppliers</span> <span
                         class="menu-arrow"></span></a>
                 <ul>
                     <li><a class="{{ Route::is('suppliers') ? 'active' : '' }}"
@@ -731,7 +731,7 @@
             </li>
 
             <li class="submenu">
-                <a href="javascript:void(0);"><i class="fas fa-file-invoice-dollar"></i><span> Expense</span>
+                <a href="javascript:void(0);"><i data-lucide="receipt-text"></i><span> Expense</span>
                     <span class="menu-arrow"></span></a>
                 <ul>
                     <li><a class="{{ Route::is('expenses') ? 'active' : '' }}"
@@ -746,7 +746,7 @@
             </li>
 
             <li class="submenu">
-                <a href="javascript:void(0);"><i class="fas fa-file-pdf"></i><span> System Reports</span>
+                <a href="javascript:void(0);"><i data-lucide="file-text"></i><span> System Reports</span>
                     <span class="menu-arrow"></span></a>
                 <ul>
 
@@ -795,7 +795,7 @@
 
 
             <li class="submenu ">
-                <a href="javascript:void(0);"><i class="fas fa-user-tie"></i><span> Customers</span> <span
+                <a href="javascript:void(0);"><i data-lucide="user-round"></i><span> Customers</span> <span
                         class="menu-arrow"></span></a>
                 <ul>
                     <li><a class="{{ Route::is('customers') ? 'active' : '' }}"
@@ -805,7 +805,7 @@
                 </ul>
             </li>
             <li class="submenu">
-                <a href="javascript:void(0);"><i class="fas fa-building"></i><span> Suppliers</span> <span
+                <a href="javascript:void(0);"><i data-lucide="building-2"></i><span> Suppliers</span> <span
                         class="menu-arrow"></span></a>
                 <ul>
                     <li><a class="{{ Route::is('suppliers') ? 'active' : '' }}"
@@ -816,7 +816,7 @@
             </li>
 
             <li class="submenu">
-                <a href="javascript:void(0);"><i class="fas fa-file-invoice-dollar"></i><span> Expense</span>
+                <a href="javascript:void(0);"><i data-lucide="receipt-text"></i><span> Expense</span>
                     <span class="menu-arrow"></span></a>
                 <ul>
                     <li><a class="{{ Route::is('expenses') ? 'active' : '' }}"
@@ -828,7 +828,7 @@
 
 
             {{-- <li class="submenu">
-                <a href="javascript:void(0);"><i class="fas fa-hand-holding-usd"></i><span> Liability</span>
+                <a href="javascript:void(0);"><i data-lucide="hand-coins"></i><span> Liability</span>
                     <span class="menu-arrow"></span></a>
                 <ul>
                     <li><a class="{{ Route::is('account_payables') ? 'active' : '' }}"
@@ -839,7 +839,7 @@
                 </ul>
             </li> --}}
             <li class="submenu">
-                <a href="javascript:void(0);"><i class="fas fa-file-pdf"></i><span> System Reports</span>
+                <a href="javascript:void(0);"><i data-lucide="file-text"></i><span> System Reports</span>
                     <span class="menu-arrow"></span></a>
                 <ul>
 
@@ -864,7 +864,7 @@
 
             <li>
                 <a href="{{ route('settings.index') }}" class="{{ Route::is('settings.index') ? 'active' : '' }}">
-                    <i class="fas fa-cog"></i> <span>Header Settings</span>
+                    <i data-lucide="settings"></i> <span>Header Settings</span>
                 </a>
             </li>
             </ul>

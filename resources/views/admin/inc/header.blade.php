@@ -198,7 +198,7 @@
             {{-- <li class="nav-item dropdown">
     <a href="javascript:void(0);" class="nav-link userset" data-bs-toggle="dropdown">
         <span class="user-img position-relative">
-            <i class="fas fa-bell fa-lg"></i>
+            <i data-lucide="bell" class="icon-lg"></i>
             <span class="pulse-badge"></span>
         </span>
     </a>
@@ -209,7 +209,7 @@
         </div>
         <div class="notification-item">
             <div class="icon-wrapper bg-gradient-info">
-                <i class="fas fa-info-circle"></i>
+                <i data-lucide="info"></i>
             </div>
             <div class="notification-text">
                 <p>New features are launching soon!</p>
@@ -218,7 +218,7 @@
         </div>
         <div class="notification-item">
             <div class="icon-wrapper bg-gradient-success">
-                <i class="fas fa-check-circle"></i>
+                <i data-lucide="circle-check"></i>
             </div>
             <div class="notification-text">
                 <p>System update completed successfully.</p>
@@ -227,7 +227,7 @@
         </div>
         <div class="notification-item">
             <div class="icon-wrapper bg-gradient-warning">
-                <i class="fas fa-bullhorn"></i>
+                <i data-lucide="megaphone"></i>
             </div>
             <div class="notification-text">
                 <p>New product launch announced!</p>
@@ -242,7 +242,7 @@
 
             @if (auth()->user()->role === 'admin' || auth()->user()->role === 'branch-manager')
                 <a href="{{ route('products.add') }}" class=" nav-link userset">
-                    <span class="user-img"><i class="fas fa-cart-plus"></i> <span class="mr-2"></span>
+                    <span class="user-img"><i data-lucide="shopping-cart"></i> <span class="mr-2"></span>
                     </span>
                 </a>
             @endif
@@ -251,7 +251,7 @@
 
             @if (auth()->user()->role === 'admin' || auth()->user()->role === 'branch-manager')
                 <a href="{{ route('sales.add') }}" class=" nav-link userset">
-                    <span class="user-img"><i class="fas fa-dollar-sign"></i> <span class="mr-2"></span>
+                    <span class="user-img"><i data-lucide="dollar-sign"></i> <span class="mr-2"></span>
                     </span>
                 </a>
             @endif
@@ -294,7 +294,7 @@
         </ul>
         <div class="dropdown mobile-user-menu">
             <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
-                aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
+                aria-expanded="false"><i data-lucide="ellipsis-vertical"></i></a>
             <div class="dropdown-menu dropdown-menu-right">
                 <a class="dropdown-item" href="{{ route('profile.users') }}"> My Profile</a>
                 <a class="dropdown-item" href="{{ route('settings.index') }}"> Settings</a>

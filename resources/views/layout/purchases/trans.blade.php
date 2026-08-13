@@ -18,7 +18,7 @@
     <div class="toast-container">
         <div class="toast-message success">
             <div class="toast-icon">
-                <i class="icon-checkmark fas fa-check-circle"></i> <!-- Success checkmark icon -->
+                <i data-lucide="circle-check" class="icon-checkmark"></i> <!-- Success checkmark icon -->
             </div>
             <div class="toast-content">
                 <strong>Success!</strong>
@@ -32,7 +32,7 @@
     <div class="toast-container">
         <div class="toast-message error">
             <div class="toast-icon">
-                <i class="icon-error fa fa-exclamation-circle"></i> <!-- Error exclamation mark icon -->
+                <i data-lucide="circle-alert" class="icon-error"></i> <!-- Error exclamation mark icon -->
             </div>
             <div class="toast-content">
                 <strong>Error!</strong>
@@ -200,12 +200,12 @@
                     let deleteUrl = `{{ url('purchaseTransactions/purchaseTransactions') }}/${data}`;
                     let InvoiceUrl = `{{ url('purchaseTransactions/invoice')}}/${data}`;
                     return `
-                    <a href="${InvoiceUrl}" target="_blank" class="btn btn-rounded btn-sm bg-outline-light me-2"> <i class="fas fa-print"></i></a>
+                    <a href="${InvoiceUrl}" target="_blank" class="btn btn-rounded btn-sm bg-outline-light me-2"> <i data-lucide="printer"></i></a>
                        <form id="deleteForm-${data}" action="${deleteUrl}" method="POST" style="display:inline;">
                            @csrf
                            @method('DELETE')
                            <button style="float:right !important;" type="button" class="btn btn-rounded btn-sm bg-outline-light me-2" onclick="confirmDelete(${data})">
-                               <i class="fas fa-trash"></i>
+                               <i data-lucide="trash-2"></i>
                            </button>
                        </form>`;
                 }

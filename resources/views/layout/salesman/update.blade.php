@@ -61,7 +61,7 @@
 
 
                             <div class="col-lg-12">
-                                <button type="submit" class="btn btn-primary "><i class="fas fa-edit"></i> Update
+                                <button type="submit" class="btn btn-primary "><i data-lucide="square-pen"></i> Update
                                     Salesman</button>
                             </div>
                         </div>

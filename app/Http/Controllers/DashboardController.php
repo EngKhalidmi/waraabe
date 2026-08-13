@@ -207,8 +207,13 @@ class DashboardController extends Controller
      * regular (cash) fuel sale transactions and the credit fuel sales.
      * Oil sales and bad products are stock-out movements as well.
      *
-     * Opening stock is derived so the row always balances:
+     * Opening stock is normally derived so the row balances:
      *     opening + in - out = current quantity
+     *
+     * Exception: a product that has never had an Opening Inventory record
+     * started life with its first purchase, so that purchase is reported as
+     * the opening figure for the month it was made in. It stays counted in
+     * "In" as well, so those rows intentionally do not balance.
      */
     private function attachStockMovements($products, int $year, int $month, $depID): void
     {
@@ -271,6 +276,8 @@ class DashboardController extends Controller
             ->groupBy('p.proID')
             ->pluck('qty', 'pid');
 
+        $seededOpenings = $this->seededOpeningQuantities($productIds, $depID, $year, $month);
+
         foreach ($products as $product) {
             $id = $product->id;
 
@@ -282,11 +289,89 @@ class DashboardController extends Controller
             $in = (float) ($purchaseIn[$id] ?? 0);
             $balance = (float) $product->quantity;
 
+            $opening = $balance - $in + $out;
+            $seededFromPurchase = isset($seededOpenings[$id]);
+
+            if ($seededFromPurchase) {
+                $opening = (float) $seededOpenings[$id];
+            }
+
             $product->stock_in = $in;
             $product->stock_out = $out;
             $product->stock_balance = $balance;
-            $product->opening_stock = $balance - $in + $out;
+            $product->opening_stock = $opening;
+            $product->opening_from_purchase = $seededFromPurchase;
+
+            // Progress basis that never double counts the seeded opening.
+            $product->stock_available = $balance + $out;
         }
+    }
+
+    /**
+     * Opening quantities for products that have no Opening Inventory record and
+     * made their very first purchase inside the reported month, keyed by product id.
+     *
+     * Products whose first purchase predates the month are left out so later
+     * months keep carrying the balance forward instead of re-seeding.
+     */
+    private function seededOpeningQuantities(array $productIds, $depID, int $year, int $month)
+    {
+        $withOpeningRecord = DB::table('opening_inventory')
+            ->whereIn('product_id', $productIds)
+            ->when($depID, fn($q) => $q->where('depID', $depID))
+            ->distinct()
+            ->pluck('product_id')
+            ->all();
+
+        $candidateIds = array_values(array_diff($productIds, $withOpeningRecord));
+
+        if (empty($candidateIds)) {
+            return collect();
+        }
+
+        // Narrow to products whose first purchase ever falls in the reported
+        // month before reading any purchase rows.
+        $seededIds = DB::table('purchases as p')
+            ->join('returned_credits as rc', 'rc.id', '=', 'p.transID')
+            ->selectRaw('p.proID as pid, MIN(rc.date) as first_date')
+            ->whereIn('p.proID', $candidateIds)
+            ->when($depID, fn($q) => $q->where('p.depID', $depID))
+            ->groupBy('p.proID')
+            ->pluck('first_date', 'pid')
+            ->filter(fn($date) => $this->isInPeriod($date, $year, $month))
+            ->keys()
+            ->all();
+
+        if (empty($seededIds)) {
+            return collect();
+        }
+
+        return DB::table('purchases as p')
+            ->join('returned_credits as rc', 'rc.id', '=', 'p.transID')
+            ->select('p.proID', 'p.quantity')
+            ->whereIn('p.proID', $seededIds)
+            ->when($depID, fn($q) => $q->where('p.depID', $depID))
+            ->orderBy('rc.date')
+            ->orderBy('p.id')
+            ->get()
+            ->unique('proID')
+            ->mapWithKeys(fn($row) => [$row->proID => (float) $row->quantity]);
+    }
+
+    private function isInPeriod($date, int $year, int $month): bool
+    {
+        if (empty($date)) {
+            return false;
+        }
+
+        $timestamp = strtotime((string) $date);
+
+        if ($timestamp === false) {
+            return false;
+        }
+
+        return (int) date('Y', $timestamp) === $year
+            && (int) date('n', $timestamp) === $month;
     }
 
     /**

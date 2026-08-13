@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="{{asset('/theme/assets/plugins/fontawesome/css/fontawesome.min.css')}}">
 <link rel="stylesheet" href="{{asset('/theme/assets/plugins/fontawesome/css/all.min.css')}}">
 <link rel="stylesheet" href="{{asset('/theme/assets/css/style.css')}}">
+@include('partials.icons')
 </head>
 <style>
         @font-face {
@@ -156,7 +157,7 @@
     <div class="toast-container">
         <div class="toast-message success">
             <div class="toast-icon">
-                <i class="icon-checkmark fas fa-check-circle"></i> <!-- Success checkmark icon -->
+                <i data-lucide="circle-check" class="icon-checkmark"></i> <!-- Success checkmark icon -->
             </div>
             <div class="toast-content">
                 <strong>Success!</strong>
@@ -170,7 +171,7 @@
     <div class="toast-container">
         <div class="toast-message error">
             <div class="toast-icon">
-                <i class="icon-error fa fa-exclamation-circle"></i>
+                <i data-lucide="circle-alert" class="icon-error"></i>
             </div>
             <div class="toast-content">
                 <strong>Error!</strong>
@@ -205,7 +206,7 @@
 <div class="form-group" >
 <label>Enter your registered email address <span class="login-danger">*</span></label>
 <input class="form-control" type="email" name="email">
-<span class="profile-views"><i class="fas fa-envelope"></i></span>
+<span class="profile-views"><i data-lucide="mail"></i></span>
 </div>
 <div class="form-group">
 <button class="btn btn-primary btn-block" type="submit"><i class="feather-check-circle"></i> Reset My Password</button>

@@ -1,0 +1,60 @@
+/*
+ * Lucide icon defaults.
+ *
+ * Sizing uses `em` so icons inherit the font-size of their container, which
+ * keeps the spacing identical to the FontAwesome glyphs they replaced.
+ * CSS width/height override the width="24" height="24" attributes Lucide
+ * renders on the SVG.
+ */
+[data-lucide],
+svg.lucide {
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    vertical-align: -0.125em;
+    flex-shrink: 0;
+    stroke-width: 2;
+    overflow: visible;
+}
+
+/* Placeholders before the SVG swap: reserve space so layout doesn't shift. */
+i[data-lucide] {
+    width: 1em;
+    height: 1em;
+}
+
+/* Larger decorative icons read better with a slightly lighter stroke. */
+.kpi-icon-wrapper svg.lucide,
+.panel-title-icon svg.lucide,
+.stock-item-icon svg.lucide,
+.header-icon-box svg.lucide {
+    width: 1.05em;
+    height: 1.05em;
+    stroke-width: 1.75;
+}
+
+/* FontAwesome size helpers kept working for markup that used them. */
+svg.lucide.fa-lg,
+svg.lucide.icon-lg {
+    width: 1.33em;
+    height: 1.33em;
+}
+
+/* Replacement for FontAwesome's fa-spin. */
+svg.lucide.icon-spin,
+i[data-lucide].icon-spin {
+    animation: lucide-spin 1s linear infinite;
+    transform-origin: center;
+}
+
+@keyframes lucide-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    svg.lucide.icon-spin,
+    i[data-lucide].icon-spin {
+        animation-duration: 2.5s;
+    }
+}

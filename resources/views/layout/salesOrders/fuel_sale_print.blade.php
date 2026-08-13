@@ -206,6 +206,7 @@
             color: #555;
         }
     </style>
+@include('partials.icons')
 </head>
 <body>
     <div class="print-container">
@@ -413,7 +414,7 @@
 
     <!-- Print Button -->
     <button class="print-btn no-print" onclick="window.print()">
-        <i class="fas fa-print"></i> Print Receipt
+        <i data-lucide="printer"></i> Print Receipt
     </button>
 
     <script>

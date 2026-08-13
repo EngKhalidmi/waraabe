@@ -19,7 +19,7 @@
                 <div class="toast-container">
                     <div class="toast-message success">
                         <div class="toast-icon">
-                            <i class="icon-checkmark fas fa-check-circle"></i> <!-- Success checkmark icon -->
+                            <i data-lucide="circle-check" class="icon-checkmark"></i> <!-- Success checkmark icon -->
                         </div>
                         <div class="toast-content">
                             <strong>Success!</strong>
@@ -33,7 +33,7 @@
                 <div class="toast-container">
                     <div class="toast-message error">
                         <div class="toast-icon">
-                            <i class="icon-error fa fa-exclamation-circle"></i> <!-- Error exclamation mark icon -->
+                            <i data-lucide="circle-alert" class="icon-error"></i> <!-- Error exclamation mark icon -->
                         </div>
                         <div class="toast-content">
                             <strong>Error!</strong>
@@ -214,7 +214,7 @@
                            @csrf
                            @method('DELETE')
                            <button style="float:right !important;" type="button" class="btn btn-rounded btn-sm bg-outline-light me-2" onclick="confirmDelete(${data})">
-                               <i class="fas fa-trash"></i>
+                               <i data-lucide="trash-2"></i>
                            </button>
                        </form>`;
                         }

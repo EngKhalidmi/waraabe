@@ -6,7 +6,7 @@
     <div class="toast-container">
         <div class="toast-message success">
             <div class="toast-icon">
-                <i class="icon-checkmark fas fa-check-circle"></i>
+                <i data-lucide="circle-check" class="icon-checkmark"></i>
             </div>
             <div class="toast-content">
                 <strong>Success!</strong>
@@ -20,7 +20,7 @@
     <div class="toast-container">
         <div class="toast-message error">
             <div class="toast-icon">
-                <i class="icon-error fa fa-exclamation-circle"></i> 
+                <i data-lucide="circle-alert" class="icon-error"></i> 
             </div>
             <div class="toast-content">
                 <strong>Error!</strong>
@@ -179,7 +179,7 @@
                                 {{ number_format($totSell, 2, '.', '') }}
                             </td>
                             <td>
-                                <a href="javascript:void(0);" class="delete-set"><i class="fas fa-trash"></i></a>
+                                <a href="javascript:void(0);" class="delete-set"><i data-lucide="trash-2"></i></a>
                             </td>
                         </tr>
                     @endforeach
@@ -248,7 +248,7 @@
     </div>
     </div>
     <div class="col-lg-12">
-        <button type="submit" id="Create" class="btn btn-primary me-2"><i class="fas fa-save"></i> Create Purchase</button>
+        <button type="submit" id="Create" class="btn btn-primary me-2"><i data-lucide="save"></i> Create Purchase</button>
         <a href="#" class="btn btn-cancel">Cancel</a> 
     </div>
 </div>
@@ -459,7 +459,7 @@ $(document).ready(function() {
         if (query.length >= 2) {
             $('#productDropdown').html(`
                 <div class="dropdown-item text-center">
-                    <i class="fa fa-spinner fa-spin" style="margin-right:8px !important;"></i> Searching...
+                    <i data-lucide="loader-circle" class="icon-spin" style="margin-right:8px !important;"></i> Searching...
                 </div>
             `).show();
             
@@ -485,7 +485,7 @@ $(document).ready(function() {
                     } else {
                         const newProductOption = $(`
                             <a class="dropdown-item new-product-row" href="#">
-                                <i class="fas fa-plus-circle"></i> Add New Product: "${query}"
+                                <i data-lucide="circle-plus"></i> Add New Product: "${query}"
                             </a>
                         `);
                         $('#productDropdown').append(newProductOption);
@@ -644,7 +644,7 @@ $(document).ready(function() {
                     ${totalSelling.toFixed(2)}
                 </td>
                 <td>
-                    <a href="javascript:void(0);" class="delete-set"><i class="fas fa-trash"></i></a>
+                    <a href="javascript:void(0);" class="delete-set"><i data-lucide="trash-2"></i></a>
                 </td>
             </tr>
         `);
@@ -675,7 +675,7 @@ $(document).ready(function() {
         if (query.length >= 1) {
             $('#customerDropdown').html(`
                 <div class="dropdown-item text-center">
-                    <i class="fa fa-spinner fa-spin" style="margin-right:8px !important;"></i> Searching...
+                    <i data-lucide="loader-circle" class="icon-spin" style="margin-right:8px !important;"></i> Searching...
                 </div>
             `).show();
             

@@ -18,7 +18,7 @@
     <div class="toast-container">
         <div class="toast-message success">
             <div class="toast-icon">
-                <i class="icon-checkmark fas fa-check-circle"></i> <!-- Success checkmark icon -->
+                <i data-lucide="circle-check" class="icon-checkmark"></i> <!-- Success checkmark icon -->
             </div>
             <div class="toast-content">
                 <strong>Success!</strong>
@@ -32,7 +32,7 @@
     <div class="toast-container">
         <div class="toast-message error">
             <div class="toast-icon">
-                <i class="icon-error fa fa-exclamation-circle"></i> <!-- Error exclamation mark icon -->
+                <i data-lucide="circle-alert" class="icon-error"></i> <!-- Error exclamation mark icon -->
             </div>
             <div class="toast-content">
                 <strong>Error!</strong>
@@ -54,21 +54,21 @@
                 <button class="nav-link active" id="fuel-tab" data-bs-toggle="tab" 
                         data-bs-target="#fuel-purchases" type="button" role="tab" 
                         aria-controls="fuel-purchases" aria-selected="true">
-                    <i class="fas fa-gas-pump me-2"></i>Fuel Purchases
+                    <i data-lucide="fuel" class="me-2"></i>Fuel Purchases
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="oil-tab" data-bs-toggle="tab" 
                         data-bs-target="#oil-purchases" type="button" role="tab" 
                         aria-controls="oil-purchases" aria-selected="false">
-                    <i class="fas fa-oil-can me-2"></i>Oil Purchases
+                    <i data-lucide="droplets" class="me-2"></i>Oil Purchases
                 </button>
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="all-tab" data-bs-toggle="tab" 
                         data-bs-target="#all-purchases" type="button" role="tab" 
                         aria-controls="all-purchases" aria-selected="false">
-                    <i class="fas fa-list-alt me-2"></i>All Purchases
+                    <i data-lucide="clipboard-list" class="me-2"></i>All Purchases
                 </button>
             </li>
         </ul>

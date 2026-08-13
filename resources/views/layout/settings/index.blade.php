@@ -32,7 +32,7 @@
 
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="card-title text-white mb-0"><i class="fas fa-cog me-2"></i>Header & Contact Information</h5>
+                    <h5 class="card-title text-white mb-0"><i data-lucide="settings" class="me-2"></i>Header & Contact Information</h5>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('settings.update') }}" method="POST">
@@ -79,7 +79,7 @@
 
                             <div class="col-md-12 mt-3">
                                 <button type="submit" class="btn btn-primary px-4">
-                                    <i class="fas fa-save me-2"></i> Save Header Settings
+                                    <i data-lucide="save" class="me-2"></i> Save Header Settings
                                 </button>
                             </div>
                         </div>

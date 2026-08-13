@@ -15,7 +15,7 @@
                 <div class="toast-container">
                     <div class="toast-message success">
                         <div class="toast-icon">
-                            <i class="icon-checkmark fas fa-check-circle"></i>
+                            <i data-lucide="circle-check" class="icon-checkmark"></i>
                         </div>
                         <div class="toast-content">
                             <strong>Success!</strong>
@@ -29,7 +29,7 @@
                 <div class="toast-container">
                     <div class="toast-message error">
                         <div class="toast-icon">
-                            <i class="icon-error fa fa-exclamation-circle"></i>
+                            <i data-lucide="circle-alert" class="icon-error"></i>
                         </div>
                         <div class="toast-content">
                             <strong>Error!</strong>
@@ -105,13 +105,13 @@
                                                 Generate Report
                                             </button>
                                             <button type="button" class="btn btn-success" onclick="exportToExcel()">
-                                                <i class="fas fa-table"></i> Export to Excel
+                                                <i data-lucide="table"></i> Export to Excel
                                             </button>
                                             <button type="button" class="btn btn-danger" onclick="exportToPDF()">
-                                                <i class="fas fa-file-pdf"></i> Export to PDF
+                                                <i data-lucide="file-text"></i> Export to PDF
                                             </button>
                                             <button type="button" class="btn btn-info" onclick="printReport()">
-                                                <i class="fas fa-print"></i> Print Report
+                                                <i data-lucide="printer"></i> Print Report
                                             </button>
                                         </div>
                                     </div>
@@ -184,12 +184,12 @@
                         </p>
                         
                         <p style="margin: 3px 0;">
-                            <i class="fas fa-phone-alt" style="color: #2c5aa0; margin-right: 5px;"></i>
+                            <i data-lucide="phone" style="color: #2c5aa0; margin-right: 5px;"></i>
                             <strong>Tell:</strong> {{ $settings->phone1 ?? '' }}{{ !empty($settings->phone2) ? ' | ' . $settings->phone2 : '' }}
                         </p>
                         
                         <p style="margin: 5px 0; font-size: 14px;">
-                            <i class="fas fa-wallet" style="color: #2c5aa0; margin-right: 5px;"></i>
+                            <i data-lucide="wallet" style="color: #2c5aa0; margin-right: 5px;"></i>
                             <strong>Merchant Accounts: Zaad : {{ $settings->zaad ?? '' }} &nbsp; | &nbsp; E-dahab : {{ $settings->edahab ?? '' }}</strong>
                         </p>
                     </div>
@@ -204,7 +204,7 @@
                 
                 <div style="text-align: right;">
                     <p style="margin: 5px 0; font-size: 14px;">
-                        <i class="fas fa-calendar-alt" style="color: #2c5aa0; margin-right: 5px;"></i>
+                        <i data-lucide="calendar-days" style="color: #2c5aa0; margin-right: 5px;"></i>
                         <span id="printDateRange">Date Range</span>
                     </p>
                     <p style="margin: 5px 0; font-size: 14px;">
@@ -264,7 +264,7 @@
             <div class="invoice-footer" style="margin-top: 40px; padding: 20px 0; border-top: 2px solid #2c5aa0;">
                 <div style="text-align: center; margin-bottom: 20px;">
                     <p style="font-size: 16px; font-weight: bold; color: #2c5aa0;">
-                        <i class="fas fa-handshake" style="margin-right: 8px;"></i>Thank you for your business!
+                        <i data-lucide="handshake" style="margin-right: 8px;"></i>Thank you for your business!
                     </p>
                 </div>
                 

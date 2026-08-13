@@ -23,6 +23,7 @@
   rel="stylesheet"
 />
 <link rel="stylesheet" href="{{asset('uniquestyle/message.css')}}">
+@include('partials.icons')
 </head>
 <style>
     body {
@@ -69,7 +70,7 @@
     <div class="toast-container">
         <div class="toast-message success">
             <div class="toast-icon">
-                <i class="icon-checkmark fas fa-check-circle"></i> <!-- Success checkmark icon -->
+                <i data-lucide="circle-check" class="icon-checkmark"></i> <!-- Success checkmark icon -->
             </div>
             <div class="toast-content">
                 <strong>Success!</strong>
@@ -83,7 +84,7 @@
     <div class="toast-container">
         <div class="toast-message error">
             <div class="toast-icon">
-                <i class="icon-error fa fa-exclamation-circle"></i>
+                <i data-lucide="circle-alert" class="icon-error"></i>
             </div>
             <div class="toast-content">
                 <strong>Error!</strong>
@@ -122,7 +123,7 @@
                             <input type="password" name="password" id="form2Example22" class="form-control" />
                             <label class="form-label" for="form2Example22">Password</label>
                             <span class="toggle-password" onclick="togglePassword()" style="cursor: pointer; position: absolute; right: 15px; top: 50%; transform: translateY(-50%);">
-                                <i class="fa fa-eye" id="toggleEye"></i>
+                                <i data-lucide="eye" id="toggleEye"></i>
                             </span>
                         </div>                        
       
@@ -148,17 +149,10 @@
     <script>
         function togglePassword() {
             var passwordField = document.getElementById("form2Example22");
-            var toggleIcon = document.getElementById("toggleEye");
+            var revealing = passwordField.type === "password";
 
-            if (passwordField.type === "password") {
-                passwordField.type = "text";
-                toggleIcon.classList.remove("fa-eye");
-                toggleIcon.classList.add("fa-eye-slash");
-            } else {
-                passwordField.type = "password";
-                toggleIcon.classList.remove("fa-eye-slash");
-                toggleIcon.classList.add("fa-eye");
-            }
+            passwordField.type = revealing ? "text" : "password";
+            window.setIcon("#toggleEye", revealing ? "eye-off" : "eye");
         }
 
         document.addEventListener('DOMContentLoaded', function() {

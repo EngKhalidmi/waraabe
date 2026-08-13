@@ -249,6 +249,7 @@
             text-align: center;
         }
     </style>
+@include('partials.icons')
 </head>
 
 <body>
@@ -257,7 +258,7 @@
             <div class="page-header">
                 <div class="page-title">
                     <button onclick="window.history.back()" class="btn btn-primary mb-2">
-                        <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+                        <i data-lucide="arrow-left" class="me-2"></i> Back to Dashboard
                     </button>
                     <h4>Fuel Daily Sales Transactions</h4>
                     <h6>Record and Manage Fuel Sales</h6>
@@ -355,7 +356,7 @@
                                     <div class="row mt-3">
                                         <div class="col-lg-12">
                                             <button type="button" id="addTransaction" class="btn btn-primary">
-                                                <i class="fas fa-plus-circle me-2"></i>Add Transaction
+                                                <i data-lucide="circle-plus" class="me-2"></i>Add Transaction
                                             </button>
                                         </div>
                                     </div>
@@ -436,7 +437,7 @@
                                 <div class="row mt-3">
                                     <div class="col-lg-12 text-end">
                                         <button type="submit" class="btn btn-success">
-                                            <i class="fas fa-save me-2"></i>Save Transactions
+                                            <i data-lucide="save" class="me-2"></i>Save Transactions
                                         </button>
                                     </div>
                                 </div>
@@ -501,7 +502,7 @@
                                     </div>
 
                                     <button type="button" id="addCreditTransaction" class="btn btn-primary w-100">
-                                        <i class="fas fa-plus-circle me-2"></i>Add Credit Sale
+                                        <i data-lucide="circle-plus" class="me-2"></i>Add Credit Sale
                                     </button>
                                 </div>
                             </div>
@@ -601,7 +602,7 @@
                                     </div>
                                     <div class="col-md-6 d-flex align-items-end">
                                         <button type="button" id="calculatePayment" class="btn btn-primary w-100">
-                                            <i class="fas fa-calculator me-2"></i>Calculate
+                                            <i data-lucide="calculator" class="me-2"></i>Calculate
                                         </button>
                                     </div>
                                 </div>
@@ -689,7 +690,7 @@
                 if (query.length >= 2) {
                     $('#customerDropdown').html(`
                 <div class="dropdown-item text-center">
-                    <i class="fa fa-spinner fa-spin" style="margin-right:8px !important;"></i> Searching...
+                    <i data-lucide="loader-circle" class="icon-spin" style="margin-right:8px !important;"></i> Searching...
                 </div>
                 `).show();
 
@@ -853,7 +854,7 @@
                             <td>${transaction.total.toFixed(2)}</td>
                             <td>
                                 <button type="button" class="btn btn-sm btn-danger" onclick="removeCreditTransaction(${index})">
-                                    <i class="fas fa-trash"></i>
+                                    <i data-lucide="trash-2"></i>
                                 </button>
                             </td>
                         </tr>
@@ -877,7 +878,7 @@
                     <td>${transaction.total.toFixed(2)}</td>
                     <td>
                         <button type="button" class="btn btn-sm btn-danger" onclick="removeTransaction(${index})">
-                            <i class="fas fa-trash"></i>
+                            <i data-lucide="trash-2"></i>
                         </button>
                     </td>
                 </tr>

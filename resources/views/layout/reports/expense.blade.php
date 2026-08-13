@@ -70,12 +70,9 @@
                                         </div>
                                     </div>
                                     <div class="form-group col-md-12">
-                                        <button type="button" class="btn btn-primary" onclick="printReport()"><i
-                                                class="fas fa-print"></i> <span class="ml-2">Print</span></button>
-                                        <button type="button" class="btn btn-success" onclick="exportToExcel()"><i
-                                                class="fas fa-table"></i> <span class="ml-2">Excel</span></button>
-                                        <button type="button" class="btn btn-danger" onclick="exportToPDF()"><i
-                                                class="fas fa-file-pdf"></i> <span class="ml-2">PDF</span></button>
+                                        <button type="button" class="btn btn-primary" onclick="printReport()"><i data-lucide="printer"></i> <span class="ml-2">Print</span></button>
+                                        <button type="button" class="btn btn-success" onclick="exportToExcel()"><i data-lucide="table"></i> <span class="ml-2">Excel</span></button>
+                                        <button type="button" class="btn btn-danger" onclick="exportToPDF()"><i data-lucide="file-text"></i> <span class="ml-2">PDF</span></button>
                                     </div>
                                 </div>
                             </form>
@@ -106,12 +103,12 @@
                                              </p>
 
                                              <p style="margin: 3px 0;">
-                                                 <i class="fas fa-phone-alt" style="color: #2c5aa0; margin-right: 5px;"></i>
+                                                 <i data-lucide="phone" style="color: #2c5aa0; margin-right: 5px;"></i>
                                                  <strong>Tell:</strong> {{ $settings->phone1 ?? '' }}{{ !empty($settings->phone2) ? ' | ' . $settings->phone2 : '' }}
                                              </p>
 
                                              <p style="margin: 5px 0; font-size: 14px;">
-                                                 <i class="fas fa-wallet" style="color: #2c5aa0; margin-right: 5px;"></i>
+                                                 <i data-lucide="wallet" style="color: #2c5aa0; margin-right: 5px;"></i>
                                                  <strong>Merchant Accounts: Zaad : {{ $settings->zaad ?? '' }} &nbsp; | &nbsp; E-dahab : {{ $settings->edahab ?? '' }}</strong>
                                              </p>
                                          </div></div>
@@ -128,7 +125,7 @@
 
                                     <div style="text-align: right;">
                                         <p style="margin: 5px 0; font-size: 14px;">
-                                            <i class="fas fa-calendar-alt" style="color: #2c5aa0; margin-right: 5px;"></i>
+                                            <i data-lucide="calendar-days" style="color: #2c5aa0; margin-right: 5px;"></i>
                                             <span id="printDateRange">Date Range</span>
                                         </p>
                                         <p style="margin: 5px 0; font-size: 14px;">
@@ -175,7 +172,7 @@
                                     style="margin-top: 40px; padding: 20px 0; border-top: 2px solid #2c5aa0;">
                                     <div style="text-align: center; margin-bottom: 20px;">
                                         <p style="font-size: 16px; font-weight: bold; color: #2c5aa0;">
-                                            <i class="fas fa-file-invoice-dollar" style="margin-right: 8px;"></i>Expense
+                                            <i data-lucide="receipt-text" style="margin-right: 8px;"></i>Expense
                                             Management Report
                                         </p>
                                     </div>

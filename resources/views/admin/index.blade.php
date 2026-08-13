@@ -13,7 +13,7 @@
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
         <div class="d-flex align-items-center gap-3">
             <div class="header-icon-box">
-                <i class="fas fa-filter text-blue"></i>
+                <i data-lucide="sliders-horizontal" class="text-blue"></i>
             </div>
             <div>
                 <h3 class="dashboard-title mb-0">Dashboard</h3>
@@ -32,12 +32,12 @@
         <div class="col-lg-3 col-sm-6 col-12">
             <div class="card-kpi kpi-blue">
                 <div class="kpi-icon-wrapper bg-blue-soft mb-2">
-                    <i class="fas fa-shopping-bag text-blue"></i>
+                    <i data-lucide="shopping-bag" class="text-blue"></i>
                 </div>
                 <span class="kpi-label">Total Purchases</span>
                 <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalPurchase'] ?? 0, 2) }}</span></h4>
                 <div class="d-flex justify-content-between align-items-center mt-2 pt-1">
-                    <span class="kpi-growth text-green"><i class="fas fa-arrow-up me-1"></i>+12.5% <span class="text-muted fw-normal">in {{ $data['selectedMonthName'] }}</span></span>
+                    <span class="kpi-growth text-green"><i data-lucide="arrow-up" class="me-1"></i>+12.5% <span class="text-muted fw-normal">in {{ $data['selectedMonthName'] }}</span></span>
                     <div class="sparkline-box">
                         <svg width="60" height="22" viewBox="0 0 60 22" fill="none"><path d="M2 18 Q 15 10, 30 14 T 58 4" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
                     </div>
@@ -49,12 +49,12 @@
         <div class="col-lg-3 col-sm-6 col-12">
             <div class="card-kpi kpi-green">
                 <div class="kpi-icon-wrapper bg-green-soft mb-2">
-                    <i class="fas fa-gas-pump text-green"></i>
+                    <i data-lucide="fuel" class="text-green"></i>
                 </div>
                 <span class="kpi-label">Fuel Purchases</span>
                 <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalFuelPurchase'] ?? 0, 2) }}</span></h4>
                 <div class="d-flex justify-content-between align-items-center mt-2 pt-1">
-                    <span class="kpi-growth text-green"><i class="fas fa-arrow-up me-1"></i>+15.8% <span class="text-muted fw-normal">in {{ $data['selectedMonthName'] }}</span></span>
+                    <span class="kpi-growth text-green"><i data-lucide="arrow-up" class="me-1"></i>+15.8% <span class="text-muted fw-normal">in {{ $data['selectedMonthName'] }}</span></span>
                     <div class="sparkline-box">
                         <svg width="60" height="22" viewBox="0 0 60 22" fill="none"><path d="M2 18 Q 15 12, 30 15 T 58 4" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
                     </div>
@@ -66,12 +66,12 @@
         <div class="col-lg-3 col-sm-6 col-12">
             <div class="card-kpi kpi-amber">
                 <div class="kpi-icon-wrapper bg-amber-soft mb-2">
-                    <i class="fas fa-tint text-amber"></i>
+                    <i data-lucide="droplet" class="text-amber"></i>
                 </div>
                 <span class="kpi-label">Oil Purchases</span>
                 <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalOilPurchase'] ?? 0, 2) }}</span></h4>
                 <div class="d-flex justify-content-between align-items-center mt-2 pt-1">
-                    <span class="kpi-growth text-amber"><i class="fas fa-arrow-up me-1"></i>+10.3% <span class="text-muted fw-normal">in {{ $data['selectedMonthName'] }}</span></span>
+                    <span class="kpi-growth text-amber"><i data-lucide="arrow-up" class="me-1"></i>+10.3% <span class="text-muted fw-normal">in {{ $data['selectedMonthName'] }}</span></span>
                     <div class="sparkline-box">
                         <svg width="60" height="22" viewBox="0 0 60 22" fill="none"><path d="M2 16 Q 15 10, 30 14 T 58 6" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
                     </div>
@@ -83,12 +83,12 @@
         <div class="col-lg-3 col-sm-6 col-12">
             <div class="card-kpi kpi-rose">
                 <div class="kpi-icon-wrapper bg-rose-soft mb-2">
-                    <i class="fas fa-chart-line text-rose"></i>
+                    <i data-lucide="trending-up" class="text-rose"></i>
                 </div>
                 <span class="kpi-label">Total Oil Sales</span>
                 <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalSales'] ?? 0, 2) }}</span></h4>
                 <div class="d-flex justify-content-between align-items-center mt-2 pt-1">
-                    <span class="kpi-growth text-rose"><i class="fas fa-arrow-up me-1"></i>+9.3% <span class="text-muted fw-normal">in {{ $data['selectedMonthName'] }}</span></span>
+                    <span class="kpi-growth text-rose"><i data-lucide="arrow-up" class="me-1"></i>+9.3% <span class="text-muted fw-normal">in {{ $data['selectedMonthName'] }}</span></span>
                     <div class="sparkline-box">
                         <svg width="60" height="22" viewBox="0 0 60 22" fill="none"><path d="M2 18 Q 15 8, 30 16 T 58 4" stroke="#f43f5e" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
                     </div>
@@ -103,12 +103,12 @@
         <div class="col-lg-3 col-sm-6 col-12">
             <div class="card-kpi kpi-green">
                 <div class="kpi-icon-wrapper bg-green-soft mb-2">
-                    <i class="fas fa-money-bill-wave text-green"></i>
+                    <i data-lucide="banknote" class="text-green"></i>
                 </div>
                 <span class="kpi-label">Total Fuel Sales</span>
                 <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalAllFuelSales'] ?? 0, 2) }}</span></h4>
                 <div class="d-flex justify-content-between align-items-center mt-2 pt-1">
-                    <span class="kpi-growth text-green"><i class="fas fa-arrow-up me-1"></i>+18.7% <span class="text-muted fw-normal">in {{ $data['selectedMonthName'] }}</span></span>
+                    <span class="kpi-growth text-green"><i data-lucide="arrow-up" class="me-1"></i>+18.7% <span class="text-muted fw-normal">in {{ $data['selectedMonthName'] }}</span></span>
                     <div class="sparkline-box">
                         <svg width="60" height="22" viewBox="0 0 60 22" fill="none"><path d="M2 18 Q 15 12, 30 15 T 58 4" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
                     </div>
@@ -120,12 +120,12 @@
         <div class="col-lg-3 col-sm-6 col-12">
             <div class="card-kpi kpi-amber">
                 <div class="kpi-icon-wrapper bg-amber-soft mb-2">
-                    <i class="fas fa-wallet text-amber"></i>
+                    <i data-lucide="wallet" class="text-amber"></i>
                 </div>
                 <span class="kpi-label">Total Receivable</span>
                 <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalReceivable'] ?? 0, 2) }}</span></h4>
                 <div class="d-flex justify-content-between align-items-center mt-2 pt-1">
-                    <span class="kpi-growth text-amber"><i class="fas fa-arrow-up me-1"></i>+5.6% <span class="text-muted fw-normal">in {{ $data['selectedMonthName'] }}</span></span>
+                    <span class="kpi-growth text-amber"><i data-lucide="arrow-up" class="me-1"></i>+5.6% <span class="text-muted fw-normal">in {{ $data['selectedMonthName'] }}</span></span>
                     <div class="sparkline-box">
                         <svg width="60" height="22" viewBox="0 0 60 22" fill="none"><path d="M2 16 Q 15 10, 30 14 T 58 6" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
                     </div>
@@ -137,12 +137,12 @@
         <div class="col-lg-3 col-sm-6 col-12">
             <div class="card-kpi kpi-rose">
                 <div class="kpi-icon-wrapper bg-rose-soft mb-2">
-                    <i class="fas fa-credit-card text-rose"></i>
+                    <i data-lucide="credit-card" class="text-rose"></i>
                 </div>
                 <span class="kpi-label">Total Payable</span>
                 <h4 class="kpi-value">$<span class="counter">{{ number_format($data['totalPayable'] ?? 0, 2) }}</span></h4>
                 <div class="d-flex justify-content-between align-items-center mt-2 pt-1">
-                    <span class="kpi-growth text-rose"><i class="fas fa-arrow-down me-1"></i>-2.4% <span class="text-muted fw-normal">in {{ $data['selectedMonthName'] }}</span></span>
+                    <span class="kpi-growth text-rose"><i data-lucide="arrow-down" class="me-1"></i>-2.4% <span class="text-muted fw-normal">in {{ $data['selectedMonthName'] }}</span></span>
                     <div class="sparkline-box">
                         <svg width="60" height="22" viewBox="0 0 60 22" fill="none"><path d="M2 6 Q 15 14, 30 10 T 58 18" stroke="#f43f5e" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
                     </div>
@@ -154,12 +154,12 @@
         <div class="col-lg-3 col-sm-6 col-12">
             <div class="card-kpi kpi-blue">
                 <div class="kpi-icon-wrapper bg-blue-soft mb-2">
-                    <i class="fas fa-users text-blue"></i>
+                    <i data-lucide="users" class="text-blue"></i>
                 </div>
                 <span class="kpi-label">Customers</span>
                 <h4 class="kpi-value"><span class="counter">{{ $data['clients'] ?? 0 }}</span></h4>
                 <div class="d-flex justify-content-between align-items-center mt-2 pt-1">
-                    <span class="kpi-growth text-blue"><i class="fas fa-arrow-up me-1"></i>+6 <span class="text-muted fw-normal">in {{ $data['selectedMonthName'] }}</span></span>
+                    <span class="kpi-growth text-blue"><i data-lucide="arrow-up" class="me-1"></i>+6 <span class="text-muted fw-normal">in {{ $data['selectedMonthName'] }}</span></span>
                     <div class="sparkline-box">
                         <svg width="60" height="22" viewBox="0 0 60 22" fill="none"><path d="M2 15 Q 15 8, 30 12 T 58 4" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
                     </div>
@@ -177,7 +177,7 @@
                 <div class="panel-header d-flex justify-content-between align-items-center">
                     <div class="d-flex align-items-center gap-2">
                         <div class="panel-title-icon bg-blue-soft">
-                            <i class="fas fa-chart-line text-blue"></i>
+                            <i data-lucide="trending-up" class="text-blue"></i>
                         </div>
                         <h5 class="panel-title mb-0">Sales Summary</h5>
                     </div>
@@ -195,7 +195,7 @@
                         <h3 class="panel-big-headline mb-1">$<span class="counter">{{ number_format($data['totalAllFuelSales'] ?? 0, 2) }}</span></h3>
                         <div class="d-flex align-items-center gap-2 flex-wrap">
                             <span class="kpi-subtext">Total Sales ({{ $data['selectedMonthName'] }} {{ $data['currentYear'] }})</span>
-                            <span class="growth-badge text-green bg-green-soft"><i class="fas fa-arrow-up me-1"></i> in {{ $data['selectedMonthName'] }}</span>
+                            <span class="growth-badge text-green bg-green-soft"><i data-lucide="arrow-up" class="me-1"></i> in {{ $data['selectedMonthName'] }}</span>
                         </div>
                     </div>
                     <div id="salesPurchasesChart" style="height: 310px !important;"></div>
@@ -209,7 +209,7 @@
                 <div class="panel-header d-flex justify-content-between align-items-center">
                     <div class="d-flex align-items-center gap-2">
                         <div class="panel-title-icon bg-blue-soft">
-                            <i class="fas fa-box text-blue"></i>
+                            <i data-lucide="package" class="text-blue"></i>
                         </div>
                         <h5 class="panel-title mb-0">Stock Balance</h5>
                     </div>
@@ -241,14 +241,16 @@
                                         $stockIn = (float) ($product->stock_in ?? 0);
                                         $stockOut = (float) ($product->stock_out ?? 0);
                                         $stockBalance = (float) ($product->stock_balance ?? $product->quantity ?? 0);
-                                        $available = $openingStock + $stockIn;
+                                        $available = (float) ($product->stock_available ?? ($openingStock + $stockIn));
                                         $stockPercent = $available > 0 ? min(100, max(0, ($stockBalance / $available) * 100)) : 0;
+                                        $openingFromPurchase = (bool) ($product->opening_from_purchase ?? false);
+                                        $openingNote = 'No opening inventory recorded - first purchase shown as opening';
                                     @endphp
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center gap-2.5">
                                                 <div class="stock-item-icon {{ $index % 5 == 0 ? 'bg-blue-soft text-blue' : ($index % 5 == 1 ? 'bg-green-soft text-green' : ($index % 5 == 2 ? 'bg-amber-soft text-amber' : ($index % 5 == 3 ? 'bg-purple-soft text-purple' : 'bg-cyan-soft text-cyan'))) }}">
-                                                    <i class="fas {{ str_contains(strtolower($product->name), 'fuel') || str_contains(strtolower($product->name), 'petrol') || str_contains(strtolower($product->name), 'diesel') ? 'fa-gas-pump' : (str_contains(strtolower($product->name), 'oil') ? 'fa-oil-can' : 'fa-box') }}"></i>
+                                                    <i data-lucide="{{ str_contains(strtolower($product->name), 'fuel') || str_contains(strtolower($product->name), 'petrol') || str_contains(strtolower($product->name), 'diesel') ? 'fuel' : (str_contains(strtolower($product->name), 'oil') ? 'droplets' : 'package') }}"></i>
                                                 </div>
                                                 <div>
                                                     <div class="stock-item-name">{{ $product->name }}</div>
@@ -258,7 +260,12 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="text-start fw-semibold text-dark">{{ number_format($openingStock, 2) }} {{ $product->unit ?? 'PCS' }}</td>
+                                        <td class="text-start fw-semibold text-dark" @if($openingFromPurchase) title="{{ $openingNote }}" @endif>
+                                            {{ number_format($openingStock, 2) }} {{ $product->unit ?? 'PCS' }}
+                                            @if($openingFromPurchase)
+                                                <i data-lucide="info" class="text-muted ms-1" style="font-size: 0.75rem;"></i>
+                                            @endif
+                                        </td>
                                         <td class="text-start fw-semibold text-green">{{ number_format($stockIn, 2) }} {{ $product->unit ?? 'PCS' }}</td>
                                         <td class="text-start fw-semibold text-rose">{{ number_format($stockOut, 2) }} {{ $product->unit ?? 'PCS' }}</td>
                                         <td class="text-start fw-bold text-blue">{{ number_format($stockBalance, 2) }} {{ $product->unit ?? 'PCS' }}</td>
@@ -294,7 +301,6 @@
 
 {{-- ApexCharts & Scripts --}}
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
 <script>
 window.addEventListener('pageshow', function (event) {
     const navigationEntry = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
@@ -306,8 +312,6 @@ window.addEventListener('pageshow', function (event) {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-    feather.replace();
-
     let dashboardPayload = {};
     try {
         const jsonText = document.getElementById('dashboard-json')?.textContent;
@@ -388,14 +392,14 @@ document.addEventListener('DOMContentLoaded', function() {
         renderDashboardFilters(payload);
     }
 
-    function stockIconClass(name) {
+    function stockIconName(name) {
         const value = String(name || '').toLowerCase();
 
         if (value.includes('fuel') || value.includes('petrol') || value.includes('diesel')) {
-            return 'fa-gas-pump';
+            return 'fuel';
         }
 
-        return value.includes('oil') ? 'fa-oil-can' : 'fa-box';
+        return value.includes('oil') ? 'droplets' : 'package';
     }
 
     function renderStockBalance(products) {
@@ -416,15 +420,22 @@ document.addEventListener('DOMContentLoaded', function() {
             const stockIn = parseFloat(product.stock_in) || 0;
             const stockOut = parseFloat(product.stock_out) || 0;
             const opening = parseFloat(product.opening_stock ?? product.quantity) || 0;
-            const available = opening + stockIn;
+            const available = parseFloat(product.stock_available ?? (opening + stockIn)) || 0;
             const percent = available > 0 ? Math.min(100, Math.max(0, (balance / available) * 100)) : 0;
+            const seeded = !!product.opening_from_purchase;
+            const openingNote = seeded
+                ? ' title="No opening inventory recorded - first purchase shown as opening"'
+                : '';
+            const openingFlag = seeded
+                ? ' <i data-lucide="info" class="text-muted ms-1" style="font-size: 0.75rem;"></i>'
+                : '';
 
             return `
                 <tr>
                     <td>
                         <div class="d-flex align-items-center gap-2.5">
                             <div class="stock-item-icon ${softTones[index % 5]}">
-                                <i class="fas ${stockIconClass(product.name)}"></i>
+                                <i data-lucide="${stockIconName(product.name)}"></i>
                             </div>
                             <div>
                                 <div class="stock-item-name">${escapeHtml(product.name)}</div>
@@ -434,7 +445,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             </div>
                         </div>
                     </td>
-                    <td class="text-start fw-semibold text-dark">${formatCurrency(opening)} ${unit}</td>
+                    <td class="text-start fw-semibold text-dark"${openingNote}>${formatCurrency(opening)} ${unit}${openingFlag}</td>
                     <td class="text-start fw-semibold text-green">${formatCurrency(stockIn)} ${unit}</td>
                     <td class="text-start fw-semibold text-rose">${formatCurrency(stockOut)} ${unit}</td>
                     <td class="text-start fw-bold text-blue">${formatCurrency(balance)} ${unit}</td>
@@ -469,7 +480,7 @@ document.addEventListener('DOMContentLoaded', function() {
             `
                 <div class="dropdown">
                     <button class="btn btn-pill-outline btn-sm dropdown-toggle d-flex align-items-center gap-1.5" type="button" id="yearDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="far fa-calendar-alt text-muted me-1"></i>
+                        <i data-lucide="calendar-days" class="text-muted me-1"></i>
                         ${currentYear}
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="yearDropdown">
@@ -491,7 +502,7 @@ document.addEventListener('DOMContentLoaded', function() {
             `
                 <div class="dropdown">
                     <button class="btn btn-pill-outline btn-sm dropdown-toggle d-flex align-items-center gap-1.5" type="button" id="monthDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="far fa-calendar text-muted me-1"></i>
+                        <i data-lucide="calendar" class="text-muted me-1"></i>
                         ${selectedMonthName}
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="monthDropdown">

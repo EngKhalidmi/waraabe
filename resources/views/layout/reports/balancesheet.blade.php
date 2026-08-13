@@ -15,7 +15,7 @@
                 <div class="toast-container">
                     <div class="toast-message success">
                         <div class="toast-icon">
-                            <i class="icon-checkmark fas fa-check-circle"></i> <!-- Success checkmark icon -->
+                            <i data-lucide="circle-check" class="icon-checkmark"></i> <!-- Success checkmark icon -->
                         </div>
                         <div class="toast-content">
                             <strong>Success!</strong>
@@ -29,7 +29,7 @@
                 <div class="toast-container">
                     <div class="toast-message error">
                         <div class="toast-icon">
-                            <i class="icon-error fa fa-exclamation-circle"></i> <!-- Error exclamation mark icon -->
+                            <i data-lucide="circle-alert" class="icon-error"></i> <!-- Error exclamation mark icon -->
                         </div>
                         <div class="toast-content">
                             <strong>Error!</strong>
@@ -178,12 +178,9 @@
                             </div>
 
                             <!-- Print Button -->
-                            <button type="button" class="btn btn-primary ml-2 mt-4" onclick="printBalanceSheet()"><i
-                                    class="fas fa-print ml-2"></i> <span class="ml-2">Print</span></button>
-                            <button type="button" class="btn btn-success mt-4 ml-2" onclick="exportToExcel()"><i
-                                    class="fas fa-table"></i> <span class="ml-2">Excel</span></button>
-                            <button type="button" class="btn btn-danger mt-4 ml-2" onclick="exportToPDF()"><i
-                                    class="fas fa-file-pdf"></i> <span class="ml-2">PDF</span></button>
+                            <button type="button" class="btn btn-primary ml-2 mt-4" onclick="printBalanceSheet()"><i data-lucide="printer" class="ml-2"></i> <span class="ml-2">Print</span></button>
+                            <button type="button" class="btn btn-success mt-4 ml-2" onclick="exportToExcel()"><i data-lucide="table"></i> <span class="ml-2">Excel</span></button>
+                            <button type="button" class="btn btn-danger mt-4 ml-2" onclick="exportToPDF()"><i data-lucide="file-text"></i> <span class="ml-2">PDF</span></button>
                         </div>
                     </div>
                 </div>

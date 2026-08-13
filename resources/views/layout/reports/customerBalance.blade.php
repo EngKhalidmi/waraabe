@@ -59,12 +59,9 @@
                                         </div>
                                     </div>
                                     <div class="form-group col-md-12">
-                                        <button type="button" class="btn btn-primary" onclick="printReport()"><i
-                                                class="fas fa-print"></i> <span class="ml-2">Print</span></button>
-                                        <button type="button" class="btn btn-success" onclick="exportToExcel()"><i
-                                                class="fas fa-table"></i> <span class="ml-2">Excel</span></button>
-                                        <button type="button" class="btn btn-danger" onclick="exportToPDF()"><i
-                                                class="fas fa-file-pdf"></i> <span class="ml-2">PDF</span></button>
+                                        <button type="button" class="btn btn-primary" onclick="printReport()"><i data-lucide="printer"></i> <span class="ml-2">Print</span></button>
+                                        <button type="button" class="btn btn-success" onclick="exportToExcel()"><i data-lucide="table"></i> <span class="ml-2">Excel</span></button>
+                                        <button type="button" class="btn btn-danger" onclick="exportToPDF()"><i data-lucide="file-text"></i> <span class="ml-2">PDF</span></button>
                                     </div>
                                 </div>
                             </form>
@@ -138,7 +135,7 @@
                                 <div class="invoice-footer" style="margin-top: 40px; padding: 20px 0; border-top: 2px solid #2c5aa0;">
                                     <div style="text-align: center; margin-bottom: 20px;">
                                         <p style="font-size: 16px; font-weight: bold; color: #2c5aa0;">
-                                            <i class="fas fa-handshake" style="margin-right: 8px;"></i>Customer Balances Report
+                                            <i data-lucide="handshake" style="margin-right: 8px;"></i>Customer Balances Report
                                         </p>
                                     </div>
                                     

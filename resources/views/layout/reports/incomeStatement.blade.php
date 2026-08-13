@@ -18,7 +18,7 @@
                 <div class="toast-container">
                     <div class="toast-message success">
                         <div class="toast-icon">
-                            <i class="icon-checkmark fas fa-check-circle"></i>
+                            <i data-lucide="circle-check" class="icon-checkmark"></i>
                         </div>
                         <div class="toast-content">
                             <strong>Success!</strong>
@@ -32,7 +32,7 @@
                 <div class="toast-container">
                     <div class="toast-message error">
                         <div class="toast-icon">
-                            <i class="icon-error fa fa-exclamation-circle"></i>
+                            <i data-lucide="circle-alert" class="icon-error"></i>
                         </div>
                         <div class="toast-content">
                             <strong>Error!</strong>
@@ -69,15 +69,13 @@
                                             </div>
                                         </div>
                                         <div class="form-group col-md-12">
-                                            <button type="submit" class="btn btn-info"><i class="fas fa-filter"></i>
+                                            <button type="submit" class="btn btn-info"><i data-lucide="sliders-horizontal"></i>
                                                 Filter</button>
                                             <button type="button" class="btn btn-primary ml-2"
-                                                onclick="printIncomeStatement()"><i class="fas fa-print ml-2"></i> <span
+                                                onclick="printIncomeStatement()"><i data-lucide="printer" class="ml-2"></i> <span
                                                     class="ml-2">Print</span></button>
-                                            <button type="button" class="btn btn-success ml-2" onclick="exportToExcel()"><i
-                                                    class="fas fa-table"></i> <span class="ml-2">Excel</span></button>
-                                            <button type="button" class="btn btn-danger ml-2" onclick="exportToPDF()"><i
-                                                    class="fas fa-file-pdf"></i> <span class="ml-2">PDF</span></button>
+                                            <button type="button" class="btn btn-success ml-2" onclick="exportToExcel()"><i data-lucide="table"></i> <span class="ml-2">Excel</span></button>
+                                            <button type="button" class="btn btn-danger ml-2" onclick="exportToPDF()"><i data-lucide="file-text"></i> <span class="ml-2">PDF</span></button>
                                         </div>
                                     </div>
                                 </div>
@@ -126,7 +124,7 @@
                                                 
                                                 <div style="text-align: right;">
                                                     <p style="margin: 5px 0; font-size: 14px;">
-                                                        <i class="fas fa-calendar-alt" style="color: #2c5aa0; margin-right: 5px;"></i>
+                                                        <i data-lucide="calendar-days" style="color: #2c5aa0; margin-right: 5px;"></i>
                                                         <span id="printReportPeriod">For Period: {{ $formattedIncomeStatement['startDate'] ?? '' }} to {{ $formattedIncomeStatement['endDate'] ?? '' }}</span>
                                                     </p>
                                                     <p style="margin: 5px 0; font-size: 14px;">
@@ -153,7 +151,7 @@
                                             <div class="invoice-footer" style="margin-top: 40px; padding: 20px 0; border-top: 2px solid #2c5aa0;">
                                                 <div style="text-align: center; margin-bottom: 20px;">
                                                     <p style="font-size: 16px; font-weight: bold; color: #2c5aa0;">
-                                                        <i class="fas fa-chart-line" style="margin-right: 8px;"></i>Financial Performance Report
+                                                        <i data-lucide="trending-up" style="margin-right: 8px;"></i>Financial Performance Report
                                                     </p>
                                                 </div>
                                                 

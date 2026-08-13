@@ -14,7 +14,7 @@
     <div class="toast-container">
         <div class="toast-message success">
             <div class="toast-icon">
-                <i class="icon-checkmark fas fa-check-circle"></i> <!-- Success checkmark icon -->
+                <i data-lucide="circle-check" class="icon-checkmark"></i> <!-- Success checkmark icon -->
             </div>
             <div class="toast-content">
                 <strong>Success!</strong>
@@ -28,7 +28,7 @@
     <div class="toast-container">
         <div class="toast-message error">
             <div class="toast-icon">
-                <i class="icon-error fa fa-exclamation-circle"></i> <!-- Error exclamation mark icon -->
+                <i data-lucide="circle-alert" class="icon-error"></i> <!-- Error exclamation mark icon -->
             </div>
             <div class="toast-content">
                 <strong>Error!</strong>
@@ -71,7 +71,7 @@
     </div>
     </div>
     <div class="col-lg-12">
-    <button type="submit" class="btn btn-primary "><i class="fas fa-save"></i> Register Account</button>
+    <button type="submit" class="btn btn-primary "><i data-lucide="save"></i> Register Account</button>
     </div>
     </div>
 </form>

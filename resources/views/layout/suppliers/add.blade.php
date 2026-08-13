@@ -41,7 +41,7 @@
     </div>
     </div>
     <div class="col-lg-12">
-    <button type="submit" class="btn btn-primary "><i class="fas fa-save"></i> Save Supplier</button>
+    <button type="submit" class="btn btn-primary "><i data-lucide="save"></i> Save Supplier</button>
     </div>
     </div>
 </form>

@@ -6,7 +6,7 @@
         <div class="toast-container">
             <div class="toast-message success">
                 <div class="toast-icon">
-                    <i class="icon-checkmark fas fa-check-circle"></i>
+                    <i data-lucide="circle-check" class="icon-checkmark"></i>
                 </div>
                 <div class="toast-content">
                     <strong>Success!</strong>
@@ -20,7 +20,7 @@
         <div class="toast-container">
             <div class="toast-message error">
                 <div class="toast-icon">
-                    <i class="icon-error fa fa-exclamation-circle"></i>
+                    <i data-lucide="circle-alert" class="icon-error"></i>
                 </div>
                 <div class="toast-content">
                     <strong>Error!</strong>
@@ -116,8 +116,7 @@
                         <div class="row">
                          
                             <div class="col-lg-12">
-                                <button type="submit" id="Create" class="btn btn-primary me-2"><i
-                                        class="fas fa-save"></i> Register Bad Product </button>.
+                                <button type="submit" id="Create" class="btn btn-primary me-2"><i data-lucide="save"></i> Register Bad Product </button>.
                                 
                             </div>
                         </div>

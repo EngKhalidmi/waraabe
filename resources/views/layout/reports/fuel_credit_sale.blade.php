@@ -17,7 +17,7 @@
                     <div class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
                         <div class="d-flex">
                             <div class="toast-body d-flex align-items-center">
-                                <i class="fas fa-check-circle me-2"></i>
+                                <i data-lucide="circle-check" class="me-2"></i>
                                 {{ session('status') }}
                             </div>
                             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -31,7 +31,7 @@
                     <div class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
                         <div class="d-flex">
                             <div class="toast-body">
-                                <i class="fas fa-exclamation-circle me-2"></i>
+                                <i data-lucide="circle-alert" class="me-2"></i>
                                 <strong>Error!</strong>
                                 @foreach ($errors->all() as $error)
                                     <div>{{ $error }}</div>
@@ -47,7 +47,7 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-light py-3">
                     <h5 class="card-title mb-0">
-                        <i class="fas fa-filter me-2"></i>Filter Options
+                        <i data-lucide="sliders-horizontal" class="me-2"></i>Filter Options
                     </h5>
                 </div>
                 <div class="card-body">
@@ -87,22 +87,22 @@
                             <div class="col-12 mt-4">
                                 <div class="d-flex gap-2 flex-wrap">
                                     <button type="button" class="btn btn-primary" onclick="getFuelCreditsReport()">
-                                        <i class="fas fa-search me-2"></i>Search
+                                        <i data-lucide="search" class="me-2"></i>Search
                                     </button>
                                     <button type="button" class="btn btn-outline-primary" onclick="printReport()">
-                                        <i class="fas fa-print me-2"></i>Print
+                                        <i data-lucide="printer" class="me-2"></i>Print
                                     </button>
                                     <button type="button" class="btn btn-outline-success" onclick="exportToExcel()">
-                                        <i class="fas fa-table me-2"></i>Excel
+                                        <i data-lucide="table" class="me-2"></i>Excel
                                     </button>
                                     <button type="button" class="btn btn-outline-danger" onclick="exportToPDF()">
-                                        <i class="fas fa-file-pdf me-2"></i>PDF
+                                        <i data-lucide="file-text" class="me-2"></i>PDF
                                     </button>
                                     <button type="button" class="btn btn-outline-info" onclick="generateInvoice()">
-                                        <i class="fas fa-file-invoice me-2"></i>Generate Invoice
+                                        <i data-lucide="receipt" class="me-2"></i>Generate Invoice
                                     </button>
                                     <button type="reset" class="btn btn-outline-secondary">
-                                        <i class="fas fa-sync-alt me-2"></i>Reset
+                                        <i data-lucide="refresh-cw" class="me-2"></i>Reset
                                     </button>
                                 </div>
                             </div>
@@ -115,7 +115,7 @@
             <div class="card shadow-sm">
                 <div class="card-header bg-light py-3">
                     <h5 class="card-title mb-0">
-                        <i class="fas fa-list me-2"></i>Report Results
+                        <i data-lucide="list" class="me-2"></i>Report Results
                     </h5>
                 </div>
                 <div class="card-body">
@@ -135,7 +135,7 @@
                             <tbody id="visibleTableBody">
                                 <tr>
                                     <td colspan="7" class="text-center py-4 text-muted">
-                                        <i class="fas fa-info-circle me-2"></i>Use the filters above to generate a report
+                                        <i data-lucide="info" class="me-2"></i>Use the filters above to generate a report
                                     </td>
                                 </tr>
                             </tbody>
@@ -169,11 +169,11 @@
                             <h1 style="font-size: 28px; font-weight: bold; margin: 0; color: #2c5aa0;">{{ $settings->company_name ?? 'WARAABE FUEL STATIONS' }}</h1>
                             <p style="margin: 5px 0; font-size: 14px;">{{ $settings->company_address ?? 'Kaalinta Shiidaalka Waraabe, Berbera Somaliland' }}</p>
                             <p style="margin: 3px 0;">
-                                <i class="fas fa-phone-alt" style="color: #2c5aa0; margin-right: 5px;"></i>
+                                <i data-lucide="phone" style="color: #2c5aa0; margin-right: 5px;"></i>
                                 <strong>Tell:</strong> {{ $settings->phone1 ?? '' }}{{ !empty($settings->phone2) ? ' | ' . $settings->phone2 : '' }}
                             </p>
                             <p style="margin: 5px 0; font-size: 14px;">
-                                <i class="fas fa-wallet" style="color: #2c5aa0; margin-right: 5px;"></i>
+                                <i data-lucide="wallet" style="color: #2c5aa0; margin-right: 5px;"></i>
                                 <strong>Merchant Accounts: Zaad : {{ $settings->zaad ?? '' }} &nbsp; | &nbsp; E-dahab : {{ $settings->edahab ?? '' }}</strong>
                             </p>
                         </div>
@@ -195,7 +195,7 @@
                     <div style="text-align: right;">
                         <h3 style="margin: 0 0 10px 0; font-size: 18px; color: #2c5aa0;" id="printCustomerName">Customer Name</h3>
                         <p style="margin: 5px 0; font-size: 14px;">
-                            <i class="fas fa-calendar-alt" style="color: #2c5aa0; margin-right: 5px;"></i>
+                            <i data-lucide="calendar-days" style="color: #2c5aa0; margin-right: 5px;"></i>
                             <span id="printDateRange">Date Range</span>
                         </p>
                     </div>
@@ -258,7 +258,7 @@
                 <div class="invoice-footer" style="margin-top: 30px; border-top: 2px solid #2c5aa0;">
                     <div style="text-align: center; margin-bottom: 20px; padding-top: 15px;">
                         <p style="font-size: 16px; font-weight: bold; color: #2c5aa0;">
-                            <i class="fas fa-handshake" style="margin-right: 8px;"></i>Thank you for your business!
+                            <i data-lucide="handshake" style="margin-right: 8px;"></i>Thank you for your business!
                         </p>
                     </div>
                 </div>
@@ -430,7 +430,7 @@
         }
 
         function showNoDataMessage(visibleTableBody, printTableBody, message = 'No data available for the selected filters') {
-            visibleTableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted"><i class="fas fa-info-circle me-2"></i>${message}</td></tr>`;
+            visibleTableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted"><i data-lucide="info" class="me-2"></i>${message}</td></tr>`;
             printTableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px;">${message}</td></tr>`;
             
             // Reset totals

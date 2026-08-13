@@ -15,7 +15,7 @@
     <div class="toast-container">
         <div class="toast-message success">
             <div class="toast-icon">
-                <i class="icon-checkmark fas fa-check-circle"></i> <!-- Success checkmark icon -->
+                <i data-lucide="circle-check" class="icon-checkmark"></i> <!-- Success checkmark icon -->
             </div>
             <div class="toast-content">
                 <strong>Success!</strong>
@@ -29,7 +29,7 @@
     <div class="toast-container">
         <div class="toast-message error">
             <div class="toast-icon">
-                <i class="icon-error fa fa-exclamation-circle"></i> <!-- Error exclamation mark icon -->
+                <i data-lucide="circle-alert" class="icon-error"></i> <!-- Error exclamation mark icon -->
             </div>
             <div class="toast-content">
                 <strong>Error!</strong>
@@ -115,9 +115,9 @@
 </div>
 </div>
     <div class="form-group col-md-12">
-            <button type="button" class="btn btn-primary" onclick="printReport()"><i class="fas fa-print"></i> <span class="ml-2">Print</span></button>
-            <button type="button" class="btn btn-success" onclick="exportToExcel()"><i class="fas fa-table"></i>  <span class="ml-2">Excel</span></button>
-            <button type="button" class="btn btn-danger" onclick="exportToPDF()"><i class="fas fa-file-pdf"></i> <span class="ml-2">PDF</span></button>
+            <button type="button" class="btn btn-primary" onclick="printReport()"><i data-lucide="printer"></i> <span class="ml-2">Print</span></button>
+            <button type="button" class="btn btn-success" onclick="exportToExcel()"><i data-lucide="table"></i>  <span class="ml-2">Excel</span></button>
+            <button type="button" class="btn btn-danger" onclick="exportToPDF()"><i data-lucide="file-text"></i> <span class="ml-2">PDF</span></button>
     </div>
     </div>
     </div>
@@ -177,7 +177,7 @@
             <div class="invoice-header" style="text-align: center; margin-bottom: 25px; padding: 20px 0; border-bottom: 2px solid #2c5aa0;">
                 <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
                     <div style="width: 80px; height: 80px; background: #2c5aa0; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
-                        <i class="fas fa-file-invoice-dollar" style="font-size: 36px;"></i>
+                        <i data-lucide="receipt-text" style="font-size: 36px;"></i>
                     </div>
                     <div>
                         <h1 style="font-size: 28px; font-weight: bold; margin: 0; color: #2c5aa0;">WARAABE FUEL STATION</h1>
@@ -203,15 +203,15 @@
                 
                 <div style="text-align: right;">
                     <p style="margin: 5px 0; font-size: 14px;">
-                        <i class="fas fa-calendar-alt" style="color: #2c5aa0; margin-right: 5px;"></i>
+                        <i data-lucide="calendar-days" style="color: #2c5aa0; margin-right: 5px;"></i>
                         <span id="printDateRange">Date Range</span>
                     </p>
                     <p style="margin: 5px 0; font-size: 14px;" id="printCustomerInfo">
-                        <i class="fas fa-users" style="color: #2c5aa0; margin-right: 5px;"></i>
+                        <i data-lucide="users" style="color: #2c5aa0; margin-right: 5px;"></i>
                         All Customers
                     </p>
                     <p style="margin: 5px 0; font-size: 14px;" id="printDepartmentInfo">
-                        <i class="fas fa-building" style="color: #2c5aa0; margin-right: 5px;"></i>
+                        <i data-lucide="building-2" style="color: #2c5aa0; margin-right: 5px;"></i>
                         All Departments
                     </p>
                 </div>
@@ -265,7 +265,7 @@
             <div class="report-footer" style="margin-top: 40px; padding: 20px 0; border-top: 2px solid #2c5aa0;">
                 <div style="text-align: center; margin-bottom: 20px;">
                     <p style="font-size: 16px; font-weight: bold; color: #2c5aa0;">
-                        <i class="fas fa-chart-line" style="margin-right: 8px;"></i>Financial Summary
+                        <i data-lucide="trending-up" style="margin-right: 8px;"></i>Financial Summary
                     </p>
                 </div>
                 
@@ -287,7 +287,7 @@
                 
                 <div style="text-align: center; margin-top: 30px;">
                     <p style="font-size: 12px; color: #6c757d;">
-                        <i class="fas fa-info-circle" style="margin-right: 5px;"></i>
+                        <i data-lucide="info" style="margin-right: 5px;"></i>
                         This is an automated financial report. For inquiries, contact the finance department.
                     </p>
                 </div>
@@ -433,7 +433,7 @@
         if (clientSelect.value) {
             const selectedOption = clientSelect.options[clientSelect.selectedIndex];
             document.getElementById('printCustomerInfo').innerHTML = `
-                <i class="fas fa-user" style="color: #2c5aa0; margin-right: 5px;"></i>
+                <i data-lucide="user" style="color: #2c5aa0; margin-right: 5px;"></i>
                 ${selectedOption.text}
             `;
         }
@@ -443,7 +443,7 @@
         if (depSelect.value) {
             const selectedDep = depSelect.options[depSelect.selectedIndex];
             document.getElementById('printDepartmentInfo').innerHTML = `
-                <i class="fas fa-building" style="color: #2c5aa0; margin-right: 5px;"></i>
+                <i data-lucide="building-2" style="color: #2c5aa0; margin-right: 5px;"></i>
                 ${selectedDep.text}
             `;
         }
@@ -499,10 +499,10 @@
         if (data.type) {
             if (data.type.toLowerCase().includes('debit')) {
                 typeClass = 'style="color: #dc3545;"';
-                typeIcon = '<i class="fas fa-arrow-down me-1"></i>';
+                typeIcon = '<i data-lucide="arrow-down" class="me-1"></i>';
             } else if (data.type.toLowerCase().includes('credit')) {
                 typeClass = 'style="color: #28a745;"';
-                typeIcon = '<i class="fas fa-arrow-up me-1"></i>';
+                typeIcon = '<i data-lucide="arrow-up" class="me-1"></i>';
             }
         }
 

@@ -22,6 +22,7 @@
 
 <link rel="stylesheet" href="{{asset('/assets/css/style.css')}}">
 
+@include('partials.icons')
 </head>
 <style>
     @font-face {
@@ -50,7 +51,7 @@
 <div class="main-wrapper">
 <div class="error-box">
 <h1>500</h1>
-<h3 class="h2 mb-3"><i class="fas fa-exclamation-circle"></i> Oops! Something went wrong</h3>
+<h3 class="h2 mb-3"><i data-lucide="circle-alert"></i> Oops! Something went wrong</h3>
 <p class="h4 font-weight-normal">The page you requested was not found.</p>
 <a href="{{route('dashboard')}}" class="btn btn-primary">Back to Home</a>
 <hr>
