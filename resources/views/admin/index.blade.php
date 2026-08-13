@@ -228,7 +228,7 @@
                             <thead>
                                 <tr>
                                     <th>Product</th>
-                                    <th class="text-start">Opening Stock</th>
+                                    <th class="text-start">Opening</th>
                                     <th class="text-start">In</th>
                                     <th class="text-start">Out</th>
                                     <th class="text-start">Balance</th>
@@ -245,6 +245,15 @@
                                         $stockPercent = $available > 0 ? min(100, max(0, ($stockBalance / $available) * 100)) : 0;
                                         $openingFromPurchase = (bool) ($product->opening_from_purchase ?? false);
                                         $openingNote = 'No opening inventory recorded - first purchase shown as opening';
+                                        $stockUnit = $product->unit ?? 'PCS';
+                                        $unitKey = strtolower(trim((string) $stockUnit));
+                                        if (in_array($unitKey, ['l', 'lt', 'ltr', 'liter', 'litre', 'liters', 'litres'], true)) {
+                                            $stockUnit = 'L';
+                                        }
+                                        $formatStockQty = function ($qty) use ($stockUnit) {
+                                            $decimals = abs($qty - round($qty)) < 0.0001 ? 0 : 2;
+                                            return number_format($qty, $decimals) . $stockUnit;
+                                        };
                                     @endphp
                                     <tr>
                                         <td>
@@ -260,15 +269,15 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="text-start fw-semibold text-dark" @if($openingFromPurchase) title="{{ $openingNote }}" @endif>
-                                            {{ number_format($openingStock, 2) }} {{ $product->unit ?? 'PCS' }}
+                                        <td class="text-start fw-semibold text-dark stock-qty" @if($openingFromPurchase) title="{{ $openingNote }}" @endif>
+                                            {{ $formatStockQty($openingStock) }}
                                             @if($openingFromPurchase)
                                                 <i data-lucide="info" class="text-muted ms-1" style="font-size: 0.75rem;"></i>
                                             @endif
                                         </td>
-                                        <td class="text-start fw-semibold text-green">{{ number_format($stockIn, 2) }} {{ $product->unit ?? 'PCS' }}</td>
-                                        <td class="text-start fw-semibold text-rose">{{ number_format($stockOut, 2) }} {{ $product->unit ?? 'PCS' }}</td>
-                                        <td class="text-start fw-bold text-blue">{{ number_format($stockBalance, 2) }} {{ $product->unit ?? 'PCS' }}</td>
+                                        <td class="text-start fw-semibold text-green stock-qty">{{ $formatStockQty($stockIn) }}</td>
+                                        <td class="text-start fw-semibold text-rose stock-qty">{{ $formatStockQty($stockOut) }}</td>
+                                        <td class="text-start fw-bold text-blue stock-qty">{{ $formatStockQty($stockBalance) }}</td>
                                     </tr>
                                 @empty
                                     <tr>
@@ -335,6 +344,28 @@ document.addEventListener('DOMContentLoaded', function() {
     function formatNumber(num) {
         const val = parseInt(num, 10) || 0;
         return val.toLocaleString();
+    }
+
+    function compactStockUnit(unit) {
+        const value = String(unit || 'PCS').trim();
+        const key = value.toLowerCase();
+
+        if (['l', 'lt', 'ltr', 'liter', 'litre', 'liters', 'litres'].includes(key)) {
+            return 'L';
+        }
+
+        return value || 'PCS';
+    }
+
+    function formatStockQty(num, unit) {
+        const val = parseFloat(num) || 0;
+        const decimals = Math.abs(val - Math.round(val)) < 0.0001 ? 0 : 2;
+        const amount = val.toLocaleString(undefined, {
+            minimumFractionDigits: decimals,
+            maximumFractionDigits: decimals
+        });
+
+        return amount + compactStockUnit(unit);
     }
 
     function escapeHtml(value) {
@@ -415,7 +446,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const barTones = ['bg-blue', 'bg-green', 'bg-amber', 'bg-purple', 'bg-cyan'];
 
         tbody.innerHTML = products.map(function(product, index) {
-            const unit = escapeHtml(product.unit || 'PCS');
+            const unit = product.unit || 'PCS';
             const balance = parseFloat(product.stock_balance ?? product.quantity) || 0;
             const stockIn = parseFloat(product.stock_in) || 0;
             const stockOut = parseFloat(product.stock_out) || 0;
@@ -445,10 +476,10 @@ document.addEventListener('DOMContentLoaded', function() {
                             </div>
                         </div>
                     </td>
-                    <td class="text-start fw-semibold text-dark"${openingNote}>${formatCurrency(opening)} ${unit}${openingFlag}</td>
-                    <td class="text-start fw-semibold text-green">${formatCurrency(stockIn)} ${unit}</td>
-                    <td class="text-start fw-semibold text-rose">${formatCurrency(stockOut)} ${unit}</td>
-                    <td class="text-start fw-bold text-blue">${formatCurrency(balance)} ${unit}</td>
+                    <td class="text-start fw-semibold text-dark stock-qty"${openingNote}>${formatStockQty(opening, unit)}${openingFlag}</td>
+                    <td class="text-start fw-semibold text-green stock-qty">${formatStockQty(stockIn, unit)}</td>
+                    <td class="text-start fw-semibold text-rose stock-qty">${formatStockQty(stockOut, unit)}</td>
+                    <td class="text-start fw-bold text-blue stock-qty">${formatStockQty(balance, unit)}</td>
                 </tr>
             `;
         }).join('');
@@ -799,6 +830,12 @@ document.addEventListener('DOMContentLoaded', function() {
     font-weight: 600;
     color: #0f172a;
     font-size: 0.92rem;
+}
+
+.stock-qty {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.01em;
 }
 
 .progress-thin {
