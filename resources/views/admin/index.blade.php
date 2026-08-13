@@ -818,5 +818,54 @@ document.addEventListener('DOMContentLoaded', function() {
 .gap-2\.5 {
     gap: 0.65rem;
 }
+
+/*
+ * Dashboard icon sizing.
+ *
+ * The tiles above are fixed-size boxes that used to size their glyph with
+ * font-size. Lucide renders an SVG, so size it explicitly instead — stroke
+ * icons also read smaller than the solid glyphs they replaced, so these are
+ * set to roughly half the tile for a balanced fill.
+ */
+.header-icon-box svg.lucide {
+    width: 22px;
+    height: 22px;
+    stroke-width: 1.75;
+}
+
+.kpi-icon-wrapper svg.lucide {
+    width: 20px;
+    height: 20px;
+    stroke-width: 1.75;
+}
+
+.stock-item-icon svg.lucide {
+    width: 18px;
+    height: 18px;
+    stroke-width: 1.75;
+}
+
+.panel-title-icon svg.lucide {
+    width: 18px;
+    height: 18px;
+    stroke-width: 1.75;
+}
+
+/* Inline trend arrows sit next to very small text, so lift them off the
+   text size and keep the heavier stroke for legibility. */
+.kpi-growth svg.lucide,
+.growth-badge svg.lucide {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2.25;
+    vertical-align: -0.2em;
+}
+
+/* Year / month filter buttons. */
+.btn-pill-outline svg.lucide {
+    width: 15px;
+    height: 15px;
+    stroke-width: 2;
+}
 </style>
 @endsection

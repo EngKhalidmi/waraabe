@@ -23,16 +23,6 @@ i[data-lucide] {
     height: 1em;
 }
 
-/* Larger decorative icons read better with a slightly lighter stroke. */
-.kpi-icon-wrapper svg.lucide,
-.panel-title-icon svg.lucide,
-.stock-item-icon svg.lucide,
-.header-icon-box svg.lucide {
-    width: 1.05em;
-    height: 1.05em;
-    stroke-width: 1.75;
-}
-
 /* FontAwesome size helpers kept working for markup that used them. */
 svg.lucide.fa-lg,
 svg.lucide.icon-lg {
