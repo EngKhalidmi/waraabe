@@ -124,6 +124,8 @@ class DashboardController extends Controller
 
         $recentProducts = $staticProducts->merge($otherProducts);
 
+        $this->attachStockMovements($recentProducts, $selectedYear, $selectedMonth, $selectedDepID);
+
         /**
          * ===================== FUEL SALES =====================
          */
@@ -196,6 +198,95 @@ class DashboardController extends Controller
             ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, private')
             ->header('Pragma', 'no-cache')
             ->header('Expires', '0');
+    }
+
+    /**
+     * ===================== STOCK MOVEMENTS =====================
+     *
+     * Stock "Out" must match the Fuel Sales Report, which counts both the
+     * regular (cash) fuel sale transactions and the credit fuel sales.
+     * Oil sales and bad products are stock-out movements as well.
+     *
+     * Opening stock is derived so the row always balances:
+     *     opening + in - out = current quantity
+     */
+    private function attachStockMovements($products, int $year, int $month, $depID): void
+    {
+        $productIds = $products->pluck('id')->filter()->values()->all();
+
+        if (empty($productIds)) {
+            return;
+        }
+
+        // OUT: regular (cash) fuel sales — dated on the parent fuel_sales row
+        $fuelCashOut = DB::table('fuel_sale_transactions as fst')
+            ->join('fuel_sales as fs', 'fs.id', '=', 'fst.fuel_sale_id')
+            ->selectRaw('fst.product_id as pid, SUM(fst.liters) as qty')
+            ->whereYear('fs.date', $year)
+            ->whereMonth('fs.date', $month)
+            ->whereIn('fst.product_id', $productIds)
+            ->when($depID, fn($q) => $q->where('fst.depID', $depID))
+            ->groupBy('fst.product_id')
+            ->pluck('qty', 'pid');
+
+        // OUT: credit fuel sales
+        $fuelCreditOut = DB::table('fuel_credit_sales')
+            ->selectRaw('product_id as pid, SUM(quantity) as qty')
+            ->whereYear('date', $year)
+            ->whereMonth('date', $month)
+            ->whereIn('product_id', $productIds)
+            ->when($depID, fn($q) => $q->where('depID', $depID))
+            ->groupBy('product_id')
+            ->pluck('qty', 'pid');
+
+        // OUT: oil / general sales
+        $oilOut = DB::table('sales as s')
+            ->join('sales_transactions as st', 'st.id', '=', 's.sales_transaction_id')
+            ->selectRaw('s.proID as pid, SUM(s.quantity) as qty')
+            ->whereYear('st.paid_date', $year)
+            ->whereMonth('st.paid_date', $month)
+            ->whereIn('s.proID', $productIds)
+            ->when($depID, fn($q) => $q->where('s.depID', $depID))
+            ->groupBy('s.proID')
+            ->pluck('qty', 'pid');
+
+        // OUT: damaged / written-off stock
+        $badOut = DB::table('bad_products')
+            ->selectRaw('proID as pid, SUM(quantity) as qty')
+            ->whereYear('created_at', $year)
+            ->whereMonth('created_at', $month)
+            ->whereIn('proID', $productIds)
+            ->when($depID, fn($q) => $q->where('depID', $depID))
+            ->groupBy('proID')
+            ->pluck('qty', 'pid');
+
+        // IN: purchases — dated on the parent returned_credits row
+        $purchaseIn = DB::table('purchases as p')
+            ->join('returned_credits as rc', 'rc.id', '=', 'p.transID')
+            ->selectRaw('p.proID as pid, SUM(p.quantity) as qty')
+            ->whereYear('rc.date', $year)
+            ->whereMonth('rc.date', $month)
+            ->whereIn('p.proID', $productIds)
+            ->when($depID, fn($q) => $q->where('p.depID', $depID))
+            ->groupBy('p.proID')
+            ->pluck('qty', 'pid');
+
+        foreach ($products as $product) {
+            $id = $product->id;
+
+            $out = (float) ($fuelCashOut[$id] ?? 0)
+                 + (float) ($fuelCreditOut[$id] ?? 0)
+                 + (float) ($oilOut[$id] ?? 0)
+                 + (float) ($badOut[$id] ?? 0);
+
+            $in = (float) ($purchaseIn[$id] ?? 0);
+            $balance = (float) $product->quantity;
+
+            $product->stock_in = $in;
+            $product->stock_out = $out;
+            $product->stock_balance = $balance;
+            $product->opening_stock = $balance - $in + $out;
+        }
     }
 
     /**

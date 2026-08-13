@@ -234,8 +234,16 @@
                                     <th class="text-start">Balance</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="stockBalanceBody">
                                 @forelse($data['products'] as $index => $product)
+                                    @php
+                                        $openingStock = (float) ($product->opening_stock ?? $product->quantity ?? 0);
+                                        $stockIn = (float) ($product->stock_in ?? 0);
+                                        $stockOut = (float) ($product->stock_out ?? 0);
+                                        $stockBalance = (float) ($product->stock_balance ?? $product->quantity ?? 0);
+                                        $available = $openingStock + $stockIn;
+                                        $stockPercent = $available > 0 ? min(100, max(0, ($stockBalance / $available) * 100)) : 0;
+                                    @endphp
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center gap-2.5">
@@ -245,15 +253,15 @@
                                                 <div>
                                                     <div class="stock-item-name">{{ $product->name }}</div>
                                                     <div class="progress progress-thin mt-1">
-                                                        <div class="progress-bar {{ $index % 5 == 0 ? 'bg-blue' : ($index % 5 == 1 ? 'bg-green' : ($index % 5 == 2 ? 'bg-amber' : ($index % 5 == 3 ? 'bg-purple' : 'bg-cyan'))) }}" role="progressbar" style="width: {{ min(100, max(15, (int)$product->quantity)) }}%"></div>
+                                                        <div class="progress-bar {{ $index % 5 == 0 ? 'bg-blue' : ($index % 5 == 1 ? 'bg-green' : ($index % 5 == 2 ? 'bg-amber' : ($index % 5 == 3 ? 'bg-purple' : 'bg-cyan'))) }}" role="progressbar" style="width: {{ $stockPercent }}%"></div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="text-start fw-semibold text-dark">{{ number_format($product->quantity ?? 0, 2) }} {{ $product->unit ?? 'PCS' }}</td>
-                                        <td class="text-start fw-semibold text-green">{{ number_format(($product->quantity ?? 0) * 1.2, 2) }} {{ $product->unit ?? 'PCS' }}</td>
-                                        <td class="text-start fw-semibold text-rose">{{ number_format(($product->quantity ?? 0) * 0.2, 2) }} {{ $product->unit ?? 'PCS' }}</td>
-                                        <td class="text-start fw-bold text-blue">{{ number_format($product->quantity ?? 0, 2) }} {{ $product->unit ?? 'PCS' }}</td>
+                                        <td class="text-start fw-semibold text-dark">{{ number_format($openingStock, 2) }} {{ $product->unit ?? 'PCS' }}</td>
+                                        <td class="text-start fw-semibold text-green">{{ number_format($stockIn, 2) }} {{ $product->unit ?? 'PCS' }}</td>
+                                        <td class="text-start fw-semibold text-rose">{{ number_format($stockOut, 2) }} {{ $product->unit ?? 'PCS' }}</td>
+                                        <td class="text-start fw-bold text-blue">{{ number_format($stockBalance, 2) }} {{ $product->unit ?? 'PCS' }}</td>
                                     </tr>
                                 @empty
                                     <tr>
@@ -376,7 +384,63 @@ document.addEventListener('DOMContentLoaded', function() {
             chart.updateSeries([{ name: 'Monthly Sales', data: salesSeries }]);
         }
 
+        renderStockBalance(d.products || []);
         renderDashboardFilters(payload);
+    }
+
+    function stockIconClass(name) {
+        const value = String(name || '').toLowerCase();
+
+        if (value.includes('fuel') || value.includes('petrol') || value.includes('diesel')) {
+            return 'fa-gas-pump';
+        }
+
+        return value.includes('oil') ? 'fa-oil-can' : 'fa-box';
+    }
+
+    function renderStockBalance(products) {
+        const tbody = document.getElementById('stockBalanceBody');
+        if (!tbody) return;
+
+        if (!products.length) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">No products found in stock.</td></tr>';
+            return;
+        }
+
+        const softTones = ['bg-blue-soft text-blue', 'bg-green-soft text-green', 'bg-amber-soft text-amber', 'bg-purple-soft text-purple', 'bg-cyan-soft text-cyan'];
+        const barTones = ['bg-blue', 'bg-green', 'bg-amber', 'bg-purple', 'bg-cyan'];
+
+        tbody.innerHTML = products.map(function(product, index) {
+            const unit = escapeHtml(product.unit || 'PCS');
+            const balance = parseFloat(product.stock_balance ?? product.quantity) || 0;
+            const stockIn = parseFloat(product.stock_in) || 0;
+            const stockOut = parseFloat(product.stock_out) || 0;
+            const opening = parseFloat(product.opening_stock ?? product.quantity) || 0;
+            const available = opening + stockIn;
+            const percent = available > 0 ? Math.min(100, Math.max(0, (balance / available) * 100)) : 0;
+
+            return `
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center gap-2.5">
+                            <div class="stock-item-icon ${softTones[index % 5]}">
+                                <i class="fas ${stockIconClass(product.name)}"></i>
+                            </div>
+                            <div>
+                                <div class="stock-item-name">${escapeHtml(product.name)}</div>
+                                <div class="progress progress-thin mt-1">
+                                    <div class="progress-bar ${barTones[index % 5]}" role="progressbar" style="width: ${percent}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-start fw-semibold text-dark">${formatCurrency(opening)} ${unit}</td>
+                    <td class="text-start fw-semibold text-green">${formatCurrency(stockIn)} ${unit}</td>
+                    <td class="text-start fw-semibold text-rose">${formatCurrency(stockOut)} ${unit}</td>
+                    <td class="text-start fw-bold text-blue">${formatCurrency(balance)} ${unit}</td>
+                </tr>
+            `;
+        }).join('');
     }
 
     function renderDashboardFilters(payload) {
